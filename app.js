@@ -235,18 +235,44 @@ async function fetchRoute(from, to) {
 }
 
 async function applyRouteFilter(routeLine, onProgress) {
-  const CHUNK = 200;
+  // Pass 1 — fast pre-filter using a simplified route geometry.
+  // turf.nearestPointOnLine is O(route_segments) per station; OSRM's full-
+  // resolution geometry can have 10 000–50 000 points for a long route.
+  // Simplifying to ~500 representative points cuts the work by ~50–100×.
+  // tolerance 0.001° ≈ 111 m, so we widen the candidate threshold by that
+  // amount to avoid false negatives at the corridor boundary.
+  const SIMPLIFICATION_ERROR_KM = 0.15; // generous margin for 0.001° tolerance
+  const simplified = turf.simplify(routeLine, { tolerance: 0.001, highQuality: false });
+
+  const candidates = [];
+  const CHUNK = 500;
   for (let i = 0; i < markers.length; i += CHUNK) {
     const end = Math.min(i + CHUNK, markers.length);
     for (let j = i; j < end; j++) {
       const m = markers[j];
-      const snap = turf.nearestPointOnLine(routeLine, turf.point([m._lon, m._lat]), { units: 'kilometers' });
-      m._distFromRoute  = snap.properties.dist;
-      m._distAlongRoute = snap.properties.location;
+      const snap = turf.nearestPointOnLine(simplified, turf.point([m._lon, m._lat]), { units: 'kilometers' });
+      if (snap.properties.dist <= ROUTE_BUFFER_KM + SIMPLIFICATION_ERROR_KM) {
+        candidates.push(m);
+      } else {
+        m._distFromRoute  = snap.properties.dist; // definitely outside — store for completeness
+        m._distAlongRoute = snap.properties.location;
+      }
     }
-    if (onProgress) onProgress(end, markers.length);
+    if (onProgress) onProgress(Math.round(end * 0.8), markers.length);
     await new Promise(r => requestAnimationFrame(r));
   }
+
+  // Pass 2 — precise check on the small candidate set only.
+  // Typically ≤ 100 stations for a 200 m corridor, so this is fast even with
+  // the full-resolution route geometry.
+  for (let i = 0; i < candidates.length; i++) {
+    const m = candidates[i];
+    const snap = turf.nearestPointOnLine(routeLine, turf.point([m._lon, m._lat]), { units: 'kilometers' });
+    m._distFromRoute  = snap.properties.dist;
+    m._distAlongRoute = snap.properties.location;
+  }
+  if (onProgress) onProgress(markers.length, markers.length);
+
   updateVisibility();
 }
 
