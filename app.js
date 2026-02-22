@@ -207,13 +207,21 @@ function buildPopup(p, op) {
 // ── Route planning ────────────────────────────────────────────
 
 async function geocode(query) {
-  const r = await fetch(
-    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
-    { headers: { 'Accept-Language': 'fr' } }
-  );
-  const data = await r.json();
-  if (!data.length) throw new Error(`"${query}" introuvable`);
-  return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+  const url  = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+  const opts = { headers: { 'Accept-Language': 'fr' } };
+  // Nominatim occasionally fails on first cold-connection attempt (rate-limit
+  // or missing CORS header on error response).  Retry once after a short pause.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const r    = await fetch(url, opts);
+      const data = await r.json();
+      if (!data.length) throw new Error(`"${query}" introuvable`);
+      return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+    } catch (e) {
+      if (attempt === 1 || e.message.includes('introuvable')) throw e;
+      await new Promise(r => setTimeout(r, 800));
+    }
+  }
 }
 
 async function fetchRoute(from, to) {
