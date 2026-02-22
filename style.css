@@ -36,27 +36,6 @@ html, body {
   margin-bottom: 10px;
 }
 
-#mw-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.mw-btn {
-  padding: 3px 11px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 700;
-  border: 2px solid;
-  background: transparent;
-  transition: opacity 0.15s, transform 0.1s;
-  user-select: none;
-}
-
-.mw-btn:hover { transform: scale(1.07); }
-.mw-btn.off   { opacity: 0.28; }
-
 /* ── Route planning ─────────────────────────────────────────── */
 
 #panel {

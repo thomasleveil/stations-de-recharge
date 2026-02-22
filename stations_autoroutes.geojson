@@ -48,6 +48,216 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -0.852195,
+          44.361347
+        ]
+      },
+      "properties": {
+        "id": "ESZUNP3563451997298711981",
+        "nom_station": "Zunder/143957",
+        "adresse": " A63, Saugnac-et-Muret 40410 France",
+        "operateur": "Zunder | ES*ZUN",
+        "enseigne": "Zunder",
+        "nbre_pdc": "26",
+        "max_power_kw": 400.0,
+        "autoroute": "A63",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.849591,
+          44.361107
+        ]
+      },
+      "properties": {
+        "id": "ESZUNP381229663620381962",
+        "nom_station": "Zunder/143958",
+        "adresse": " A63, Saugnac-et-Muret 40410 France",
+        "operateur": "Zunder | ES*ZUN",
+        "enseigne": "Zunder",
+        "nbre_pdc": "29",
+        "max_power_kw": 400.0,
+        "autoroute": "A63",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.092769,
+          43.937578
+        ]
+      },
+      "properties": {
+        "id": "ESZUNP7368675728380321468",
+        "nom_station": "Zunder/143954",
+        "adresse": " A63, Lesperon 40260 France",
+        "operateur": "Zunder | ES*ZUN",
+        "enseigne": "Zunder",
+        "nbre_pdc": "29",
+        "max_power_kw": 400.0,
+        "autoroute": "A63",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.0893,
+          43.937372
+        ]
+      },
+      "properties": {
+        "id": "ESZUNP83809080630916683",
+        "nom_station": "Zunder/143955",
+        "adresse": "59 A63, Lesperon 40260 France",
+        "operateur": "Zunder | ES*ZUN",
+        "enseigne": "Zunder",
+        "nbre_pdc": "28",
+        "max_power_kw": 400.0,
+        "autoroute": "A63",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.470168,
+          47.650783
+        ]
+      },
+      "properties": {
+        "id": "ESZUNP885181614413741274",
+        "nom_station": "Zunder/143953",
+        "adresse": " A28, Dissay-sous-Courcillon 72500 France",
+        "operateur": "Zunder | ES*ZUN",
+        "enseigne": "Zunder",
+        "nbre_pdc": "5",
+        "max_power_kw": 200.0,
+        "autoroute": "A28",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.174335,
+          43.265294
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000221",
+        "nom_station": "LESPIGNAN NORD VINCI",
+        "adresse": "Aire de Lespignan Nord A9 - 34710 LESPIGNAN",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "15",
+        "max_power_kw": 300.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.549115,
+          43.485788
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000019",
+        "nom_station": "TOULOUSE SUD NORD ASF",
+        "adresse": "ASF Aire de Toulouse Sud Nord, A61 31450 DEYME ",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "14",
+        "max_power_kw": 300.0,
+        "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.55014,
+          43.48583
+        ]
+      },
+      "properties": {
+        "id": "FRALLPASF023",
+        "nom_station": "TOULOUSE SUD NORD ASF",
+        "adresse": "ASF Aire de Toulouse Sud Nord, A61 31450 DEYME ",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "12",
+        "max_power_kw": 300.0,
+        "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.017796,
+          46.453132
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000020",
+        "nom_station": "ROUILLE PAMPROUX ASF",
+        "adresse": "ASF Aire De Rouille Pamproux Nord, A10 79800 PAMPROUX",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "14",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.174483,
+          43.264096
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000219",
+        "nom_station": "LESPIGNAN SUD VINCI",
+        "adresse": "Aire de Lespignan Sud A9 - 34710 LESPIGNAN",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "15",
+        "max_power_kw": 300.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.835428,
           44.786443
         ]
@@ -82,6 +292,27 @@
         "nbre_pdc": "10",
         "max_power_kw": 400.0,
         "autoroute": "A7",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.060912,
+          43.689381
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000256",
+        "nom_station": "Aire de Nabrigas",
+        "adresse": "Aire de Nabrigas A9 km 83 34400 - Lunel Viel",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "17",
+        "max_power_kw": 300.0,
+        "autoroute": "A9",
         "horaires": "24/7"
       }
     },
@@ -174,6 +405,111 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          1.890148,
+          48.389867
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000276",
+        "nom_station": "Aire de Boutroux_A10",
+        "adresse": "Aire de Boutroux, A10, km 43, 28700- Sainville",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "12",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.890605,
+          48.390125
+        ]
+      },
+      "properties": {
+        "id": "FRALLPGO800450",
+        "nom_station": "Allego - Aire de Boutroux_A10",
+        "adresse": "Aire de Boutroux, A10, km 43",
+        "operateur": "Allego",
+        "enseigne": "Allego - Aire de Boutroux_A10",
+        "nbre_pdc": "3",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.49959,
+          48.108181
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000283",
+        "nom_station": "Aire de Heron Cendre_A10",
+        "adresse": "Aire de Heron Cendre, A10, km 75, 28140- Dambron",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "11",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.849959,
+          48.108181
+        ]
+      },
+      "properties": {
+        "id": "FRALLPGO800455",
+        "nom_station": "Allego - Aire de Heron Cendre_A10",
+        "adresse": "Aire de Heron Cendre, A10, km 75",
+        "operateur": "Allego",
+        "enseigne": "Allego - Aire de Heron Cendre_A10",
+        "nbre_pdc": "3",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.851741,
+          48.109275
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000302",
+        "nom_station": "Aire de La Dauneuse_A10",
+        "adresse": "Aire de la Dauneuse, A10, km 75, 28140-Dambron",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "11",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           2.184198,
           47.145743
         ]
@@ -237,6 +573,69 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -0.432787,
+          44.975352
+        ]
+      },
+      "properties": {
+        "id": "FRATLP5935206721937634759",
+        "nom_station": "Atlante/FRATLFR00307",
+        "adresse": " A10, Aire de Meillac, Cubzac-les-Ponts 33240 France",
+        "operateur": "Atlante | FR*ATL",
+        "enseigne": "Atlante",
+        "nbre_pdc": "23",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.439411,
+          43.869269
+        ]
+      },
+      "properties": {
+        "id": "FRATLP4452318604862553169",
+        "nom_station": "Atlante/FRATLFR00310",
+        "adresse": " A9, Aire de Marguerittes Sud, Marguerittes 30320 France",
+        "operateur": "Atlante | FR*ATL",
+        "enseigne": "Atlante",
+        "nbre_pdc": "38",
+        "max_power_kw": 300.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.59942,
+          45.609308
+        ]
+      },
+      "properties": {
+        "id": "FRATLP8550715564089620999",
+        "nom_station": "Atlante/FRATLFR00309",
+        "adresse": " A10, Aire de Saint-Léger, Saint-Léger 17800 France",
+        "operateur": "Atlante | FR*ATL",
+        "enseigne": "Atlante",
+        "nbre_pdc": "39",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           2.457271,
           45.622961
         ]
@@ -258,6 +657,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          3.991514,
+          47.508686
+        ]
+      },
+      "properties": {
+        "id": "FRBFCPVDOCO",
+        "nom_station": "SDEY - SAUVIGNY LE BOIS (89) - Sortie 22 Avallon sur A6",
+        "adresse": "D646 22 D646 89200 SAUVIGNY-LE-BOIS",
+        "operateur": "",
+        "enseigne": "CPO CITEOS Region-Bfc",
+        "nbre_pdc": "4",
+        "max_power_kw": 160.0,
+        "autoroute": "A6",
+        "horaires": "Mo-Su 00:00-24:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           2.009837,
           47.546416
         ]
@@ -271,6 +691,69 @@
         "nbre_pdc": "9",
         "max_power_kw": 600.0,
         "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.326023,
+          46.610184
+        ]
+      },
+      "properties": {
+        "id": "FRBPEP3EA034",
+        "nom_station": "Aire de Cent Septiers ",
+        "adresse": "A10 - Sens Paris Bordeaux - point km 303 86000 Poitiers",
+        "operateur": "bp France",
+        "enseigne": "bp pulse",
+        "nbre_pdc": "14",
+        "max_power_kw": 600.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.511479,
+          46.796324
+        ]
+      },
+      "properties": {
+        "id": "FRBPEP3EA035",
+        "nom_station": "Aire de Chagnats",
+        "adresse": "A10 km 277  86530 Naintré",
+        "operateur": "bp France",
+        "enseigne": "bp pulse",
+        "nbre_pdc": "14",
+        "max_power_kw": 600.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.962103,
+          47.536843
+        ]
+      },
+      "properties": {
+        "id": "FRBPEP3EA036",
+        "nom_station": "FR | BP 3EA036 | Auzouer-en-Touraine / Aire de Courte Epee - A10 - Sens Paris Bordeaux - DC #03",
+        "adresse": "A10 - Sens Paris Bordeaux - point km 180, 37110, Auzouer-en-Touraine",
+        "operateur": "bp pulse",
+        "enseigne": "bp pulse",
+        "nbre_pdc": "2",
+        "max_power_kw": 600.0,
+        "autoroute": "A10",
         "horaires": "24/7"
       }
     },
@@ -321,6 +804,48 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          0.962236,
+          47.534762
+        ]
+      },
+      "properties": {
+        "id": "FRBPEP3EA039",
+        "nom_station": "FR | BP 3EA039 | Auzouer-en-Touraine / Aire de Picardiere - A10 - Sens Bordeaux Paris - DC #04",
+        "adresse": "A10 - Sens Bordeaux Paris - point km 180, 37110, Auzouer-en-Touraine",
+        "operateur": "bp pulse",
+        "enseigne": "bp pulse",
+        "nbre_pdc": "2",
+        "max_power_kw": 600.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.932888,
+          48.555516
+        ]
+      },
+      "properties": {
+        "id": "FRBPEP3EA040",
+        "nom_station": "Aire de Saint Arnoult Ouest",
+        "adresse": "A10 - sens Paris Province -point km 23 78730 Saint Arnoult en Yvelines",
+        "operateur": "bp France",
+        "enseigne": "bp pulse",
+        "nbre_pdc": "14",
+        "max_power_kw": 600.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           1.464896,
           48.372502
         ]
@@ -342,6 +867,69 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.954277,
+          43.113785
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAABAG",
+        "nom_station": "A9 - Aire de Bages (direction Narbonne)",
+        "adresse": "A9, 11100 Bages",
+        "operateur": "Electra",
+        "enseigne": "A9 - Aire de Bages (direction Narbonne)",
+        "nbre_pdc": "11",
+        "max_power_kw": 400.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.460093,
+          45.067029
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAACEZ",
+        "nom_station": "A10 - Aire de Cézac (direction Paris)",
+        "adresse": "A10 - Aire de Cézac, 33620 Cézac",
+        "operateur": "Electra",
+        "enseigne": "A10 - Aire de Cézac (direction Paris)",
+        "nbre_pdc": "11",
+        "max_power_kw": 400.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.555796,
+          45.296722
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAASCAP",
+        "nom_station": "A10 - Aire de Saint Caprais (direction Bordeaux)",
+        "adresse": "A10, 33820 VAL-DE-LIVENNE",
+        "operateur": "Electra",
+        "enseigne": "A10 - Aire de Saint Caprais (direction Bordeaux)",
+        "nbre_pdc": "8",
+        "max_power_kw": 400.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.82935,
           44.111227
         ]
@@ -355,6 +943,69 @@
         "nbre_pdc": "8",
         "max_power_kw": 400.0,
         "autoroute": "A7",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.220567,
+          43.217186
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAAARZS",
+        "nom_station": "A61 - Aire d'Arzens Sud (direction Narbonne)",
+        "adresse": "A61 - Aire d'Arzens Sud, 11000 Carcassonne",
+        "operateur": "Electra",
+        "enseigne": "A61 - Aire d'Arzens Sud (direction Narbonne)",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.004787,
+          44.040629
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAAGART",
+        "nom_station": "A62 - Aire de Garonne (direction Toulouse)",
+        "adresse": "A62 - Aire de Garonne, 82210 Saint-Nicolas-de-la-Grave",
+        "operateur": "Electra",
+        "enseigne": "A62 - Aire de Garonne (direction Toulouse)",
+        "nbre_pdc": "12",
+        "max_power_kw": 300.0,
+        "autoroute": "A62",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.6383,
+          43.965009
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAAESTN",
+        "nom_station": "A9 - Aire d'Estézargues Nord (direction Montpellier)",
+        "adresse": "A9 - Aire d'Estézargues-Nord, 30390 Estézargues",
+        "operateur": "Electra",
+        "enseigne": "A9 - Aire d'Estézargues Nord (direction Montpellier)",
+        "nbre_pdc": "10",
+        "max_power_kw": 400.0,
+        "autoroute": "A9",
         "horaires": "24/7"
       }
     },
@@ -405,6 +1056,132 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -0.539583,
+          46.010618
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAABEN",
+        "nom_station": "A10 - Aire de la Benâte (direction Paris)",
+        "adresse": "A10 - Aire de La Benâte, 17400 Essouvert",
+        "operateur": "Electra",
+        "enseigne": "A10 - Aire de la Benâte (direction Paris)",
+        "nbre_pdc": "8",
+        "max_power_kw": 400.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.636584,
+          43.962583
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAAESTS",
+        "nom_station": "A9 - Aire d'Estézargues Sud (direction Orange)",
+        "adresse": "A9 - Aire d'Estézargues-Sud, 30390 Estézargues",
+        "operateur": "Electra",
+        "enseigne": "A9 - Aire d'Estézargues Sud (direction Orange)",
+        "nbre_pdc": "8",
+        "max_power_kw": 400.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.89191,
+          42.750766
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAARIV",
+        "nom_station": "A9 - Aire de Rivesaltes (direction Perpignan)",
+        "adresse": "A9 - Aire de Rivesaltes, 66380 Pia",
+        "operateur": "Electra",
+        "enseigne": "A9 - Aire de Rivesaltes (direction Perpignan)",
+        "nbre_pdc": "9",
+        "max_power_kw": 400.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.610802,
+          45.512597
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAASPAE",
+        "nom_station": "A10 - Aire de Saint Palais Est (direction Paris)",
+        "adresse": "A10 - Aire de Saint Palais Est, 17800 Saint-Palais-de-Phiolin",
+        "operateur": "Electra",
+        "enseigne": "A10 - Aire de Saint Palais Est (direction Paris)",
+        "nbre_pdc": "11",
+        "max_power_kw": 400.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.613711,
+          45.512687
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAASPAO",
+        "nom_station": "A10 - Aire de Saint Palais Ouest (direction Bordeaux)",
+        "adresse": "A10 - Aire de Saint Palais Ouest, 17800 Saint-Palais-de-Phiolin",
+        "operateur": "Electra",
+        "enseigne": "A10 - Aire de Saint Palais Ouest (direction Bordeaux)",
+        "nbre_pdc": "7",
+        "max_power_kw": 400.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.893251,
+          42.753711
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAAPIA",
+        "nom_station": "A9 - Aire de Pia (direction Montpellier)",
+        "adresse": "A9 - Aire de Pia, 66380 Pia",
+        "operateur": "Electra",
+        "enseigne": "A9 - Aire de Pia (direction Montpellier)",
+        "nbre_pdc": "9",
+        "max_power_kw": 400.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           5.243111,
           43.446899
         ]
@@ -418,6 +1195,27 @@
         "nbre_pdc": "10",
         "max_power_kw": 300.0,
         "autoroute": "A7",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.52905,
+          45.481249
+        ]
+      },
+      "properties": {
+        "id": "FRELCPSLTPA",
+        "nom_station": "Salon-La-Tour - Parcelle A20",
+        "adresse": "X, 19510 Salon-la-Tour",
+        "operateur": "Electra",
+        "enseigne": "Salon-La-Tour - Parcelle A20",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A20",
         "horaires": "24/7"
       }
     },
@@ -447,6 +1245,48 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.216763,
+          43.219984
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAAARZN",
+        "nom_station": "A61 - Aire d'Arzens Nord (direction Toulouse)",
+        "adresse": "A61 - Aire d'Arzens Nord, 11290 Arzens",
+        "operateur": "Electra",
+        "enseigne": "A61 - Aire d'Arzens Nord (direction Toulouse)",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.004127,
+          44.040485
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAAGARB",
+        "nom_station": "A62 - Aire de Garonne (direction Bordeaux)",
+        "adresse": "A62 - Aire de Garonne, 82210 Saint-Nicolas-de-la-Grave",
+        "operateur": "Electra",
+        "enseigne": "A62 - Aire de Garonne (direction Bordeaux)",
+        "nbre_pdc": "12",
+        "max_power_kw": 300.0,
+        "autoroute": "A62",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.887513,
           45.154707
         ]
@@ -460,6 +1300,27 @@
         "nbre_pdc": "10",
         "max_power_kw": 400.0,
         "autoroute": "A7",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.557716,
+          45.313329
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAABOIS",
+        "nom_station": "A10 - Aire de Boisredon (direction Saintes)",
+        "adresse": "A10, 17150 Boisredon",
+        "operateur": "Electra",
+        "enseigne": "A10 - Aire de Boisredon (direction Saintes)",
+        "nbre_pdc": "7",
+        "max_power_kw": 400.0,
+        "autoroute": "A10",
         "horaires": "24/7"
       }
     },
@@ -489,6 +1350,90 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.951727,
+          43.023681
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAAGAS",
+        "nom_station": "A9 - Aire de Gasparets (direction Perpignan)",
+        "adresse": "A9, 11130 Sigean",
+        "operateur": "Electra",
+        "enseigne": "A9 - Aire de Gasparets (direction Perpignan)",
+        "nbre_pdc": "12",
+        "max_power_kw": 400.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.718711,
+          43.493438
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAAGIGN",
+        "nom_station": "A9 - Aire de Gigean Nord (direction Béziers)",
+        "adresse": "A9, 34770 Gigean",
+        "operateur": "Electra",
+        "enseigne": "A9 - Aire de Gigean Nord (direction Béziers)",
+        "nbre_pdc": "9",
+        "max_power_kw": 400.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.630591,
+          43.463523
+        ]
+      },
+      "properties": {
+        "id": "FRELCPAALOUP",
+        "nom_station": "A9 - Aire de Loupian (direction Montpellier)",
+        "adresse": "A9, 34140 Loupian",
+        "operateur": "Electra",
+        "enseigne": "A9 - Aire de Loupian (direction Montpellier)",
+        "nbre_pdc": "14",
+        "max_power_kw": 400.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.294519,
+          46.205566
+        ]
+      },
+      "properties": {
+        "id": "FREVAP01195A",
+        "nom_station": "e-Vadea - Jasseron - A40 Teyssonge",
+        "adresse": "A40 - Aire de Bourg Teyssonge 01250 JASSERON (01)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "6",
+        "max_power_kw": 300.0,
+        "autoroute": "A40",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           7.420005,
           43.753589
         ]
@@ -502,6 +1447,216 @@
         "nbre_pdc": "9",
         "max_power_kw": 300.0,
         "autoroute": "A8",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.969035,
+          42.949432
+        ]
+      },
+      "properties": {
+        "id": "FREVAP11188A",
+        "nom_station": "e-Vadea - La Palme - A9 La Palme Ouest",
+        "adresse": "A9 - Aire de La Palme Ouest 11480 LA PALME (11)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.395574,
+          43.441127
+        ]
+      },
+      "properties": {
+        "id": "FREVAP13015A",
+        "nom_station": "e-Vadea - Bouc-Bel-Air - A51 Champouse",
+        "adresse": "A51 - Aire de la Champouse 13320 BOUC-BEL-AIR (13)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "13",
+        "max_power_kw": 300.0,
+        "autoroute": "A51",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.171659,
+          47.421321
+        ]
+      },
+      "properties": {
+        "id": "FREVAP21111A",
+        "nom_station": "e-Vadea - Brognon - A31 Dijon Brognon",
+        "adresse": "A31 - Aire de Dijon Brognon 21490 BROGNON (21)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "7",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.172468,
+          47.425011
+        ]
+      },
+      "properties": {
+        "id": "FREVAP21111B",
+        "nom_station": "e-Vadea - Brognon - A31 Dijon Spoy (direction Toul)",
+        "adresse": "A31 - Aire de Dijon Spoy 21490 BROGNON (21) Bourgogne-Franche-Comté FRANCE",
+        "operateur": "SPIE CityNetworks",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "9",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.495427,
+          47.314872
+        ]
+      },
+      "properties": {
+        "id": "FREVAP21298A",
+        "nom_station": "e-Vadea - Gissey-le-Vieil - A6 Chien Blanc",
+        "adresse": "A6 - Aire du Chien Blanc 21350 GISSEY-LE-VIEIL (21)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.127125,
+          47.328902
+        ]
+      },
+      "properties": {
+        "id": "FREVAP25368A",
+        "nom_station": "e-Vadea - Marchaux-Chaudefontaine - A36 Besançon Champoux",
+        "adresse": "A36 - Aire de Besançon Champoux 25640 MARCHAUX-CHAUDEFONTAINE (25)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "6",
+        "max_power_kw": 300.0,
+        "autoroute": "A36",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.125201,
+          47.327026
+        ]
+      },
+      "properties": {
+        "id": "FREVAP25368B",
+        "nom_station": "e-Vadea - Marchaux-Chaudefontaine - A36 Besançon Marchaux",
+        "adresse": "A36 - Aire de Besançon Marchaux 25640 MARCHAUX-CHAUDEFONTAINE (25) Bourgogne-Franche-Comté FRANCE",
+        "operateur": "SPIE CityNetworks",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A36",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.549728,
+          43.48261
+        ]
+      },
+      "properties": {
+        "id": "FREVAP31161A",
+        "nom_station": "e-Vadea - Deyme - A61 Toulouse Sud",
+        "adresse": "A61 - Aire de Toulouse Sud 31450 DEYME (31)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "13",
+        "max_power_kw": 300.0,
+        "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.490309,
+          45.189955
+        ]
+      },
+      "properties": {
+        "id": "FREVAP33502A",
+        "nom_station": "e-Vadea - Saugon - A10 Terres de l'Estuaire",
+        "adresse": "A10 - Aire des Terres de l’Estuaire 33920 SAUGON (33)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "10",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.795622,
+          43.546265
+        ]
+      },
+      "properties": {
+        "id": "FREVAP34095A",
+        "nom_station": "e-Vadea - Fabregues - A9 Montpellier Sud",
+        "adresse": "A9 - Aire de Montpellier Fabregues Sud 34690 FABREGUES (34)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A9",
         "horaires": "24/7"
       }
     },
@@ -531,6 +1686,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          5.860412,
+          48.268133
+        ]
+      },
+      "properties": {
+        "id": "FREVAP88440A",
+        "nom_station": "e-Vadea - Sandaucourt - A31 La Trelle",
+        "adresse": "A31 - Aire de Sandaucourt La Trelle 88170 SANDAUCOURT (88)",
+        "operateur": "SPIE CITYNETWORKS",
+        "enseigne": "e-Vadea",
+        "nbre_pdc": "6",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.156034,
           45.679959
         ]
@@ -552,6 +1728,132 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          4.13341,
+          43.715255
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50801",
+        "nom_station": "Fastned Aire d’Ambrussum Nord",
+        "adresse": "Aire d’Ambrussum Nord A9, 34400 Villetelle",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire d’Ambrussum Nord",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.57393,
+          48.360859
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50682",
+        "nom_station": "Fastned Aire d’Achères - La Forêt",
+        "adresse": "Aire d’Achères - La Forêt A6, 77760 Achères-la-Forêt",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire d’Achères - La Forêt",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.76787,
+          46.14335
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50602",
+        "nom_station": "Fastned Aire de Dracé",
+        "adresse": "Aire de Dracé A6, 69220 Dracé",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Dracé",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.844517,
+          46.69318
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50603",
+        "nom_station": "Fastned Aire de Saint Ambreuil",
+        "adresse": "Aire de Saint Ambreuil A6, 71240 Saint Ambreuil",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Saint Ambreuil",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.001847,
+          47.216809
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50558",
+        "nom_station": "Fastned Aire de Gevrey - Chambertin Ouest",
+        "adresse": "Aire de Gevrey - Chambertin Ouest A31, 21220 Gevrey-Chambertin",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Gevrey - Chambertin Ouest",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.728741,
+          47.440536
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50560",
+        "nom_station": "Fastned Aire d’Écot Sud",
+        "adresse": "Aire d’Ecot Sud A36, 25150 Écot",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire d’Écot Sud",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A36",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           0.800075,
           45.149531
         ]
@@ -565,6 +1867,384 @@
         "nbre_pdc": "8",
         "max_power_kw": 300.0,
         "autoroute": "A89",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.630208,
+          45.577663
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50811",
+        "nom_station": "Fastned Aire de Romagnieu",
+        "adresse": "Aire de Romagnieu A43, 38480 Romagnieu",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Romagnieu",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.86101,
+          45.243957
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50804",
+        "nom_station": "Fastned Aire de Saint-Nazaire les Eymes",
+        "adresse": "Aire de Saint-Nazaire les Eymes A41, 38330 Saint-Nazaire les Eymes",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Saint-Nazaire les Eymes",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A41",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.551434,
+          49.073179
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50814",
+        "nom_station": "Fastned Aire de Vémars Ouest",
+        "adresse": "Aire de Vémars Ouest A1, 95470 Vémars",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Vémars Ouest",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.552983,
+          49.071747
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50815",
+        "nom_station": "Fastned Aire de Vémars Est",
+        "adresse": "Aire de Vémars Est A1, 95470 Vémars",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Vémars Est",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.873564,
+          50.173438
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50825",
+        "nom_station": "Fastned Aire de Saint-Léger",
+        "adresse": "Aire de Saint-Léger A1, 62128 Saint-Léger",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Saint-Léger",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.864158,
+          50.261485
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50828",
+        "nom_station": "Fastned Aire de Wancourt Est",
+        "adresse": "Aire de Wancourt Est A1, 62128 Monchy-le-Preux",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Wancourt Est",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.63311,
+          48.992331
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50806",
+        "nom_station": "Fastned Aire de Rosny-Sud",
+        "adresse": "Aire de Rosny-Sud A13, 78710 Rosny-sur-Seine",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Rosny-Sud",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.379636,
+          50.572433
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50820",
+        "nom_station": "Fastned Aire de Saint Hilaire Cottes",
+        "adresse": "Aire de Saint Hilaire Cottes A26, 62120 Saint-Hilaire-Cottes",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Saint Hilaire Cottes",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.088926,
+          48.856103
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50822",
+        "nom_station": "Fastned Aire de L'Obrion",
+        "adresse": "Aire de L'Obrion A31, 54700 Loisy",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de L'Obrion",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.091331,
+          48.86053
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50835",
+        "nom_station": "Fastned Aire de Loisy",
+        "adresse": "A31 Aire de Loisy, 54700 Loisy",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Loisy",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.054163,
+          48.9646
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50832",
+        "nom_station": "Fastned Aire de Changis sur Marne",
+        "adresse": "Aire de Changis sur Marne A4, 77260 Ussy-sur-Marne",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Changis sur Marne",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.063073,
+          48.970463
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50833",
+        "nom_station": "Fastned Aire de Ussy sur Marne",
+        "adresse": "Aire de Ussy sur Marne A4, 77260 Ussy-sur-Marne",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Ussy sur Marne",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.790058,
+          49.073637
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50810",
+        "nom_station": "Fastned Aire de Valmy Le Moulin",
+        "adresse": "Aire de Valmy Le Moulin A4, 51800 Valmy",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Valmy Le Moulin",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.788939,
+          49.072318
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50809",
+        "nom_station": "Fastned Aire de Valmy-Orbeval",
+        "adresse": "Aire de Valmy-Orbeval A4, 51800 Valmy",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Valmy-Orbeval",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.064557,
+          48.974923
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50830",
+        "nom_station": "Fastned Aire de Keskastel-Ouest",
+        "adresse": "Aire de Keskastel-Ouest A4, 67260 Keskastel",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Keskastel-Ouest",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.423404,
+          45.245848
+        ]
+      },
+      "properties": {
+        "id": "FRFASP50866",
+        "nom_station": "Fastned Aire de Saint-Julien-Mont-Denis",
+        "adresse": "A43 Saint-Julien-Mont-Denis, 73870 Saint-Julien-Mont-Denis",
+        "operateur": "Fastned France",
+        "enseigne": "Fastned Aire de Saint-Julien-Mont-Denis",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.44222,
+          48.59459
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF006369TOTEM",
+        "nom_station": "RELAIS LES LISSES",
+        "adresse": "A6 - AIRE DES LISSES Corbeil Essonnes, 91100 VILLABE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.442461,
+          48.594189
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF006369",
+        "nom_station": "RELAIS LES LISSES",
+        "adresse": "A6  -  AIRE DES  LISSES",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
         "horaires": "24/7"
       }
     },
@@ -636,6 +2316,279 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -0.436995,
+          44.645735
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF007451TOTEMSA",
+        "nom_station": "LES TERRES DE GRAVES SUD",
+        "adresse": "A62, 33720 Saint-Michel-de-Rieufret",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A62",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.4371,
+          44.6466
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF007451",
+        "nom_station": "REL.LES TERRES DE GRAVES SUD",
+        "adresse": "A62-AIRE DES TERRES DE GRAVES SU",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A62",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.335014,
+          49.78609
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF042331TOTEM",
+        "nom_station": "RELAIS URVILLERS",
+        "adresse": "A26 - AIRE D'URVILLERS, 02690 ESSIGNY LE GRAND",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 150.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.334361,
+          49.78542
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF042331",
+        "nom_station": "RELAIS URVILLERS",
+        "adresse": "A26 - AIRE  D'URVILLERS",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 150.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.507334,
+          44.8737
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF042677",
+        "nom_station": "RELAIS LORMONT",
+        "adresse": "A10 AIRE FONTBELLEAU PARIS BAYONNE, 33310 LORMONT",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.669435,
+          47.789562
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF058911TOTEM",
+        "nom_station": "RELAIS VENOY CHABLIS",
+        "adresse": "A6 - AIRE VENOY-CHABLIS, 89290 VENOY",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.6719,
+          47.7877
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF058911",
+        "nom_station": "REL.VENOY OUEST CHABLIS",
+        "adresse": "A6 -  AIRE VENOY-CHABLIS",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.198907,
+          47.975069
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF058931TOTEM",
+        "nom_station": "RELAIS DE LA COULINE",
+        "adresse": "A6 AIRE DE LA COULINE Sens Province - Paris, 89116 PRECY SUR VRIN",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1995,
+          47.9741
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF058931",
+        "nom_station": "RELAIS DE LA COULINE",
+        "adresse": "A6 - AIRE DE LA COULINE",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.72303,
+          49.52435
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF058967TOTEM",
+        "nom_station": "AIRE DE RESSONS EST",
+        "adresse": "Aire de Resson Est A1, 60490 Ressons-sur-Matz",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.7224,
+          49.5235
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF058967",
+        "nom_station": "AIRE DE RESSONS EST",
+        "adresse": "A1 - AIRE DE RESSONS EST",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.443222,
+          48.595281
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF058968TOTEM",
+        "nom_station": "RELAIS VILLABE",
+        "adresse": "A6 - AIRE DE VILLABE, 91100 VILLABE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.4439,
+          48.5944
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF058968",
+        "nom_station": "REL.VILLABE",
+        "adresse": "A6 -  AIRE DE  VILLABE",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.867226,
           44.866331
         ]
@@ -678,6 +2631,90 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          4.836437,
+          46.963869
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059042TOTEM",
+        "nom_station": "RELAIS BEAUNE TAILLY",
+        "adresse": "A6 - AIRE DE BEAUNE TAILLY, 21190 MERCEUIL",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8367,
+          46.9647
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059042",
+        "nom_station": "REL.BEAUNE TAILLY",
+        "adresse": "A6 - AIRE DE BEAUNE  TAILLY",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.133098,
+          43.713306
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059051TOTEM",
+        "nom_station": "RELAIS AMBRUSSUM SUD",
+        "adresse": "A9 - AIRE AMBRUSSUM SUD, 34400 VILLETELLE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 150.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.1312,
+          43.712
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059051",
+        "nom_station": "RELAIS AMBRUSSUM SUD",
+        "adresse": "A9 - AIRE AMBRUSSUM        SUD",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 150.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           5.186405,
           43.589684
         ]
@@ -691,6 +2728,90 @@
         "nbre_pdc": "16",
         "max_power_kw": 300.0,
         "autoroute": "A7",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.865283,
+          46.418606
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059190TOTEM",
+        "nom_station": "RELAIS MACON LA SALLE",
+        "adresse": "A6 - AIRE DE MACON LA SALLE, 71260 SAINT ALBAIN",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8653,
+          46.418
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059190",
+        "nom_station": "REL.MACON LA SALLE",
+        "adresse": "A6 - AIRE DE MACON LA SALLE",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 175.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.449003,
+          43.8755
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059193TOTEM",
+        "nom_station": "RELAIS MARGUERITTES NORD",
+        "adresse": "A9 AIRE DE MARGUERITTES NORD, 30320 MARGUERITTES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.092478,
+          43.216189
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059472TOTEM",
+        "nom_station": "AIRE NARBONNE VINASSAN SUD",
+        "adresse": "A9, 11110 SALLES D'AUDE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A9",
         "horaires": "24/7"
       }
     },
@@ -783,6 +2904,237 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          7.1364,
+          47.7167
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059600TOTEM",
+        "nom_station": "RELAIS LA PORTE D'ALSACE NORD",
+        "adresse": "A36 AIRE DE LA PORTE D'ALSACE, 68520 BURNHAUPT LE BAS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A36",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.858496,
+          47.977888
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059671TOTEM",
+        "nom_station": "RELAIS ORLEANS SARAN",
+        "adresse": "A10 - AIRE D'ORLEANS SARAN, 45520 GIDY",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.858,
+          47.9789
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059671",
+        "nom_station": "REL.ORLEANS SARAN",
+        "adresse": "A10 - AIRE  D'ORLEANS SARAN",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.212535,
+          45.613803
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059672TOTEM",
+        "nom_station": "RELAIS L'ISLE D'ABEAU NORD",
+        "adresse": "A43 - AIRE DE L'ISLE D'ABEAU NORD, 38080 L'ISLE D'ABEAU",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.213,
+          45.6133
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059672",
+        "nom_station": "L'ISLE D'ABEAU NORD",
+        "adresse": "A43 - AIRE DE L'ISLE D'ABEAU NOR",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.776472,
+          47.473807
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059694TOTEM",
+        "nom_station": "RELAIS TOURS VAL DE LOIRE",
+        "adresse": "A10 - AIRE TOURS VAL DE LOIRE, 37380 MONNAIE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.775936,
+          47.473369
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059694",
+        "nom_station": "RELAIS TOURS VAL DE LOIRE",
+        "adresse": "A10 - AIRE TOURS VAL DE LOIRE",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.630401,
+          47.167146
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059736TOTEM",
+        "nom_station": "RELAIS STE MAURE DE TOURAINE",
+        "adresse": "A10 AIRE DE STE MAURE DE TOURAINE, 37800 ST EPAIN",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6307,
+          47.1681
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059736",
+        "nom_station": "STE MAURE DE TOURAINE",
+        "adresse": "A10 AIRE DE STE MAURE DE  TOURAI",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.596739,
+          43.422748
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059743TOTEM",
+        "nom_station": "RELAIS BIDART EST",
+        "adresse": "A63 - AIRE DE BIDART EST, 64210 BIDART",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A63",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.597308,
+          43.422226
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059743",
+        "nom_station": "RELAIS BIDART EST",
+        "adresse": "A63 - AIRE DE   BIDART EST",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A63",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           3.406246,
           45.850306
         ]
@@ -804,6 +3156,69 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.745091,
+          48.83022
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059775TOTEMSA",
+        "nom_station": "RELAIS BUSSY ST GEORGES",
+        "adresse": "A4 - AIRE DE BUSSY SAINT GEORGES, 77600 BUSSY ST GEORGES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 400.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.745807,
+          48.830553
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059775",
+        "nom_station": "REL.BUSSY ST GEORGES",
+        "adresse": "A4 - AIRE DE BUSSY SAINT GEORGES",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.148,
+          48.634
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059788TOTEM",
+        "nom_station": "RELAIS LIMOURS BRIIS SOUS FORGES",
+        "adresse": "A10 - AIRE DE LIMOURS, 91640 BRIIS SOUS FORGES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "23",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           0.252,
           48.0553
         ]
@@ -817,6 +3232,90 @@
         "nbre_pdc": "8",
         "max_power_kw": 175.0,
         "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.599122,
+          43.422829
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059903TOTEM",
+        "nom_station": "RELAIS BIDART OUEST",
+        "adresse": "A63 - AIRE DE BIDART OUEST, 64210 BIDART",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A63",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.598405,
+          43.422958
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF059903",
+        "nom_station": "REL. BIDART OUEST",
+        "adresse": "A63 - AIRE DE BIDART OUEST",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A63",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.742822,
+          48.829064
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF062704TOTEM",
+        "nom_station": "RELAIS FERRIERES",
+        "adresse": "A4 - AIRE DE FERRIERES, 77600 BUSSY ST GEORGES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.740971,
+          48.828458
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF062704",
+        "nom_station": "REL.FERRIERES",
+        "adresse": "A4 -AIRE DE FERRIERES",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
         "horaires": "24/7"
       }
     },
@@ -867,6 +3366,69 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          3.07982,
+          44.329297
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF070002TOTEM",
+        "nom_station": "RELAIS L'AVEYRON",
+        "adresse": "A75 - AIRE DE L' AVEYRON, 12150 SEVERAC LE CHATEAU",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A75",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.08065,
+          44.329765
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF070002",
+        "nom_station": "REL.L'AVEYRON",
+        "adresse": "A75 - AIRE DE L' AVEYRON",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A75",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.509803,
+          45.541115
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF070003",
+        "nom_station": "RELAIS PORTE DE CORREZE",
+        "adresse": "A20 - AIRE DE LA PORTE DE CORREZE, 19510 MASSERET",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A20",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           3.11733,
           46.057926
         ]
@@ -909,6 +3471,258 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          5.296055,
+          46.20308
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF076523TOTEM",
+        "nom_station": "RELAIS BOURG JASSERON",
+        "adresse": "A40 AIRE DE BOURG JASSERON, 01250 CEYZERIAT",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 150.0,
+        "autoroute": "A40",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.370803,
+          46.297556
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078016TOTEM",
+        "nom_station": "RELAIS POITOU CHARENTES SUD",
+        "adresse": "Route des Estuaires A10 - Aire De Poitou, 79230 VOUILLE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.335315,
+          49.675612
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078180",
+        "nom_station": "RELAIS BOSC MESNIL",
+        "adresse": "A28 - AIRE DE BOSC MESNIL, 76680 BOSC MESNIL",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A28",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.31121,
+          43.86441
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078230TOTEM",
+        "nom_station": "RELAIS DU CAYLAR",
+        "adresse": "A75 AIRE DU CAYLAR, 34520 LE CAYLAR",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "6",
+        "max_power_kw": 150.0,
+        "autoroute": "A75",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.593513,
+          46.715962
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078238",
+        "nom_station": "RELAIS MILLE ETANGS",
+        "adresse": "A20 AIRE DES MILLE ETANGS, 36350 LUANT",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A20",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.493363,
+          46.114344
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078387TOTEM",
+        "nom_station": "RELAIS CEIGNES CERDON",
+        "adresse": "A40 - AIRE DE CEIGNES CERDON, 01430 CEIGNES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A40",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.4909,
+          46.1146
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078387",
+        "nom_station": "REL.CEIGNES CERDON",
+        "adresse": "A40 - AIRE DE CEIGNES  CERDON",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A40",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.0686,
+          48.972589
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078531TOTEM",
+        "nom_station": "AIRE DE KESKASTEL",
+        "adresse": "A4 AIRE DE KESKASTEL EST, 67260 KESKASTEL",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "2",
+        "max_power_kw": 175.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.431166,
+          44.979033
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078546",
+        "nom_station": "RELAIS DE L ESTALOT",
+        "adresse": "Autoroute A10 - 33 Saint Andre de Cubzac, 33240 ST ANDRE DE CUBZAC",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.50616,
+          44.87366
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078551",
+        "nom_station": "RELAIS FONTBELLEAU",
+        "adresse": "A10 AIRE FONTBELLEAU BAYONNE PARIS, 33310 LORMONT",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.125336,
+          48.456669
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078556TOTEM",
+        "nom_station": "RELAIS LA DENTELLE D'ALENCON",
+        "adresse": "A28 -AIRE DE LA DENTELLE D'ALENCON, 61250 VALFRAMBERT",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A28",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.1265,
+          48.4572
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078556",
+        "nom_station": "REL.LA DENTELLE D'ALENCON",
+        "adresse": "A28 -AIRE DE LA DENTELLE D'ALENC",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A28",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           7.035532,
           43.589282
         ]
@@ -930,6 +3744,216 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          1.80428,
+          43.35267
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078569TOTEM",
+        "nom_station": "RELAIS PORT LAURAGAIS SUD",
+        "adresse": "A61 AIRE DE PORT LAURAGAIS SUD, 31290 AVIGNONET LAURAGAIS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "10",
+        "max_power_kw": 175.0,
+        "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.3986,
+          43.6006
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF079895",
+        "nom_station": "Relais Rocade Purpan",
+        "adresse": "A62 - 6 AV. DU GROUPE MORHANGE",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A62",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.848176,
+          43.84322
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080044TOTEM",
+        "nom_station": "RELAIS VOLX",
+        "adresse": "A51 - AIRE DE VOLX OUEST, 04130 VOLX",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 150.0,
+        "autoroute": "A51",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.849136,
+          43.844428
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080044",
+        "nom_station": "RELAIS VOLX",
+        "adresse": "A51 -  AIRE DE VOLX OUEST",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 150.0,
+        "autoroute": "A51",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.850928,
+          43.843434
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080045TOTEMSA",
+        "nom_station": "RELAIS MANOSQUE",
+        "adresse": "A51 - AIRE DE MANOSQUE EST, 04130 VOLX",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 150.0,
+        "autoroute": "A51",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.8502,
+          43.8418
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080045",
+        "nom_station": "RELAIS MANOSQUE",
+        "adresse": "A51 -  AIRE DE MANOSQUE EST",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 150.0,
+        "autoroute": "A51",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.769017,
+          45.80924
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080046TOTEM",
+        "nom_station": "RELAIS BRUYERES PAISY",
+        "adresse": "A6 - AIRE DE BRUYERES-PAISY, 69570 DARDILLY",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.769509,
+          45.808839
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080046",
+        "nom_station": "RELAIS BRUYERES PAISY",
+        "adresse": "A6 - AIRE DE BRUYERES-PAISY",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.742604,
+          50.404532
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080047",
+        "nom_station": "RELAIS SOUCHEZ",
+        "adresse": "A26 - AIRE DE SOUCHEZ, 62153 SOUCHEZ",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "2",
+        "max_power_kw": 150.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.391379,
+          48.933904
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080048TOTEM",
+        "nom_station": "RELAIS LA COURNEUVE EST",
+        "adresse": "A1 - AIRE DE LA COURNEUVE EST, 93120 LA COURNEUVE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 150.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           1.6666,
           47.33821
         ]
@@ -943,6 +3967,90 @@
         "nbre_pdc": "8",
         "max_power_kw": 175.0,
         "autoroute": "A85",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.053499,
+          49.179691
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080063TIERSTOTEM",
+        "nom_station": "RELAIS METZ ST PRIVAT",
+        "adresse": "A4 - AIRE DE METZ ST PRIVAT, 57855 ST PRIVAT LA MONTAGNE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0526,
+          49.1791
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080063",
+        "nom_station": "RELAIS METZ ST PRIVAT",
+        "adresse": "A4 - AIRE DE METZ ST PRIVAT",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.079223,
+          43.229569
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080070TOTEM",
+        "nom_station": "RELAIS LES PYRENEES",
+        "adresse": "A64 - AIRE DES PYRENEES, 64530 GER",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A64",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.08066,
+          43.2315
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080070",
+        "nom_station": "RELAIS LES PYRENEES",
+        "adresse": "A64 - AIRE DES  PYRENEES",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A64",
         "horaires": "24/7"
       }
     },
@@ -1006,6 +4114,111 @@
         "nbre_pdc": "8",
         "max_power_kw": 175.0,
         "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.169097,
+          48.197319
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080150",
+        "nom_station": "RELAIS MARESCHE",
+        "adresse": "A28 GARE DE PEAGE MARESCHE, 72170 MARESCHE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "1",
+        "max_power_kw": 150.0,
+        "autoroute": "A28",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.145602,
+          48.635405
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080155TOTEM",
+        "nom_station": "RELAIS LIMOURS JANVRY",
+        "adresse": "A10 AIRE DE LIMOURS JANVRY, 91640 JANVRY",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.1481,
+          48.6366
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080155",
+        "nom_station": "LIMOURS JANVRY",
+        "adresse": "A10 AIRE DE LIMOURS   JANVRY",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.859716,
+          47.976571
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080172TOTEM",
+        "nom_station": "RELAIS ORLEANS GIDY",
+        "adresse": "A10 AIRE ORLEANS GIDY, 45520 GIDY",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.8603,
+          47.9761
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080172",
+        "nom_station": "REL.ORLEANS GIDY",
+        "adresse": "A10 AIRE ORLEANS GIDY",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A10",
         "horaires": "24/7"
       }
     },
@@ -1098,6 +4311,636 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          7.363451,
+          48.759935
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080193TOTEMSA",
+        "nom_station": "RELAIS SAVERNE MONSWILLER",
+        "adresse": "A4 - AIRE DE SAVERNE MONSWILLER, 67700 ECKARTSWILLER",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.863486,
+          48.267388
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080197TOTEMSA",
+        "nom_station": "RELAIS LORRAINE LES RAPPES",
+        "adresse": "Relais LORRAINE LES RAPPES , A31, 88170 SANDAUCOURT",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.8624,
+          48.2685
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080197",
+        "nom_station": "RELAIS LORRAINE LES RAPPES",
+        "adresse": "AUT.A31-LORRAINE LES RAPPES",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.072417,
+          45.877047
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080200TOTEM",
+        "nom_station": "RELAIS DE LA RIPAILLE",
+        "adresse": "A41 AIRE DE LA RIPAILLE, 74600 SEYNOD",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A41",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0713,
+          45.876
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080200",
+        "nom_station": "REL. DE LA RIPAILLE",
+        "adresse": "A41 AIRE DE LA RIPAILLE",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A41",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.864688,
+          49.361312
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080261",
+        "nom_station": "RELAIS BOSGOUET NORD",
+        "adresse": "A13 AIRE DE BOSGOUET NORD, 27310 BOSGOUET",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.795923,
+          43.547473
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080266TOTEM",
+        "nom_station": "RELAIS MONTPELLIER FABREGUES NORD",
+        "adresse": "A9 AIRE DE FABREGUES NORD, 34690 FABREGUES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "9",
+        "max_power_kw": 175.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.79541,
+          43.54752
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080266",
+        "nom_station": "RELAIS MONTPELLIER FABREGUES NORD",
+        "adresse": "A9 - AIRE DE FABREGUES NORD",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "9",
+        "max_power_kw": 175.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.963146,
+          46.097489
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080288",
+        "nom_station": "RELAIS DE VALLEIRY NORD",
+        "adresse": "A40 - KM79 - SENS MILAN MACON, 74520 VALLEIRY",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "6",
+        "max_power_kw": 175.0,
+        "autoroute": "A40",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.394219,
+          48.934725
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080299TOTEM",
+        "nom_station": "RELAIS LA COURNEUVE OUEST",
+        "adresse": "A1 SENS LILLE/PARIS, 93120 LA COURNEUVE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 150.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.711425,
+          47.113401
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080339TIERSTOTEM",
+        "nom_station": "RELAIS DE CREUX MOREAU",
+        "adresse": "A6 - LYON PARIS, 21360 BLIGNY SUR OUCHE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.712157,
+          47.112935
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080339",
+        "nom_station": "RELAIS DE CREUX MOREAU",
+        "adresse": "A6 - LYON PARIS",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.034861,
+          47.503262
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080340TIERSTOTEM",
+        "nom_station": "RELAIS DE LA CHAPONNE",
+        "adresse": "A6 - PARIS LYON, 89420 GUILLON TERRE PLAINE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.0363,
+          47.5036
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080340",
+        "nom_station": "REL. LA CHAPONNE",
+        "adresse": "A6 - PARIS LYON",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.843354,
+          46.692852
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080341TIERSTOTEM",
+        "nom_station": "RELAIS DE LA FERTE",
+        "adresse": "A6 - PARIS LYON, 71240 SAINT AMBREUIL",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.138174,
+          47.716307
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080342TIERSTOTEM",
+        "nom_station": "RELAIS DE PORTE D'ALSACE SUD",
+        "adresse": "A36 - BESANCON MULHOUSE, 68520 BURNHAUPT LE BAS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A36",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.908246,
+          48.660713
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080344TIERSTOTEMSA",
+        "nom_station": "RELAIS DE TOUL DOMMARTIN",
+        "adresse": "A31 - METZ DIJON, 54200 CHAUDENEY SUR MOSELLE",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.743748,
+          50.405129
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080345TIERSTOTEMSA",
+        "nom_station": "RELAIS DE ANGRES",
+        "adresse": "A26 - REIMS CALAIS, 62143 ANGRES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.840505,
+          49.888161
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080346TIERSTOTEMSA",
+        "nom_station": "RELAIS DE COEUR DES HAUTS DE FRANCE",
+        "adresse": "A1 - PARIS LILLE, 80200 ASSEVILLERS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.8406,
+          49.8894
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080346",
+        "nom_station": "RELAIS CŒUR DES HAUTS DE FRANCE",
+        "adresse": "A1 - PARIS LILLE",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.090019,
+          50.123916
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080349TIERSTOTEM",
+        "nom_station": "RELAIS DE GRAINCOURT",
+        "adresse": "A2 - PARIS BRUXELLES, 62147 HAVRINCOURT",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A2",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0897,
+          50.1235
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080349",
+        "nom_station": "RELAIS DE GRAINCOURT",
+        "adresse": "A2 - PARIS BRUXELLES",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A2",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.538076,
+          49.12686
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080353TIERSTOTEM",
+        "nom_station": "RELAIS TARDENOIS NORD",
+        "adresse": "A4 - PARIS STRASBOURG, 02130 FRESNES EN TARDENOIS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.5359,
+          49.1273
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080353",
+        "nom_station": "TARDENOIS NORD",
+        "adresse": "A4 - PARIS STRASBOURG",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.537903,
+          49.125699
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080354TIERSTOTEM",
+        "nom_station": "RELAIS TARDENOIS SUD",
+        "adresse": "A4 - PARIS STRASBOURG, 02130 FRESNES EN TARDENOIS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.5372,
+          49.1254
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080354",
+        "nom_station": "RELAIS TARDENOIS SUD",
+        "adresse": "A4 - PARIS STRASBOURG",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.219342,
+          49.21215
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080356TIERSTOTEM",
+        "nom_station": "RELAIS VIRONVAY NORD",
+        "adresse": "A13 - PARIS ROUEN, 27400 VIRONVAY",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.2201,
+          49.2112
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080356",
+        "nom_station": "RELAIS VIRONVAY NORD",
+        "adresse": "A13 - PARIS ROUEN",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.218275,
+          49.211506
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080357TIERSTOTEMSA",
+        "nom_station": "RELAIS VIRONVAY SUD",
+        "adresse": "A13 - AIRE DE VIRONVAY SUD, 27400 LOUVIERS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.365282,
+          48.761676
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080358TIERSTOTEM",
+        "nom_station": "RELAIS SAVERNE ECKARTSWILLER",
+        "adresse": "A4 - PARIS STRASBOURG, 67700 ECKARTSWILLER",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           6.786,
           43.542
         ]
@@ -1111,6 +4954,153 @@
         "nbre_pdc": "18",
         "max_power_kw": 300.0,
         "autoroute": "A8",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.604571,
+          45.894616
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080362TOTEMTIERSSA",
+        "nom_station": "RELAIS DE FENIOUX OUEST",
+        "adresse": "A10 - NIORT SAINTES, 17350 FENIOUX",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "12",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.6033,
+          45.894701
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080362",
+        "nom_station": "RELAIS DE FENIOUX OUEST",
+        "adresse": "A10 - NIORT SAINTES",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "12",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.97228,
+          42.951091
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080363TIERSTOTEM",
+        "nom_station": "RELAIS DE LA PALME EST",
+        "adresse": "A9 - PERPIGNAN NARBONNE, 11480 LA PALME",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "14",
+        "max_power_kw": 300.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.641518,
+          47.819657
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080364TOTEMTIERS",
+        "nom_station": "RELAIS BEAUGENCY MESSAS",
+        "adresse": "A10 - PARIS BORDEAUX, 45190 MESSAS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "18",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.64124,
+          47.819106
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080364",
+        "nom_station": "RELAIS BEAUGENCY MESSAS",
+        "adresse": "A10 - BORDEAUX PARIS",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "18",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.640862,
+          47.820336
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080365TIERSTOTEM",
+        "nom_station": "RELAIS DE MEUNG SUR LOIRE",
+        "adresse": "A10 - PARIS BORDEAUX, 45190 MESSAS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.641721,
+          47.821013
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080365",
+        "nom_station": "RELAIS DE MEUNG SUR LOIRE",
+        "adresse": "A10 - PARIS BORDEAUX",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
         "horaires": "24/7"
       }
     },
@@ -1161,6 +5151,132 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          4.246004,
+          49.119215
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080373",
+        "nom_station": "RELAIS REIMS CHAMPAGNE NORD",
+        "adresse": "A4 - AIRE DE REIMS CHAMPAGNE NORD, 51400 LES PETITES-LOGES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.244126,
+          49.119763
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080374",
+        "nom_station": "RELAIS REIMS CHAMPAGNE SUD",
+        "adresse": "A4 - AIRE DE REIMS CHAMPAGNE SUD, 51400 LES PETITES-LOGES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "18",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.338317,
+          49.678346
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080385",
+        "nom_station": "RELAIS DE MAUCOMBLE",
+        "adresse": "A28 - ABBEVILLE/ROUEN\", 76680 BOSC-MESNIL",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "17",
+        "max_power_kw": 300.0,
+        "autoroute": "A28",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.507557,
+          44.199678
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF088576TOTEM",
+        "nom_station": "RELAIS AGEN PORTE D'AQUITAINE",
+        "adresse": "A62 - AIRE AGEN PORTE DAQUITAINE, 47310 LAPLUME",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "20",
+        "max_power_kw": 300.0,
+        "autoroute": "A62",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.631368,
+          47.166119
+        ]
+      },
+      "properties": {
+        "id": "FRIONE101300",
+        "nom_station": "IONITY Fontaine Colette",
+        "adresse": "Aire de Fontaine Colette, A10 - 37800 Saint-épain",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.366838,
+          46.701436
+        ]
+      },
+      "properties": {
+        "id": "FRIONE124800",
+        "nom_station": "IONITY Poitou Charentes",
+        "adresse": "Aire de Poitou-Charentes, A10, 79180 Vouillé",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           1.580008,
           48.468782
         ]
@@ -1203,6 +5319,90 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          3.918671,
+          49.242974
+        ]
+      },
+      "properties": {
+        "id": "FRIONE401700",
+        "nom_station": "IONITY Vrigny",
+        "adresse": "Aire de Vrigny,A4-51390 Vrigny",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.245204,
+          43.334659
+        ]
+      },
+      "properties": {
+        "id": "FRIONE401800",
+        "nom_station": "IONITY Garonne",
+        "adresse": "Aire De Garonne, A64 - 31410 Capens",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A64",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.245628,
+          43.337933
+        ]
+      },
+      "properties": {
+        "id": "FRIONE401900",
+        "nom_station": "IONITY Volvestre",
+        "adresse": "Aire de Capens-Volvestre,A64-31410 Capens",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A64",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.416918,
+          46.313059
+        ]
+      },
+      "properties": {
+        "id": "FRIONE402000",
+        "nom_station": "IONITY Boismandé Ouest",
+        "adresse": "Aire de Boismandé Ouest, A20 - 87160 Saint-Sulpice-les-Feuilles",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A20",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           -0.134694,
           47.41925
         ]
@@ -1216,6 +5416,90 @@
         "nbre_pdc": "5",
         "max_power_kw": 350.0,
         "autoroute": "A85",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.420088,
+          46.314092
+        ]
+      },
+      "properties": {
+        "id": "FRIONE402400",
+        "nom_station": "IONITY Boismandé Est",
+        "adresse": "Aire de Boismandé Est, A20 - 87160 Saint-Sulpice-les-Feuilles",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "4",
+        "max_power_kw": 350.0,
+        "autoroute": "A20",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.923522,
+          49.2444
+        ]
+      },
+      "properties": {
+        "id": "FRIONE402600",
+        "nom_station": "IONITY Gueux",
+        "adresse": "Aire de Gueux -A4 - 51390 Gueux",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.420473,
+          43.586775
+        ]
+      },
+      "properties": {
+        "id": "FRIONE402700",
+        "nom_station": "IONITY Lacq Audéjos Nord",
+        "adresse": "Aire de Lacq Sud AUDEJOS A64-64170 Lacq",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A64",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.584799,
+          43.418629
+        ]
+      },
+      "properties": {
+        "id": "FRIONE402800",
+        "nom_station": "IONITY Lacq Audéjos Sud",
+        "adresse": "Aire de Lacq Sud AUDEJOS A64-64170 Lacq",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A64",
         "horaires": "24/7"
       }
     },
@@ -1266,6 +5550,48 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          6.623059,
+          45.196766
+        ]
+      },
+      "properties": {
+        "id": "FRIONE403700",
+        "nom_station": "IONITY Freney",
+        "adresse": "Autoroute de la Maurienne, A43 - Autoport Du Frejus - 73500 Freney",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.070508,
+          45.843868
+        ]
+      },
+      "properties": {
+        "id": "FRIONE403800",
+        "nom_station": "IONITY Mâcon Saint-Albain",
+        "adresse": "A6, Aire de Macon Saint Albain, 71260 La Salle",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           0.622302,
           48.125475
         ]
@@ -1308,6 +5634,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          0.701054,
+          45.13792
+        ]
+      },
+      "properties": {
+        "id": "FRIONE404300",
+        "nom_station": "IONITY Poitiers Chincé",
+        "adresse": "Aire de Poitiers Chincé, A10, 86130 Jaunay-Clan",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           5.990385,
           43.423878
         ]
@@ -1321,6 +5668,90 @@
         "nbre_pdc": "5",
         "max_power_kw": 350.0,
         "autoroute": "A8",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.703626,
+          44.004071
+        ]
+      },
+      "properties": {
+        "id": "FRIONE405300",
+        "nom_station": "IONITY Tavel Sud",
+        "adresse": "Aire de Tavel Sud, A9, 30126 Tavel",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.387813,
+          47.664023
+        ]
+      },
+      "properties": {
+        "id": "FRIONE407800",
+        "nom_station": "IONITY Blois Ménars",
+        "adresse": "Aire de Blois Ménars - A10 - 41000 VILLERBON",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.387757,
+          47.665885
+        ]
+      },
+      "properties": {
+        "id": "FRIONE408000",
+        "nom_station": "IONITY Blois Villerbon",
+        "adresse": "Aire de Blois Villerbon - A10 - 41000 VILLERBON",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.721676,
+          48.264407
+        ]
+      },
+      "properties": {
+        "id": "FRIONE408100",
+        "nom_station": "IONITY Darvault",
+        "adresse": "Aire de Darvault, A6 - 77140 Darvault",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A6",
         "horaires": "24/7"
       }
     },
@@ -1350,6 +5781,69 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          6.06949,
+          45.875816
+        ]
+      },
+      "properties": {
+        "id": "FRIONE409000",
+        "nom_station": "IONITY Fontanelles",
+        "adresse": "Aire de Fontanelles, Allée des Fontanelles, A41 - 4600 Seynod",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A41",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.22454,
+          47.813445
+        ]
+      },
+      "properties": {
+        "id": "FRIONE409200",
+        "nom_station": "IONITY Langres Perrogney",
+        "adresse": "Aire de Langres Perrogney - A31, 52160 Perrogney-les-Fontaines,",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.371119,
+          46.701836
+        ]
+      },
+      "properties": {
+        "id": "FRIONE409400",
+        "nom_station": "IONITY Poitiers Jaunay-Clan",
+        "adresse": "Aire de Poitiers Jaunay Clan,A10, 86130 Jaunay-Clan",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           6.451011,
           43.413836
         ]
@@ -1363,6 +5857,321 @@
         "nbre_pdc": "5",
         "max_power_kw": 350.0,
         "autoroute": "A8",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.961812,
+          46.09619
+        ]
+      },
+      "properties": {
+        "id": "FRIONE409800",
+        "nom_station": "IONITY Valleiry Sud",
+        "adresse": "Aire de Valleiry Sud, A40, 74520 Valleiry",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A40",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.16809,
+          47.803507
+        ]
+      },
+      "properties": {
+        "id": "FRIONE431400",
+        "nom_station": "IONITY Saugon Ouest",
+        "adresse": "Aire de SAUGON, A10, 33920 SAUGON",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.158265,
+          45.548788
+        ]
+      },
+      "properties": {
+        "id": "FRIONE409900",
+        "nom_station": "IONITY Arclusaz",
+        "adresse": "A43 L'aire de L'Arclusaz, 73390 Chateauneuf, France",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.010984,
+          47.223166
+        ]
+      },
+      "properties": {
+        "id": "FRIONE410200",
+        "nom_station": "IONITY Gevrey-Chambertin Est",
+        "adresse": "Aire de Gevrey-Chambertin A31 - 21220 Gevrey-Chambertin",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.10745,
+          47.030768
+        ]
+      },
+      "properties": {
+        "id": "FRIONE412300",
+        "nom_station": "IONITY Bois Guillerot",
+        "adresse": "Aire de Bois Guillerot - A36 - 21250 Glanon",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A36",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.109707,
+          47.032073
+        ]
+      },
+      "properties": {
+        "id": "FRIONE412400",
+        "nom_station": "IONITY Glanon",
+        "adresse": "Aire de Glanon, A36 - 21250 Glanon",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A36",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.623271,
+          45.276249
+        ]
+      },
+      "properties": {
+        "id": "FRIONE412500",
+        "nom_station": "IONITY l'Isle-d'Abeau",
+        "adresse": "Aire de l'Isle-d'Abeau Sud - A43 - 38080 L'Isle-d'Abeau",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.197267,
+          47.974493
+        ]
+      },
+      "properties": {
+        "id": "FRIONE412600",
+        "nom_station": "IONITY La Réserve",
+        "adresse": "Aire de La Reserve, A6 -89116 Précy-sur-Vrin",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.411364,
+          46.064297
+        ]
+      },
+      "properties": {
+        "id": "FRIONE412700",
+        "nom_station": "IONITY Bonneville",
+        "adresse": "Aire de Bonneville, A40 - 74130 Bonneville",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A40",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.846994,
+          42.578429
+        ]
+      },
+      "properties": {
+        "id": "FRIONE413100",
+        "nom_station": "IONITY Village Catalan Est",
+        "adresse": "Aire du Village Catalan Est (Spain>France), A9, 66300 Banyuls-dels-Aspres",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.848341,
+          42.577784
+        ]
+      },
+      "properties": {
+        "id": "FRIONE413200",
+        "nom_station": "IONITY Village Catalan Ouest",
+        "adresse": "Aire du Village Catalan Ouest (France>Espagne), A9, 66300 Banyuls-dels-Aspres",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.402639,
+          48.23192
+        ]
+      },
+      "properties": {
+        "id": "FRIONE413800",
+        "nom_station": "IONITY Haut Koenigsbourg",
+        "adresse": "Aire de Haut Koenigsbourg, A35- 67600 Orschwiller",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A35",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.542194,
+          43.176909
+        ]
+      },
+      "properties": {
+        "id": "FRIONE414700",
+        "nom_station": "IONITY Corbières Sud",
+        "adresse": "Aire De Corbieres Sud, A61, 11700 Capendu",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "12",
+        "max_power_kw": 350.0,
+        "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.543044,
+          43.178103
+        ]
+      },
+      "properties": {
+        "id": "FRIONE414800",
+        "nom_station": "IONITY Corbières Nord",
+        "adresse": "Aire des Corbières Nord - A61, 11700 Capendu",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "9",
+        "max_power_kw": 350.0,
+        "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.274148,
+          49.167886
+        ]
+      },
+      "properties": {
+        "id": "FRIONE414900",
+        "nom_station": "IONITY Giberville Nord",
+        "adresse": "Aire de Giberville Nord (Sens Paris > Caen) A13 Km 219 , 14730 Giberville",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A13",
         "horaires": "24/7"
       }
     },
@@ -1392,6 +6201,48 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          3.153525,
+          45.660128
+        ]
+      },
+      "properties": {
+        "id": "FRIONE416900",
+        "nom_station": "IONITY Veyre",
+        "adresse": "Aire de Veyre, A75 - 63960 Veyre Monton",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A75",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.277238,
+          49.166932
+        ]
+      },
+      "properties": {
+        "id": "FRIONE417100",
+        "nom_station": "IONITY Giberville Sud",
+        "adresse": "Aire de Giberville Sud, Km 220, A13, 14730 Giberville",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.225917,
           45.850722
         ]
@@ -1405,6 +6256,27 @@
         "nbre_pdc": "5",
         "max_power_kw": 350.0,
         "autoroute": "A89",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.490842,
+          46.116638
+        ]
+      },
+      "properties": {
+        "id": "FRIONE431200",
+        "nom_station": "IONITY Ceignes Haut Bugey",
+        "adresse": "AIRE DE CEIGNES HAUT BUGEY - A40 - 01403 CEIGNES",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A40",
         "horaires": "24/7"
       }
     },
@@ -1434,6 +6306,48 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          3.253033,
+          44.870544
+        ]
+      },
+      "properties": {
+        "id": "FRIONE432600",
+        "nom_station": "IONITY La Garde",
+        "adresse": "Aire de Lagarde A75 48200 ALBARET-SAINTE-MARIE",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A75",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.525098,
+          45.030878
+        ]
+      },
+      "properties": {
+        "id": "FRIONE433400",
+        "nom_station": "IONITY Pech Montat Ouest",
+        "adresse": "Aire de Pech Montat, A20, 46600 Cressensac",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A20",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           -0.166865,
           47.807101
         ]
@@ -1447,6 +6361,69 @@
         "nbre_pdc": "5",
         "max_power_kw": 350.0,
         "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.865081,
+          46.421048
+        ]
+      },
+      "properties": {
+        "id": "FRIONE438800",
+        "nom_station": "IONITY Maison Dieu",
+        "adresse": "Aire de Maison Dieu, A6, 89420 Guillon-Terre-Plaine, FRANCE",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "6",
+        "max_power_kw": 350.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.089269,
+          43.21589
+        ]
+      },
+      "properties": {
+        "id": "FRIONE438900",
+        "nom_station": "IONITY Vinassan Nord",
+        "adresse": "Aire Narbonne Vinassan Nord, A9, 11110",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "7",
+        "max_power_kw": 350.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.06931,
+          50.225516
+        ]
+      },
+      "properties": {
+        "id": "FRIONE440000",
+        "nom_station": "IONITY Baralle",
+        "adresse": "Aire de Baralle - A26 - 62860 Rumaucourt",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "3",
+        "max_power_kw": 350.0,
+        "autoroute": "A26",
         "horaires": "24/7"
       }
     },
@@ -1497,27 +6474,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.491055,
-          47.500299
-        ]
-      },
-      "properties": {
-        "id": "FRIOYP4Z9Y45MTMW50",
-        "nom_station": "IONITY Portes d'Angers Sud",
-        "adresse": "Autoroute A11, 49480 Saint-Sylvain d'Anjou",
-        "operateur": "Ionity",
-        "enseigne": "IONITY Portes d'Angers Sud",
-        "nbre_pdc": "6",
-        "max_power_kw": 350.0,
-        "autoroute": "A11",
-        "horaires": "24/7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           4.828,
           45.276391
         ]
@@ -1560,6 +6516,69 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          5.222737,
+          47.815173
+        ]
+      },
+      "properties": {
+        "id": "FRIOYP222",
+        "nom_station": "IONITY Langres Perrogney",
+        "adresse": "Perrogney-les-Fontaines, A31, 52160 Perrogney-les-Fontaines",
+        "operateur": "Ionity",
+        "enseigne": "IONITY Langres Perrogney",
+        "nbre_pdc": "6",
+        "max_power_kw": 400.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.184192,
+          45.642186
+        ]
+      },
+      "properties": {
+        "id": "FRIOYP913",
+        "nom_station": "IONITY Authezat",
+        "adresse": "A75, 63114 Authezat",
+        "operateur": "Ionity",
+        "enseigne": "IONITY Authezat",
+        "nbre_pdc": "15",
+        "max_power_kw": 350.0,
+        "autoroute": "A75",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.463387,
+          45.217556
+        ]
+      },
+      "properties": {
+        "id": "FRPLNP86WW2RIVNIAQ",
+        "nom_station": "Eni Station - Autoroute de la Maurienne, A43",
+        "adresse": "Autoroute de la Maurienne, A43, 73140 Saint-Michel-de-Maurienne",
+        "operateur": "Plenitude On The Road",
+        "enseigne": "Eni Station - Autoroute de la Maurienne, A43",
+        "nbre_pdc": "9",
+        "max_power_kw": 150.0,
+        "autoroute": "A43",
+        "horaires": "Mo 06:00-18:00,Tu 06:00-18:00,We 06:00-18:00,Th 06:00-18:00,Fr 06:00-18:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           3.81043,
           45.855668
         ]
@@ -1574,6 +6593,90 @@
         "max_power_kw": 400.0,
         "autoroute": "A89",
         "horaires": "Mo 06:00-18:00,Tu 06:00-18:00,We 06:00-18:00,Th 06:00-18:00,Fr 06:00-18:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.184735,
+          49.151083
+        ]
+      },
+      "properties": {
+        "id": "FRPLNP3BUU5C7TKRDS",
+        "nom_station": "Aire de Service La Maxe - Autoroute A31",
+        "adresse": "Aire de Service La Maxe - Autoroute A31, 64230 La Maxe",
+        "operateur": "Plenitude On The Road",
+        "enseigne": "Aire de Service La Maxe - Autoroute A31",
+        "nbre_pdc": "9",
+        "max_power_kw": 600.0,
+        "autoroute": "A31",
+        "horaires": "Mo 06:00-18:00,Tu 06:00-18:00,We 06:00-18:00,Th 06:00-18:00,Fr 06:00-18:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.61306,
+          43.11008
+        ]
+      },
+      "properties": {
+        "id": "FRPY2P312100023",
+        "nom_station": "Avia Picoty/FR*PY2*P31210*0023",
+        "adresse": " A64, Aire du Comminges, Clarac 31210 France",
+        "operateur": "Avia Picoty | FR*PY2",
+        "enseigne": "Avia Picoty",
+        "nbre_pdc": "11",
+        "max_power_kw": 180.0,
+        "autoroute": "A64",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.61437,
+          43.11022
+        ]
+      },
+      "properties": {
+        "id": "FRPY2P312100024",
+        "nom_station": "Avia Picoty/FR*PY2*P31210*0024",
+        "adresse": " A64, Aire du Comminges, Clarac 31210 France",
+        "operateur": "Avia Picoty | FR*PY2",
+        "enseigne": "Avia Picoty",
+        "nbre_pdc": "11",
+        "max_power_kw": 180.0,
+        "autoroute": "A64",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.52352,
+          46.90634
+        ]
+      },
+      "properties": {
+        "id": "FRPY2P861000027",
+        "nom_station": "Avia Picoty/FR*PY2*P86100*0027",
+        "adresse": " A10, Aire de Chatellerault, Antran 86100 France",
+        "operateur": "Avia Picoty | FR*PY2",
+        "enseigne": "Avia Picoty",
+        "nbre_pdc": "12",
+        "max_power_kw": 180.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
       }
     },
     {
@@ -1602,6 +6705,216 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.898866,
+          42.781859
+        ]
+      },
+      "properties": {
+        "id": "FRRVEP4692707785787549334",
+        "nom_station": "Révéo 2025/67ecfb669b6ba8f6d4986159",
+        "adresse": " A9, Péage Nord, Rivesaltes 66600 France",
+        "operateur": "REVEO SYADEN | FR*RVE",
+        "enseigne": "Révéo 2025",
+        "nbre_pdc": "3",
+        "max_power_kw": 150.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.064356,
+          50.227477
+        ]
+      },
+      "properties": {
+        "id": "FRSHEP3FL34DV0RV6",
+        "nom_station": "Shell- France Aire de Rumaucourt HW",
+        "adresse": "Autoroute des Anglais Autoroute A26 - Aire De, 62860 Rumaucourt",
+        "operateur": "Shell Recharge",
+        "enseigne": "Shell- France Aire de Rumaucourt HW",
+        "nbre_pdc": "7",
+        "max_power_kw": 300.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.343838,
+          43.360351
+        ]
+      },
+      "properties": {
+        "id": "FRSHEP6O98DFIOPBB0",
+        "nom_station": "Shell Aire de Béziers-Montblanc NORD",
+        "adresse": "Aire de Béziers Montblanc Nord A9, 34290 Montblanc",
+        "operateur": "Shell Recharge",
+        "enseigne": "Shell Aire de Béziers-Montblanc NORD",
+        "nbre_pdc": "6",
+        "max_power_kw": 300.0,
+        "autoroute": "A9",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.717974,
+          48.538787
+        ]
+      },
+      "properties": {
+        "id": "FRSHEP35",
+        "nom_station": "Shell Aire de Ostwald HW",
+        "adresse": "Aire de service d’Ostwald – Autoroute A35, 67540 Ostwald",
+        "operateur": "Shell Recharge",
+        "enseigne": "Shell Aire de Ostwald HW",
+        "nbre_pdc": "2",
+        "max_power_kw": 175.0,
+        "autoroute": "A35",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.977541,
+          45.69848
+        ]
+      },
+      "properties": {
+        "id": "FRTSLP1749",
+        "nom_station": "Aire de Manissieux, France",
+        "adresse": "A43 - Aire de Manissieux",
+        "operateur": "Tesla",
+        "enseigne": "Tesla",
+        "nbre_pdc": "6",
+        "max_power_kw": 250.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.313277,
+          43.864589
+        ]
+      },
+      "properties": {
+        "id": "FRTSLP1744",
+        "nom_station": "Aire du Caylar, France",
+        "adresse": "A75 - Aire du Caylar",
+        "operateur": "Tesla",
+        "enseigne": "Tesla",
+        "nbre_pdc": "8",
+        "max_power_kw": 250.0,
+        "autoroute": "A75",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.975513,
+          45.698042
+        ]
+      },
+      "properties": {
+        "id": "FRTSLP1750",
+        "nom_station": "Aire de Saint-Priest, France",
+        "adresse": "A43 - Aire de Saint-Priest",
+        "operateur": "Tesla",
+        "enseigne": "Tesla",
+        "nbre_pdc": "6",
+        "max_power_kw": 250.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.974589,
+          45.525196
+        ]
+      },
+      "properties": {
+        "id": "FRTSLP11606",
+        "nom_station": "Aire du Granier, France",
+        "adresse": "Autoroute A43",
+        "operateur": "Tesla",
+        "enseigne": "Tesla",
+        "nbre_pdc": "28",
+        "max_power_kw": 250.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.976853,
+          45.524705
+        ]
+      },
+      "properties": {
+        "id": "FRTSLP11605",
+        "nom_station": "Aire de l'Abis, France",
+        "adresse": "A43, Autoroute",
+        "operateur": "Tesla",
+        "enseigne": "Tesla",
+        "nbre_pdc": "28",
+        "max_power_kw": 250.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.335433,
+          49.786878
+        ]
+      },
+      "properties": {
+        "id": "FRTSLP3045",
+        "nom_station": "Aire d'Urvillers, France",
+        "adresse": "A26 - Aire d'Urvillers",
+        "operateur": "Tesla",
+        "enseigne": "Tesla",
+        "nbre_pdc": "8",
+        "max_power_kw": 250.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.864827,
           44.864843
         ]
@@ -1615,6 +6928,132 @@
         "nbre_pdc": "16",
         "max_power_kw": 250.0,
         "autoroute": "A7",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.72858,
+          45.902756
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103102",
+        "nom_station": "ENGIE Vianeo - A6 Les Chères Ouest",
+        "adresse": "Aire des Chères Ouest - A6 - 69380 LES CHERES",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.633879,
+          45.578152
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103105",
+        "nom_station": "ENGIE Vianeo - A43 Le Guiers",
+        "adresse": "Aire du Guiers - A43 - 38480 ROMAGNIEU",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A43",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.729612,
+          45.903119
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103101",
+        "nom_station": "ENGIE Vianeo - A6 Les Chères Est",
+        "adresse": "Aire des Chères Est - A6 - 69380 LES CHERES",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.86681,
+          45.246799
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103104",
+        "nom_station": "ENGIE Vianeo - A41 Bois Claret",
+        "adresse": "Aire de Bois Claret - A41 - 38330 Saint-Nazaire-les-Eymes",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A41",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.176505,
+          49.179797
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103116",
+        "nom_station": "ENGIE Vianeo - A31 Saint-Rémy",
+        "adresse": "Aire de Saint-Rémy - A31 - 57140 WOIPPY",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.838087,
+          49.886757
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103115",
+        "nom_station": "ENGIE Vianeo - A1 Coeur des Hauts-de-France Ouest",
+        "adresse": "Aire de Coeur des Hauts-de-France Ouest - A1 - 80200 ASSEVILLERS",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 400.0,
+        "autoroute": "A1",
         "horaires": "24/7"
       }
     },
@@ -1665,6 +7104,48 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          5.395999,
+          43.433844
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103108",
+        "nom_station": "ENGIE Vianeo - A51 Chabauds (Cabriès)",
+        "adresse": "Aire des Chabauds (Cabriès) - A51 - 13320 BOUC-BEL-AIR",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A51",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.522438,
+          46.906859
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103111",
+        "nom_station": "ENGIE Vianeo - A10 Châtellerault-Antran",
+        "adresse": "Aire de Châtellerault-Antran - A10 - 86100 ANTRAN",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A10",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           7.398143,
           43.754763
         ]
@@ -1678,6 +7159,90 @@
         "nbre_pdc": "1",
         "max_power_kw": 300.0,
         "autoroute": "A8",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.95123,
+          48.941982
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102115",
+        "nom_station": "ENGIE Vianeo - A13 Morainvilliers Sud",
+        "adresse": "Aire de Morainvilliers Sud - A13 - 78630 MORAINVILLIERS",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.574533,
+          48.361836
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101101",
+        "nom_station": "ENGIE Vianeo - A6 Achères Est",
+        "adresse": "Aire d'Achères Est - A6 - 77760 URY",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.673335,
+          47.788469
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101114",
+        "nom_station": "ENGIE Vianeo - A6 Venoy Soleil Levant",
+        "adresse": "Aire de Venoy Soleil Levant - A6 - 89290 VENOY",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.838476,
+          46.961627
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101102",
+        "nom_station": "ENGIE Vianeo - A6 Beaune Merceuil",
+        "adresse": "Aire de Beaune Merceuil - A6 - 21190 MERCEUIL",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
         "horaires": "24/7"
       }
     },
@@ -1707,6 +7272,342 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          1.954211,
+          48.941591
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102114",
+        "nom_station": "ENGIE Vianeo - A13 Morainvilliers Nord",
+        "adresse": "Aire de Morainvilliers Nord - A13 - 78630 MORAINVILLIERS",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.719719,
+          49.518582
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102118",
+        "nom_station": "ENGIE Vianeo - A1 Ressons Ouest",
+        "adresse": "Aire de Ressons Ouest - A1 - 60490 RESSONS-SUR-MATZ",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.32767,
+          49.324464
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102101",
+        "nom_station": "ENGIE Vianeo - A13 Beuzeville Nord",
+        "adresse": "Aire de Beuzeville Nord - A13 - 27210 BEUZEVILLE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.320512,
+          49.321005
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102102",
+        "nom_station": "ENGIE Vianeo - A13 Beuzeville Sud",
+        "adresse": "Aire de Beuzeville Sud - A13 - 27210 BEUZEVILLE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A13",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.925151,
+          49.449858
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102113",
+        "nom_station": "ENGIE Vianeo - A26 Mont de Nizy",
+        "adresse": "Aire de Mont de Nizy - A26 - 02190 JUVINCOURT-ET-DAMARY",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.927966,
+          49.445716
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102105",
+        "nom_station": "ENGIE Vianeo - A26 Champ Roland",
+        "adresse": "Aire de Champ Roland - A26 - 02190 VILLENEUVE-SUR-AISNE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.046385,
+          50.529556
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102116",
+        "nom_station": "ENGIE Vianeo - A1 Phalempin Est",
+        "adresse": "Aire de Phalempin Est - A1 - 59113 SECLIN",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.046085,
+          50.531585
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102117",
+        "nom_station": "ENGIE Vianeo - A1 Phalempin Ouest",
+        "adresse": "Aire de Phalempin Ouest - A1 - 59113 SECLIN",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A1",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.659985,
+          49.132738
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102110",
+        "nom_station": "ENGIE Vianeo - A4 Longeville Sud",
+        "adresse": "Aire de Longeville-lès-Saint-Avold Sud - A4 - 57740 LONGEVILLE-LES-SAINT-AVOLD",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.466331,
+          50.340469
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102108",
+        "nom_station": "ENGIE Vianeo - A2 La Sentinelle Ouest",
+        "adresse": "Aire de la Sentinelle Ouest - A2 - 59174 LA SENTINELLE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A2",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.659289,
+          49.132162
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102109",
+        "nom_station": "ENGIE Vianeo - A4 Longeville Nord",
+        "adresse": "Aire de Longeville-lès-Saint-Avold Nord - A4 - 57740 LONGEVILLE-LES-SAINT-AVOLD",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.470008,
+          50.339583
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102107",
+        "nom_station": "ENGIE Vianeo - A2 La Sentinelle Est",
+        "adresse": "Aire de la Sentinelle Est - A2 - 59125 TRITH-SAINT-LEGER",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A2",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.696511,
+          48.721271
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102103",
+        "nom_station": "ENGIE Vianeo - A4 Brumath Est",
+        "adresse": "Aire de Brumath Est - A4 - 67170 BRUMATH",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.691951,
+          48.723811
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102104",
+        "nom_station": "ENGIE Vianeo - A4 Brumath Ouest",
+        "adresse": "Aire de Brumath Ouest - A4 - 67170 BRUMATH",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A4",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.498553,
+          47.975368
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101113",
+        "nom_station": "ENGIE Vianeo - A31 Val de Meuse",
+        "adresse": "Aire du Val de Meuse - A31 - 52140 VAL-DE-MEUSE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.498041,
+          47.977038
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101112",
+        "nom_station": "ENGIE Vianeo - A31 Montigny-le-Roi",
+        "adresse": "Aire de Montigny le Roi - A31 - 52140 VAL-DE-MEUSE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A31",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           2.802515,
           46.357285
         ]
@@ -1720,6 +7621,90 @@
         "nbre_pdc": "1",
         "max_power_kw": 300.0,
         "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.585301,
+          47.149066
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101106",
+        "nom_station": "ENGIE Vianeo - A36 Dole Romange",
+        "adresse": "Aire de Dole Romange A36 - 39700 AUDELANGE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A36",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.714129,
+          47.105253
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101110",
+        "nom_station": "ENGIE Vianeo - A6 La Forêt",
+        "adresse": "Aire de La Forêt - A6 - 21360 BLIGNY-SUR-OUCHE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.069313,
+          45.844643
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101111",
+        "nom_station": "ENGIE Vianeo - A42 Lyon Montluel",
+        "adresse": "Aire de Lyon Montluel - A42 - 01120 DAGNEUX",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A42",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.580425,
+          47.147381
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101105",
+        "nom_station": "ENGIE Vianeo - A36 Dole Audelange",
+        "adresse": "Aire de Dole Audelange A36 - 39700 AUDELANGE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A36",
         "horaires": "24/7"
       }
     },
@@ -1762,6 +7747,216 @@
         "nbre_pdc": "1",
         "max_power_kw": 300.0,
         "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.979748,
+          44.133879
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP104112",
+        "nom_station": "ENGIE Vianeo - A51 Aubignosc Est",
+        "adresse": "Aire de Aubignosc Est - A51 - 04200 Aubignosc",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A51",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.977708,
+          44.133246
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP104113",
+        "nom_station": "ENGIE Vianeo - A51 Aubignosc Ouest",
+        "adresse": "Aire de Aubignosc Ouest - A51 - 04200 Aubignosc",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A51",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.808766,
+          43.353167
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP104114",
+        "nom_station": "ENGIE Vianeo - A61 Port Lauragais Nord",
+        "adresse": "Aire de Port Lauragais Nord - A61 - 31290 Avignonet-Lairagais",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.360907,
+          43.813026
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP104101",
+        "nom_station": "ENGIE Vianeo - A62 Frontonnais Nord",
+        "adresse": "Aire de Frontonnais Nord - A62 - 31620 CASTELNAU-D'ESTRETEFONDS",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A62",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.360365,
+          43.811528
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP104102",
+        "nom_station": "ENGIE Vianeo - A62 Frontonnais Sud",
+        "adresse": "Aire de Frontonnais Sud - A62 - 31620 CASTELNAU-D'ESTRETEFONDS",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A62",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.226369,
+          48.729175
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP102119",
+        "nom_station": "ENGIE Vianeo Camions - Trucks Only - A26 Aire de Sommesous",
+        "adresse": "Aire de Sommesous - A26 - 51320 Sommesous",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 400.0,
+        "autoroute": "A26",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.573403,
+          48.362426
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP111102",
+        "nom_station": "ENGIE Vianeo Camions - Trucks Only - A6 Achères-Est",
+        "adresse": "Aire d'Achères Est - A6 - 77760 URY",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 400.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.672526,
+          47.78961
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP111103",
+        "nom_station": "ENGIE Vianeo Camions - Trucks Only - A6 Venoy Soleil Levant",
+        "adresse": "Aire de Venoy Soleil Levant - A6 - 89290 VENOY",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 400.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.837612,
+          46.960659
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP111104",
+        "nom_station": "ENGIE Vianeo Camions - Trucks Only - A6 Beaune Merceuil",
+        "adresse": "Aire de Beaune Merceuil - A6 - 21190 MERCEUIL",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 400.0,
+        "autoroute": "A6",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.712279,
+          47.10553
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP111105",
+        "nom_station": "ENGIE Vianeo Camions - Trucks Only - A6 La Forêt",
+        "adresse": "Aire de La Forêt - A6 - 21360 BLIGNY-SUR-OUCHE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 400.0,
+        "autoroute": "A6",
         "horaires": "24/7"
       }
     }

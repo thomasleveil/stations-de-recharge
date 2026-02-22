@@ -26,18 +26,6 @@ function getOperator(props) {
   return { name: props.enseigne || props.operateur || 'Autre', color: '#6B7280' };
 }
 
-// ── Motorway colors ───────────────────────────────────────────
-
-const MOTORWAYS = {
-  A7:  { color: '#EF4444', bg: '#FEE2E2' },
-  A8:  { color: '#0EA5E9', bg: '#E0F2FE' },
-  A11: { color: '#10B981', bg: '#D1FAE5' },
-  A57: { color: '#F97316', bg: '#FFEDD5' },
-  A71: { color: '#EC4899', bg: '#FCE7F3' },
-  A72: { color: '#F59E0B', bg: '#FEF3C7' },
-  A85: { color: '#3B82F6', bg: '#DBEAFE' },
-  A89: { color: '#8B5CF6', bg: '#EDE9FE' },
-};
 
 // ── Marker sizing (radius in px) ──────────────────────────────
 
@@ -65,33 +53,6 @@ L.tileLayer(
   }
 ).addTo(map);
 
-// ── Motorway filter buttons ───────────────────────────────────
-
-const activeMw = new Set(Object.keys(MOTORWAYS));
-const filtersEl = document.getElementById('mw-filters');
-
-Object.entries(MOTORWAYS).forEach(([mw, { color, bg }]) => {
-  const btn = document.createElement('button');
-  btn.className = 'mw-btn';
-  btn.textContent = mw;
-  btn.style.color = color;
-  btn.style.borderColor = color;
-  btn.style.background = bg;
-  btn.dataset.mw = mw;
-
-  btn.addEventListener('click', () => {
-    if (activeMw.has(mw)) {
-      activeMw.delete(mw);
-      btn.classList.add('off');
-    } else {
-      activeMw.add(mw);
-      btn.classList.remove('off');
-    }
-    updateVisibility();
-  });
-
-  filtersEl.appendChild(btn);
-});
 
 // ── Draw markers ──────────────────────────────────────────────
 
@@ -127,9 +88,7 @@ STATIONS_DATA.features.forEach(feature => {
 
 function updateVisibility() {
   markers.forEach(m => {
-    const mwOk    = activeMw.has(m._motorway);
-    const routeOk = !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
-    const visible = mwOk && routeOk;
+    const visible = !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
     m.setStyle({ opacity: visible ? 1 : 0, fillOpacity: visible ? 0.9 : 0 });
     const el = m.getElement();
     if (el) el.style.pointerEvents = visible ? '' : 'none';
@@ -280,7 +239,7 @@ document.getElementById('route-go').addEventListener('click', async () => {
     applyRouteFilter(turf.lineString(route.geometry.coordinates));
 
     const onRoute = markers.filter(m =>
-      activeMw.has(m._motorway) && m._distFromRoute <= ROUTE_BUFFER_KM
+      m._distFromRoute <= ROUTE_BUFFER_KM
     );
     const km = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
 

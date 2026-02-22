@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Purpose
 
-Interactive map of EV charging stations at highway rest areas along French motorways **A7, A8, A11, A57, A71, A72, A85, and A89**. Helps plan electric vehicle road trips by showing which charging network operators are present at each rest area, so users can choose subscriptions wisely.
+Interactive map of EV charging stations at highway rest areas along all major French motorways (A1, A2, A4, A6, A7, A8, A9, A10, A11, A13, A20, A26, A28, A31, A35, A36, A40, A41, A42, A43, A51, A54, A57, A61, A62, A63, A64, A71, A72, A75, A85, A89). Helps plan electric vehicle road trips by filtering stations along any calculated route using OSRM.
 
 ## Data Source
 
@@ -12,7 +12,7 @@ Interactive map of EV charging stations at highway rest areas along French motor
 Source: [transport.data.gouv.fr](https://transport.data.gouv.fr/datasets/fichier-consolide-des-bornes-de-recharge-pour-vehicules-electriques)
 Updated: daily. Raw CSV is ~122MB, 188k rows (one row per connector/PDC).
 
-**Pre-filtered data** is already in `stations_autoroutes.geojson` (84 stations ≥150 kW, no motorway exit required, one feature per station). Do not commit the raw CSV — it is gitignored.
+**Pre-filtered data** is already in `stations_autoroutes.geojson` (379 stations ≥150 kW, no motorway exit required, one feature per station). Do not commit the raw CSV — it is gitignored.
 
 To regenerate the GeoJSON from a fresh CSV download:
 ```bash

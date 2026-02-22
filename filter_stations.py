@@ -18,7 +18,13 @@ import argparse
 import collections
 import pathlib
 
-TARGET_MOTORWAYS = ['A11', 'A57', 'A71', 'A72', 'A85', 'A89', 'A7', 'A8']
+TARGET_MOTORWAYS = [
+    'A1', 'A2', 'A4', 'A6', 'A7', 'A8', 'A9',
+    'A10', 'A11', 'A13', 'A20', 'A26', 'A28', 'A31',
+    'A35', 'A36', 'A40', 'A41', 'A42', 'A43',
+    'A51', 'A54', 'A57', 'A61', 'A62', 'A63', 'A64',
+    'A71', 'A72', 'A75', 'A85', 'A89',
+]
 MIN_POWER_KW = 150
 COORD_GRID_DECIMALS = 3  # ~111m, removes duplicate registrations
 
@@ -26,6 +32,7 @@ COORD_GRID_DECIMALS = 3  # ~111m, removes duplicate registrations
 # Rejects stations whose GPS coordinates fall outside the motorway's corridor,
 # even if the station name/address mentions the motorway (IRVE coordinate errors).
 MOTORWAY_BOUNDS = {
+    # ── Existing ──────────────────────────────────────────────────────
     'A7':  (4.3,  5.5,  43.1, 45.9),   # Lyon → Marseille (Rhône valley)
     'A8':  (5.2,  7.6,  43.2, 43.95),  # Aix-en-Provence → Menton
     'A11': (-2.0, 2.0,  47.0, 48.7),   # Paris → Nantes (L'Océane)
@@ -34,6 +41,37 @@ MOTORWAY_BOUNDS = {
     'A72': (3.3,  4.6,  45.3, 46.0),   # Saint-Étienne → Clermont-Ferrand
     'A85': (-0.6, 1.9,  47.0, 47.8),   # Tours → Angers
     'A89': (-0.5, 4.4,  44.6, 46.2),   # Bordeaux → Lyon via Clermont
+    # ── North / Northeast ─────────────────────────────────────────────
+    'A1':  (2.1,  3.2,  48.8, 50.6),   # Paris → Lille → Belgian border
+    'A2':  (3.0,  4.0,  50.0, 50.5),   # Valenciennes → Belgian border
+    'A4':  (1.9,  7.9,  48.3, 49.5),   # Paris → Strasbourg (via Reims, Metz)
+    'A26': (1.5,  4.3,  48.0, 51.0),   # Calais → Troyes (Les Anglaises)
+    'A31': (4.5,  6.4,  47.1, 49.6),   # Dijon → Nancy → Luxembourg border
+    'A35': (7.0,  7.9,  47.6, 48.7),   # Strasbourg → Mulhouse (Alsace)
+    'A36': (4.7,  7.5,  47.0, 47.9),   # Mulhouse → Beaune (La Comtoise)
+    # ── West / Northwest ──────────────────────────────────────────────
+    'A10': (-0.8, 2.5,  44.8, 48.9),   # Paris → Orléans → Bordeaux (L'Aquitaine)
+    'A13': (-0.5, 2.4,  48.5, 49.7),   # Paris → Rouen → Caen (Normandie)
+    'A28': (-0.1, 1.6,  47.3, 50.6),   # Rouen → Abbeville → Saint-Omer + Le Mans → Tours
+    # ── Paris → Lyon (Bourgogne) ──────────────────────────────────────
+    'A6':  (2.2,  5.2,  45.4, 48.9),   # Paris → Beaune → Lyon (du Soleil)
+    # ── Center / Massif Central ───────────────────────────────────────
+    'A20': (1.1,  2.6,  44.8, 47.4),   # Vierzon → Limoges → Brive (L'Occitane)
+    'A75': (2.8,  3.6,  43.3, 45.8),   # Clermont → Millau → Montpellier
+    # ── Southeast / Alps ──────────────────────────────────────────────
+    'A40': (4.2,  6.6,  45.5, 46.5),   # Lyon → Mâcon → Bourg → Geneva
+    'A41': (5.7,  6.4,  45.1, 46.2),   # Grenoble → Annecy → Geneva
+    'A42': (4.9,  5.5,  45.7, 46.1),   # Lyon → Bourg-en-Bresse
+    'A43': (4.7,  6.8,  45.1, 45.8),   # Lyon → Chambéry → Fréjus tunnel
+    'A51': (5.1,  6.3,  43.3, 45.3),   # Marseille/Aix → Grenoble → Sisteron → Gap
+    'A54': (4.3,  5.0,  43.4, 43.9),   # Nîmes → Arles → Salon (Camargue)
+    # ── South / Mediterranean ─────────────────────────────────────────
+    'A9':  (0.5,  4.9,  42.4, 44.3),   # Orange → Montpellier → Perpignan
+    # ── Southwest ─────────────────────────────────────────────────────
+    'A61': (1.3,  3.3,  43.0, 43.7),   # Toulouse → Carcassonne → Narbonne
+    'A62': (-0.8, 1.6,  43.5, 44.9),   # Bordeaux → Agen → Toulouse
+    'A63': (-2.1, -0.4, 43.3, 44.9),   # Bordeaux → Bayonne → Spanish border
+    'A64': (-1.9, 1.7,  43.1, 43.8),   # Bayonne → Tarbes → Toulouse
 }
 
 _MOTORWAY_PAT = re.compile(r'\b(' + '|'.join(TARGET_MOTORWAYS) + r')\b', re.IGNORECASE)
