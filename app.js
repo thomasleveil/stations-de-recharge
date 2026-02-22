@@ -119,18 +119,18 @@ STATIONS_DATA.features.forEach(feature => {
   });
 
   circle._motorway = p.autoroute;
+  circle._lon = lon;
+  circle._lat = lat;
   circle.addTo(map);
   markers.push(circle);
 });
 
 function updateVisibility() {
   markers.forEach(m => {
-    const visible = activeMw.has(m._motorway);
-    m.setStyle({
-      opacity:     visible ? 1 : 0,
-      fillOpacity: visible ? 0.9 : 0,
-    });
-    // Disable pointer events on hidden markers
+    const mwOk    = activeMw.has(m._motorway);
+    const routeOk = !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
+    const visible = mwOk && routeOk;
+    m.setStyle({ opacity: visible ? 1 : 0, fillOpacity: visible ? 0.9 : 0 });
     const el = m.getElement();
     if (el) el.style.pointerEvents = visible ? '' : 'none';
   });
@@ -204,3 +204,104 @@ function appendLegendItem(name, color) {
 const subEl = document.querySelector('.panel-sub');
 subEl.textContent =
   `${STATIONS_DATA.features.length} stations · sans sortie de péage`;
+
+// ── Route planning ────────────────────────────────────────────
+
+const ROUTE_BUFFER_KM = 5;
+let routeActive = false;
+let routeLayer  = null;
+
+async function geocode(query) {
+  const r = await fetch(
+    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
+    { headers: { 'Accept-Language': 'fr' } }
+  );
+  const data = await r.json();
+  if (!data.length) throw new Error(`"${query}" introuvable`);
+  return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+}
+
+async function fetchRoute(from, to) {
+  const r = await fetch(
+    `https://router.project-osrm.org/route/v1/driving/` +
+    `${from[0]},${from[1]};${to[0]},${to[1]}?overview=full&geometries=geojson`
+  );
+  const data = await r.json();
+  if (data.code !== 'Ok') throw new Error('Itinéraire introuvable');
+  return data.routes[0];
+}
+
+function applyRouteFilter(routeLine) {
+  markers.forEach(m => {
+    const snap = turf.nearestPointOnLine(routeLine, turf.point([m._lon, m._lat]), { units: 'kilometers' });
+    m._distFromRoute  = snap.properties.dist;
+    m._distAlongRoute = snap.properties.location;
+  });
+  updateVisibility();
+}
+
+function clearRoute() {
+  routeActive = false;
+  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+  markers.forEach(m => { delete m._distFromRoute; delete m._distAlongRoute; });
+  updateVisibility();
+  subEl.textContent = `${STATIONS_DATA.features.length} stations · sans sortie de péage`;
+  document.getElementById('route-info').textContent = '';
+  document.getElementById('route-clear').style.display = 'none';
+  const btn = document.getElementById('route-go');
+  btn.style.display = '';
+  btn.disabled = false;
+  btn.textContent = 'Calculer →';
+}
+
+document.getElementById('route-go').addEventListener('click', async () => {
+  const startVal = document.getElementById('route-start').value.trim();
+  const endVal   = document.getElementById('route-end').value.trim();
+  if (!startVal || !endVal) return;
+
+  const btn  = document.getElementById('route-go');
+  const info = document.getElementById('route-info');
+  btn.disabled = true;
+  btn.textContent = '…';
+  info.className = '';
+  info.textContent = 'Calcul en cours…';
+
+  try {
+    const [from, to] = await Promise.all([geocode(startVal), geocode(endVal)]);
+    const route = await fetchRoute(from, to);
+
+    if (routeLayer) map.removeLayer(routeLayer);
+    routeLayer = L.geoJSON(route.geometry, {
+      style: { color: '#1D4ED8', weight: 4, opacity: 0.75 },
+    }).addTo(map);
+    map.fitBounds(routeLayer.getBounds(), { padding: [40, 40] });
+
+    routeActive = true;
+    applyRouteFilter(turf.lineString(route.geometry.coordinates));
+
+    const onRoute = markers.filter(m =>
+      activeMw.has(m._motorway) && m._distFromRoute <= ROUTE_BUFFER_KM
+    );
+    const km = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
+
+    subEl.textContent = `${onRoute.length} station${onRoute.length !== 1 ? 's' : ''} sur le trajet`;
+    info.className = 'route-stat';
+    info.textContent = `${km} km · corridor ±${ROUTE_BUFFER_KM} km`;
+
+    document.getElementById('route-clear').style.display = '';
+    btn.style.display = 'none';
+  } catch (e) {
+    info.className = 'route-error';
+    info.textContent = '⚠ ' + e.message;
+    btn.disabled = false;
+    btn.textContent = 'Calculer →';
+  }
+});
+
+document.getElementById('route-clear').addEventListener('click', clearRoute);
+
+['route-start', 'route-end'].forEach(id =>
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('route-go').click();
+  })
+);

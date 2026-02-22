@@ -13,8 +13,22 @@
   <!-- Top-left control panel -->
   <div id="panel">
     <div class="panel-title">Bornes rapides ≥ 150 kW</div>
-    <div class="panel-sub">Accessibles sans sortir de l'autoroute</div>
+    <div class="panel-sub"></div>
     <div id="mw-filters"></div>
+
+    <div class="panel-divider"></div>
+
+    <!-- Route planning -->
+    <div id="route-section">
+      <div class="route-label">Itinéraire</div>
+      <input id="route-start" class="route-input" type="text" placeholder="Départ" autocomplete="off" />
+      <input id="route-end"   class="route-input" type="text" placeholder="Arrivée" autocomplete="off" />
+      <div class="route-actions">
+        <button id="route-go"    class="route-btn">Calculer →</button>
+        <button id="route-clear" class="route-btn route-btn-clear" style="display:none">✕ Effacer</button>
+      </div>
+      <div id="route-info"></div>
+    </div>
   </div>
 
   <!-- Bottom-right legend -->
@@ -25,6 +39,7 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
