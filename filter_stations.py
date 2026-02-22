@@ -68,14 +68,21 @@ def build_geojson(input_path: str, output_path: str):
     """)
 
     # ── 4.5. Count CCS fast connectors per station (power ≥ 150 kW) ─────────
+    # IRVE accumulates historical PDC rows: a station can have many stale
+    # id_pdc_itinerance entries.  Cap with LEAST(…, nbre_pdc) so the count
+    # never exceeds the operator-declared total.
     con.execute(f"""
         CREATE TABLE station_ccs_fast AS
-        SELECT id_station_itinerance,
-               COUNT(*) AS nbre_ccs_fast
-        FROM irve
-        WHERE prise_type_combo_ccs = TRUE
-          AND power_kw >= {MIN_POWER_KW}
-        GROUP BY id_station_itinerance
+        SELECT i.id_station_itinerance,
+               LEAST(
+                   COUNT(DISTINCT i.id_pdc_itinerance),
+                   COALESCE(TRY_CAST(sf.nbre_pdc AS INTEGER), 999)
+               ) AS nbre_ccs_fast
+        FROM irve i
+        JOIN station_first sf ON i.id_station_itinerance = sf.id_station_itinerance
+        WHERE i.prise_type_combo_ccs = TRUE
+          AND i.power_kw >= {MIN_POWER_KW}
+        GROUP BY i.id_station_itinerance, sf.nbre_pdc
     """)
 
     # ── 4.6. Truck-only station detection (any connector signals truck use) ───

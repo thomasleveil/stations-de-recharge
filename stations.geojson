@@ -722,7 +722,7 @@
         "enseigne": "SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -920,7 +920,7 @@
         "enseigne": "SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -1140,7 +1140,7 @@
         "enseigne": "SPV COM",
         "nbre_pdc": "4",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -1206,7 +1206,7 @@
         "enseigne": "SPV COM",
         "nbre_pdc": "6",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -1404,7 +1404,7 @@
         "enseigne": "SPV COM",
         "nbre_pdc": "4",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -2306,7 +2306,7 @@
         "enseigne": "GreenToWheel",
         "nbre_pdc": "7",
         "max_power_kw": 350.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -11238,7 +11238,7 @@
         "enseigne": "Atlante - Poitiers - Quick Poitiers",
         "nbre_pdc": "6",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -12206,7 +12206,7 @@
         "enseigne": "Transport Malherbe Moissy-Cramayel",
         "nbre_pdc": "9",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 18,
+        "nbre_ccs_fast": 9,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -12228,7 +12228,7 @@
         "enseigne": "LL PARC MONDEVILLE",
         "nbre_pdc": "8",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -12250,7 +12250,7 @@
         "enseigne": "Etoile Routière LE BAILLEUL (72))",
         "nbre_pdc": "8",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -12272,7 +12272,7 @@
         "enseigne": "Groupe Malherbe - Bapaume",
         "nbre_pdc": "8",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -12294,7 +12294,7 @@
         "enseigne": "Transports Malherbe - Mâcon",
         "nbre_pdc": "8",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -12338,7 +12338,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "25",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 36,
+        "nbre_ccs_fast": 18,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12360,7 +12360,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "11",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 20,
+        "nbre_ccs_fast": 10,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12382,7 +12382,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "32",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 40,
+        "nbre_ccs_fast": 20,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12404,7 +12404,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "21",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 40,
+        "nbre_ccs_fast": 20,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12426,7 +12426,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "25",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 36,
+        "nbre_ccs_fast": 18,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12448,7 +12448,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "98",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 40,
+        "nbre_ccs_fast": 20,
         "horaires": "Mo-Su 06:00-01:00",
         "station_type": "dedicee"
       }
@@ -12470,7 +12470,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "55",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12492,7 +12492,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "25",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12514,7 +12514,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "74",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 32,
+        "nbre_ccs_fast": 16,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12536,7 +12536,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "13",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12558,7 +12558,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "9",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 9,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12580,7 +12580,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "20",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 28,
+        "nbre_ccs_fast": 14,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12602,7 +12602,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "9",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12624,7 +12624,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "14",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 22,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12646,7 +12646,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "14",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 22,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12668,7 +12668,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "13",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 20,
+        "nbre_ccs_fast": 11,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12690,7 +12690,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "12",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 18,
+        "nbre_ccs_fast": 10,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12712,7 +12712,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "14",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 22,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12734,7 +12734,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "14",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 14,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12756,7 +12756,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "6",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12778,7 +12778,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "6",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -12800,7 +12800,7 @@
         "enseigne": "bp pulse",
         "nbre_pdc": "12",
         "max_power_kw": 500.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -24548,7 +24548,7 @@
         "enseigne": "e-Vadea",
         "nbre_pdc": "9",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -24570,7 +24570,7 @@
         "enseigne": "e-Vadea",
         "nbre_pdc": "8",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -28904,7 +28904,7 @@
         "enseigne": "Fastned Aire de Pont Chêne d'Argent",
         "nbre_pdc": "4",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -28926,7 +28926,7 @@
         "enseigne": "Fastned Aire de Pont Val de Saône",
         "nbre_pdc": "4",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -31346,7 +31346,7 @@
         "enseigne": "TotalEnergies Charge Rapide",
         "nbre_pdc": "5",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -36714,7 +36714,7 @@
         "enseigne": "IONITY Gevrey-Chambertin Est",
         "nbre_pdc": "4",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -36736,7 +36736,7 @@
         "enseigne": "IONITY Jura",
         "nbre_pdc": "4",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -36780,7 +36780,7 @@
         "enseigne": "IONITY Vallée de la vire Gouvets",
         "nbre_pdc": "9",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 110,
+        "nbre_ccs_fast": 9,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -36802,7 +36802,7 @@
         "enseigne": "IONITY Langres Perrogney",
         "nbre_pdc": "6",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 18,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -36912,7 +36912,7 @@
         "enseigne": "IONITY Centre de la France",
         "nbre_pdc": "14",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 127,
+        "nbre_ccs_fast": 14,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -36978,7 +36978,7 @@
         "enseigne": "IONITY Dommartin",
         "nbre_pdc": "15",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 284,
+        "nbre_ccs_fast": 15,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -37022,7 +37022,7 @@
         "enseigne": "IONITY Agde",
         "nbre_pdc": "10",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 95,
+        "nbre_ccs_fast": 10,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -37044,7 +37044,7 @@
         "enseigne": "IONITY Saint-Rambert Est",
         "nbre_pdc": "20",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 332,
+        "nbre_ccs_fast": 20,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -37066,7 +37066,7 @@
         "enseigne": "IONITY Villaines la Gonais",
         "nbre_pdc": "4",
         "max_power_kw": 350.0,
-        "nbre_ccs_fast": 9,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -37132,7 +37132,7 @@
         "enseigne": "IONITY Portes d'Angers Sud",
         "nbre_pdc": "6",
         "max_power_kw": 350.0,
-        "nbre_ccs_fast": 56,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -37154,7 +37154,7 @@
         "enseigne": "IONITY Mionnay Chatanay",
         "nbre_pdc": "14",
         "max_power_kw": 600.0,
-        "nbre_ccs_fast": 20,
+        "nbre_ccs_fast": 14,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -37176,7 +37176,7 @@
         "enseigne": "IONITY Agen",
         "nbre_pdc": "12",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 13,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -37308,7 +37308,7 @@
         "enseigne": "IONITY Bessoncourt",
         "nbre_pdc": "15",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 20,
+        "nbre_ccs_fast": 15,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -37506,7 +37506,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -37748,7 +37748,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 400.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -37814,7 +37814,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "Mo-Sa 08:30-19:30,Su 08:30-12:00",
         "station_type": "parking"
       }
@@ -37968,7 +37968,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 225.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38012,7 +38012,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38034,7 +38034,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38056,7 +38056,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38078,7 +38078,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "Mo-Sa 08:30-19:30",
         "station_type": "parking"
       }
@@ -38298,7 +38298,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38320,7 +38320,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38452,7 +38452,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38606,7 +38606,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38694,7 +38694,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38716,7 +38716,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "Mo-Sa 08:30-19:30",
         "station_type": "parking"
       }
@@ -38892,7 +38892,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -38958,7 +38958,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39024,7 +39024,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39112,7 +39112,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39244,7 +39244,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39266,7 +39266,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39354,7 +39354,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39508,7 +39508,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39552,7 +39552,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39640,7 +39640,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39662,7 +39662,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39750,7 +39750,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39772,7 +39772,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39882,7 +39882,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39970,7 +39970,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -39992,7 +39992,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -40058,7 +40058,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -40102,7 +40102,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 375.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "Mo-Sa 08:30-20:00,Su 08:30-12:15",
         "station_type": "parking"
       }
@@ -40124,7 +40124,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "10",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -40146,7 +40146,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -40388,7 +40388,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -40542,7 +40542,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -40740,7 +40740,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -40960,7 +40960,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -41158,7 +41158,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 375.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -41268,7 +41268,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -41378,7 +41378,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -41422,7 +41422,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -41488,7 +41488,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -41510,7 +41510,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -41532,7 +41532,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -41818,7 +41818,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -41862,7 +41862,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -42236,7 +42236,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -42588,7 +42588,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -42610,7 +42610,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -42852,7 +42852,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "7",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -42874,7 +42874,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -42896,7 +42896,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -43292,7 +43292,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -43380,7 +43380,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -44062,7 +44062,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "10",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -44436,7 +44436,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -44810,7 +44810,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -44854,7 +44854,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "7",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -45272,7 +45272,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -45514,7 +45514,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -45558,7 +45558,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -45602,7 +45602,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -45624,7 +45624,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -45668,7 +45668,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "15",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -45712,7 +45712,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -45734,7 +45734,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -45954,7 +45954,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "14",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 18,
+        "nbre_ccs_fast": 10,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -46020,7 +46020,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -46570,7 +46570,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -46878,7 +46878,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -46900,7 +46900,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -47054,7 +47054,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "13",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 15,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -47252,7 +47252,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -47296,7 +47296,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -47340,7 +47340,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "15",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 15,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -47626,7 +47626,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "15",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -47736,7 +47736,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "15",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 15,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -48220,7 +48220,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "10",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -48440,7 +48440,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -49254,7 +49254,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "6",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -49342,7 +49342,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -49826,7 +49826,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -50816,7 +50816,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -50926,7 +50926,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "8",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51256,7 +51256,7 @@
         "enseigne": "LIDL",
         "nbre_pdc": "4",
         "max_power_kw": 450.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51718,7 +51718,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51740,7 +51740,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51762,7 +51762,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 178.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51784,7 +51784,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51806,7 +51806,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51828,7 +51828,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51850,7 +51850,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51872,7 +51872,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51894,7 +51894,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "12",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51916,7 +51916,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51938,7 +51938,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51960,7 +51960,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -51982,7 +51982,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52004,7 +52004,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52026,7 +52026,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52048,7 +52048,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52070,7 +52070,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "15",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52092,7 +52092,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52114,7 +52114,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52136,7 +52136,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52158,7 +52158,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52180,7 +52180,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52202,7 +52202,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52224,7 +52224,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52246,7 +52246,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52290,7 +52290,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52334,7 +52334,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "4",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52378,7 +52378,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52400,7 +52400,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52422,7 +52422,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52444,7 +52444,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52466,7 +52466,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52488,7 +52488,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52510,7 +52510,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52532,7 +52532,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52554,7 +52554,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52576,7 +52576,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52620,7 +52620,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52642,7 +52642,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 240.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52664,7 +52664,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 240.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52708,7 +52708,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52752,7 +52752,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "18",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 32,
+        "nbre_ccs_fast": 16,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52796,7 +52796,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 240.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52818,7 +52818,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 240.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52862,7 +52862,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52884,7 +52884,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52972,7 +52972,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -52994,7 +52994,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53060,7 +53060,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53082,7 +53082,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53104,7 +53104,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53126,7 +53126,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53148,7 +53148,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53170,7 +53170,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53192,7 +53192,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "20",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53236,7 +53236,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53258,7 +53258,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53280,7 +53280,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53302,7 +53302,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53324,7 +53324,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53346,7 +53346,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53368,7 +53368,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53390,7 +53390,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53412,7 +53412,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53456,7 +53456,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53478,7 +53478,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53500,7 +53500,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53522,7 +53522,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53566,7 +53566,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53588,7 +53588,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53610,7 +53610,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53632,7 +53632,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53654,7 +53654,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53676,7 +53676,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53698,7 +53698,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53720,7 +53720,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53742,7 +53742,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53764,7 +53764,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53808,7 +53808,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53830,7 +53830,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53852,7 +53852,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53874,7 +53874,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "22",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 36,
+        "nbre_ccs_fast": 18,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53896,7 +53896,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53918,7 +53918,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53940,7 +53940,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53962,7 +53962,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -53984,7 +53984,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54006,7 +54006,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54028,7 +54028,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54072,7 +54072,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54094,7 +54094,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54116,7 +54116,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54138,7 +54138,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54182,7 +54182,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54204,7 +54204,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54226,7 +54226,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54248,7 +54248,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54270,7 +54270,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54292,7 +54292,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54314,7 +54314,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54336,7 +54336,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54380,7 +54380,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54402,7 +54402,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54424,7 +54424,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54446,7 +54446,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54468,7 +54468,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54490,7 +54490,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54512,7 +54512,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54534,7 +54534,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54600,7 +54600,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54622,7 +54622,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 175.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54644,7 +54644,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54666,7 +54666,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54688,7 +54688,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "20",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54710,7 +54710,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54732,7 +54732,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54754,7 +54754,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "14",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54776,7 +54776,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "19",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54798,7 +54798,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54820,7 +54820,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54842,7 +54842,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "19",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54864,7 +54864,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "19",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 25,
+        "nbre_ccs_fast": 13,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54886,7 +54886,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54908,7 +54908,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54930,7 +54930,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54952,7 +54952,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "20",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54974,7 +54974,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "14",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -54996,7 +54996,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "42",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 30,
+        "nbre_ccs_fast": 15,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55018,7 +55018,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55040,7 +55040,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55062,7 +55062,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55084,7 +55084,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "12",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55106,7 +55106,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 181.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55128,7 +55128,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "13",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55150,7 +55150,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55172,7 +55172,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55194,7 +55194,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "13",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55216,7 +55216,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55238,7 +55238,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "13",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55260,7 +55260,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55282,7 +55282,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55304,7 +55304,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55326,7 +55326,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55348,7 +55348,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55370,7 +55370,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55392,7 +55392,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55414,7 +55414,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55436,7 +55436,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55458,7 +55458,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55480,7 +55480,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55502,7 +55502,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55524,7 +55524,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 7,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55546,7 +55546,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55590,7 +55590,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55612,7 +55612,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55634,7 +55634,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55656,7 +55656,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55700,7 +55700,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "17",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 28,
+        "nbre_ccs_fast": 14,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55744,7 +55744,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55766,7 +55766,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55788,7 +55788,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55854,7 +55854,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 7,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55876,7 +55876,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55898,7 +55898,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 15,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55920,7 +55920,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55942,7 +55942,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55964,7 +55964,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -55986,7 +55986,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "13",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 15,
+        "nbre_ccs_fast": 9,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56008,7 +56008,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56052,7 +56052,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56074,7 +56074,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56096,7 +56096,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "22",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 32,
+        "nbre_ccs_fast": 16,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56118,7 +56118,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "22",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 32,
+        "nbre_ccs_fast": 16,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56140,7 +56140,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "21",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56162,7 +56162,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56184,7 +56184,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56206,7 +56206,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "13",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56228,7 +56228,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56250,7 +56250,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56272,7 +56272,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56294,7 +56294,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56338,7 +56338,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56360,7 +56360,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56382,7 +56382,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "13",
         "max_power_kw": 175.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56404,7 +56404,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56426,7 +56426,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56448,7 +56448,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56470,7 +56470,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56492,7 +56492,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56514,7 +56514,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56536,7 +56536,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56558,7 +56558,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56580,7 +56580,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56602,7 +56602,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "4",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56624,7 +56624,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56646,7 +56646,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56668,7 +56668,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56690,7 +56690,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56712,7 +56712,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56734,7 +56734,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56756,7 +56756,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56778,7 +56778,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56800,7 +56800,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56822,7 +56822,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56866,7 +56866,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56888,7 +56888,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56910,7 +56910,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56932,7 +56932,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56954,7 +56954,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56976,7 +56976,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -56998,7 +56998,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57020,7 +57020,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57042,7 +57042,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57064,7 +57064,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57086,7 +57086,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "34",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57108,7 +57108,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57130,7 +57130,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57152,7 +57152,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57174,7 +57174,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57196,7 +57196,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57240,7 +57240,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57262,7 +57262,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57284,7 +57284,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57306,7 +57306,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57328,7 +57328,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57350,7 +57350,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57372,7 +57372,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57394,7 +57394,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57416,7 +57416,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57438,7 +57438,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57460,7 +57460,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "12",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 22,
+        "nbre_ccs_fast": 11,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57482,7 +57482,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "8",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57504,7 +57504,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57526,7 +57526,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57548,7 +57548,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "22",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57570,7 +57570,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57592,7 +57592,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57636,7 +57636,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57658,7 +57658,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57680,7 +57680,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "13",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57702,7 +57702,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57724,7 +57724,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57746,7 +57746,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "4",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57768,7 +57768,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57790,7 +57790,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57812,7 +57812,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57834,7 +57834,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57856,7 +57856,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57878,7 +57878,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57900,7 +57900,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57922,7 +57922,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57944,7 +57944,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57966,7 +57966,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -57988,7 +57988,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58010,7 +58010,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58032,7 +58032,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58054,7 +58054,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58076,7 +58076,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58098,7 +58098,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58120,7 +58120,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58164,7 +58164,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58186,7 +58186,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58208,7 +58208,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58252,7 +58252,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58274,7 +58274,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58296,7 +58296,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58318,7 +58318,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58340,7 +58340,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58362,7 +58362,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58384,7 +58384,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58406,7 +58406,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58428,7 +58428,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 170.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58450,7 +58450,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58472,7 +58472,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "4",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58516,7 +58516,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58538,7 +58538,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58560,7 +58560,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58582,7 +58582,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58604,7 +58604,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58626,7 +58626,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58648,7 +58648,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58670,7 +58670,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58692,7 +58692,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58714,7 +58714,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58736,7 +58736,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58758,7 +58758,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58780,7 +58780,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58802,7 +58802,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58824,7 +58824,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "17",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 26,
+        "nbre_ccs_fast": 13,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58846,7 +58846,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "44",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 60,
+        "nbre_ccs_fast": 30,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58868,7 +58868,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58890,7 +58890,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58912,7 +58912,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58956,7 +58956,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -58978,7 +58978,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "13",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 22,
+        "nbre_ccs_fast": 11,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59022,7 +59022,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59044,7 +59044,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59066,7 +59066,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "8",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59088,7 +59088,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59110,7 +59110,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59132,7 +59132,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59154,7 +59154,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59176,7 +59176,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59198,7 +59198,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 9,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59220,7 +59220,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59242,7 +59242,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59264,7 +59264,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "4",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59286,7 +59286,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59308,7 +59308,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59330,7 +59330,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 20,
+        "nbre_ccs_fast": 10,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59352,7 +59352,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59374,7 +59374,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59396,7 +59396,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59418,7 +59418,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 175.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59440,7 +59440,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59462,7 +59462,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59484,7 +59484,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59506,7 +59506,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 7,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59528,7 +59528,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59550,7 +59550,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59572,7 +59572,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 18,
+        "nbre_ccs_fast": 9,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59594,7 +59594,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59638,7 +59638,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59660,7 +59660,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59704,7 +59704,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59726,7 +59726,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59748,7 +59748,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59770,7 +59770,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59792,7 +59792,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59814,7 +59814,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59836,7 +59836,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59880,7 +59880,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59902,7 +59902,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59924,7 +59924,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59946,7 +59946,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59968,7 +59968,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -59990,7 +59990,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60012,7 +60012,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60034,7 +60034,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60056,7 +60056,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60078,7 +60078,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60100,7 +60100,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60144,7 +60144,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60166,7 +60166,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60232,7 +60232,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "4",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60320,7 +60320,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "17",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60342,7 +60342,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60364,7 +60364,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60386,7 +60386,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60408,7 +60408,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60430,7 +60430,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60452,7 +60452,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60474,7 +60474,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60496,7 +60496,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60518,7 +60518,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60540,7 +60540,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60562,7 +60562,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "8",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60584,7 +60584,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60606,7 +60606,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60628,7 +60628,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60650,7 +60650,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60672,7 +60672,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60694,7 +60694,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60716,7 +60716,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60738,7 +60738,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60760,7 +60760,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60782,7 +60782,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60804,7 +60804,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60826,7 +60826,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60848,7 +60848,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60870,7 +60870,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "18",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60892,7 +60892,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60914,7 +60914,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60936,7 +60936,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -60958,7 +60958,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61002,7 +61002,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61024,7 +61024,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61046,7 +61046,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61068,7 +61068,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61090,7 +61090,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61112,7 +61112,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61156,7 +61156,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61178,7 +61178,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61200,7 +61200,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61222,7 +61222,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61244,7 +61244,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61266,7 +61266,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61288,7 +61288,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61310,7 +61310,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61332,7 +61332,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61354,7 +61354,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61376,7 +61376,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61398,7 +61398,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "18",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61420,7 +61420,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61464,7 +61464,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61486,7 +61486,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61508,7 +61508,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61530,7 +61530,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61552,7 +61552,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61574,7 +61574,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61596,7 +61596,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61618,7 +61618,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61662,7 +61662,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61684,7 +61684,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61706,7 +61706,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61750,7 +61750,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61772,7 +61772,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "16",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 12,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61794,7 +61794,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61816,7 +61816,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "10",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61838,7 +61838,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61860,7 +61860,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61882,7 +61882,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61904,7 +61904,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61926,7 +61926,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61948,7 +61948,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61970,7 +61970,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -61992,7 +61992,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62014,7 +62014,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 7,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62036,7 +62036,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62058,7 +62058,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62080,7 +62080,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62102,7 +62102,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62168,7 +62168,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62190,7 +62190,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62212,7 +62212,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62234,7 +62234,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62278,7 +62278,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62300,7 +62300,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "13",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62322,7 +62322,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62344,7 +62344,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "8",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62366,7 +62366,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62388,7 +62388,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62410,7 +62410,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62432,7 +62432,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "7",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62454,7 +62454,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62476,7 +62476,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 169.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62498,7 +62498,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 10,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62542,7 +62542,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62564,7 +62564,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62608,7 +62608,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62630,7 +62630,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62652,7 +62652,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "6",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62674,7 +62674,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62696,7 +62696,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "18",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 28,
+        "nbre_ccs_fast": 14,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62718,7 +62718,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62740,7 +62740,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62762,7 +62762,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "9",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62784,7 +62784,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62806,7 +62806,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "11",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 4,
+        "nbre_ccs_fast": 2,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62828,7 +62828,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62850,7 +62850,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62872,7 +62872,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 160.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62894,7 +62894,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62916,7 +62916,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "8",
         "max_power_kw": 187.5,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62938,7 +62938,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -62960,7 +62960,7 @@
         "enseigne": "Power Dot France",
         "nbre_pdc": "5",
         "max_power_kw": 200.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64280,7 +64280,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64302,7 +64302,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "6",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64324,7 +64324,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "9",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64346,7 +64346,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64368,7 +64368,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64390,7 +64390,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64412,7 +64412,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64434,7 +64434,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64456,7 +64456,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64478,7 +64478,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64500,7 +64500,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64522,7 +64522,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64544,7 +64544,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64566,7 +64566,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64588,7 +64588,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64610,7 +64610,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64632,7 +64632,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64654,7 +64654,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64676,7 +64676,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "4",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64698,7 +64698,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 3,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64720,7 +64720,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64742,7 +64742,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64764,7 +64764,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64786,7 +64786,7 @@
         "enseigne": "R3 SPV NOR",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64808,7 +64808,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 14,
+        "nbre_ccs_fast": 5,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64830,7 +64830,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "6",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64852,7 +64852,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64918,7 +64918,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64940,7 +64940,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64962,7 +64962,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -64984,7 +64984,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "6",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65006,7 +65006,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "8",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65028,7 +65028,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "6",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65050,7 +65050,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "6",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65072,7 +65072,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65094,7 +65094,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "4",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65116,7 +65116,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "8",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65138,7 +65138,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65160,7 +65160,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65182,7 +65182,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "7",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65204,7 +65204,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65226,7 +65226,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65248,7 +65248,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65270,7 +65270,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "12",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65292,7 +65292,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65314,7 +65314,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65336,7 +65336,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65358,7 +65358,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65380,7 +65380,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65402,7 +65402,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "7",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65424,7 +65424,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "7",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65446,7 +65446,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65490,7 +65490,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 6,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65512,7 +65512,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65534,7 +65534,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "8",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65556,7 +65556,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65578,7 +65578,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65600,7 +65600,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "7",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65644,7 +65644,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65666,7 +65666,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65688,7 +65688,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "10",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 16,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65710,7 +65710,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "7",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 12,
+        "nbre_ccs_fast": 6,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65732,7 +65732,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65754,7 +65754,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "8",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65776,7 +65776,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65798,7 +65798,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "7",
         "max_power_kw": 150.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65864,7 +65864,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65908,7 +65908,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65974,7 +65974,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "7",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -65996,7 +65996,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "6",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -66018,7 +66018,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "7",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -66040,7 +66040,7 @@
         "enseigne": "R3",
         "nbre_pdc": "6",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 7,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -66062,7 +66062,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -66084,7 +66084,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -66106,7 +66106,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -66128,7 +66128,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "5",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -66150,7 +66150,7 @@
         "enseigne": "R3 SPV COM",
         "nbre_pdc": "7",
         "max_power_kw": 180.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
@@ -66238,7 +66238,7 @@
         "enseigne": "Shell- France Aire de Rumaucourt HW",
         "nbre_pdc": "7",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 39,
+        "nbre_ccs_fast": 7,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -66260,7 +66260,7 @@
         "enseigne": "Shell Aire des Eglantiers - Ruffec",
         "nbre_pdc": "8",
         "max_power_kw": 300.0,
-        "nbre_ccs_fast": 15,
+        "nbre_ccs_fast": 8,
         "horaires": "24/7",
         "station_type": "dedicee"
       }
@@ -69626,7 +69626,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "15",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 29,
+        "nbre_ccs_fast": 15,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -69648,7 +69648,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "16",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 24,
+        "nbre_ccs_fast": 16,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -69670,7 +69670,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "18",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 30,
+        "nbre_ccs_fast": 18,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -69692,7 +69692,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "24",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 40,
+        "nbre_ccs_fast": 24,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -69714,7 +69714,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "30",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 54,
+        "nbre_ccs_fast": 30,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -69736,7 +69736,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "21",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 41,
+        "nbre_ccs_fast": 21,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -69758,7 +69758,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "17",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 25,
+        "nbre_ccs_fast": 17,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -69780,7 +69780,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "49",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 82,
+        "nbre_ccs_fast": 49,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -69802,7 +69802,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "17",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 5,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -69824,7 +69824,7 @@
         "enseigne": "TESLA SUPERCHARGER",
         "nbre_pdc": "47",
         "max_power_kw": 250.0,
-        "nbre_ccs_fast": 78,
+        "nbre_ccs_fast": 46,
         "horaires": " 24/7",
         "station_type": "dedicee"
       }
@@ -70330,7 +70330,7 @@
         "enseigne": "Kallista-Yaway",
         "nbre_pdc": "4",
         "max_power_kw": 16000.0,
-        "nbre_ccs_fast": 8,
+        "nbre_ccs_fast": 4,
         "horaires": "24/7",
         "station_type": "parking"
       }
