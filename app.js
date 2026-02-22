@@ -60,39 +60,9 @@ const ROUTE_BUFFER_KM = 0.2;
 let routeActive = false;
 let routeLayer  = null;
 
-// ── Draw markers ──────────────────────────────────────────────
+// ── Draw markers (populated asynchronously by initApp) ────────
 
 const markers = [];
-
-STATIONS_DATA.features.forEach(feature => {
-  const p = feature.properties;
-  const op = getOperator(p);
-  const [lon, lat] = feature.geometry.coordinates;
-
-  const displayCount = p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : (parseInt(p.nbre_pdc) || 1);
-  const circle = L.circleMarker([lat, lon], {
-    radius:      countRadius(displayCount),
-    fillColor:   op.color,
-    color:       '#ffffff',
-    weight:      2,
-    opacity:     1,
-    fillOpacity: 0.9,
-    interactive: true,
-  });
-
-  circle.bindPopup(L.popup({ maxWidth: 300 }).setContent(buildPopup(p, op)));
-  circle.bindTooltip(p.nom_station, {
-    direction: 'top',
-    offset: [0, -8],
-  });
-
-  circle._op   = op;
-  circle._type = p.station_type || 'dedicee';
-  circle._lon  = lon;
-  circle._lat  = lat;
-  circle.addTo(map);
-  markers.push(circle);
-});
 
 // ── Visibility + legend (reactive) ───────────────────────────
 
@@ -165,8 +135,87 @@ function appendLegendItem(name, color, count) {
   legendEl.appendChild(div);
 }
 
-// Initial render
-updateVisibility();
+// ── DuckDB WASM initialisation ────────────────────────────────
+// Loads stations.parquet from the server and populates the markers array.
+// Uses the single-threaded MVP/EH bundle — no COEP headers required.
+
+async function initApp() {
+  subEl.textContent = 'Chargement DuckDB…';
+
+  // Dynamic import so the heavy WASM bundle is fetched only when needed.
+  const duckdb = await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@latest/+esm');
+
+  // selectBundle picks the best available bundle (mvp or eh) for this browser.
+  const bundle = await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+
+  // The DuckDB worker must share our origin — wrap the CDN worker in a Blob URL.
+  const workerUrl = URL.createObjectURL(
+    new Blob([`importScripts("${bundle.mainWorker}");`], { type: 'text/javascript' }),
+  );
+  const db = new duckdb.AsyncDuckDB(
+    new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
+    new Worker(workerUrl),
+  );
+  await db.instantiate(bundle.mainModule, bundle.pthreadWorker ?? null);
+  URL.revokeObjectURL(workerUrl);
+
+  subEl.textContent = 'Chargement des stations…';
+
+  // Fetch the Parquet file (~175 KB) and hand it to DuckDB's virtual FS.
+  const buf = await fetch('stations.parquet').then(r => r.arrayBuffer());
+  await db.registerFileBuffer('stations.parquet', new Uint8Array(buf));
+
+  const conn  = await db.connect();
+  const table = await conn.query("SELECT * FROM read_parquet('stations.parquet')");
+  await conn.close();
+
+  // Build Leaflet markers from the Arrow table rows.
+  for (const row of table) {
+    const p = {
+      id:            String(row.id           ?? ''),
+      nom_station:   String(row.nom_station  ?? ''),
+      adresse:       String(row.adresse      ?? ''),
+      operateur:     String(row.operateur    ?? ''),
+      enseigne:      String(row.enseigne     ?? ''),
+      nbre_pdc:      String(row.nbre_pdc     ?? ''),
+      max_power_kw:  Number(row.max_power_kw  ?? 0),
+      nbre_ccs_fast: Number(row.nbre_ccs_fast ?? 0),
+      horaires:      String(row.horaires     ?? ''),
+      station_type:  String(row.station_type ?? 'dedicee'),
+    };
+    const lon = Number(row.lon);
+    const lat = Number(row.lat);
+    const op  = getOperator(p);
+
+    const displayCount = p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : (parseInt(p.nbre_pdc) || 1);
+    const circle = L.circleMarker([lat, lon], {
+      radius:      countRadius(displayCount),
+      fillColor:   op.color,
+      color:       '#ffffff',
+      weight:      2,
+      opacity:     1,
+      fillOpacity: 0.9,
+      interactive: true,
+    });
+
+    circle.bindPopup(L.popup({ maxWidth: 300 }).setContent(buildPopup(p, op)));
+    circle.bindTooltip(p.nom_station, { direction: 'top', offset: [0, -8] });
+
+    circle._op   = op;
+    circle._type = p.station_type || 'dedicee';
+    circle._lon  = lon;
+    circle._lat  = lat;
+    circle.addTo(map);
+    markers.push(circle);
+  }
+
+  updateVisibility();
+}
+
+initApp().catch(err => {
+  console.error('initApp:', err);
+  subEl.textContent = '⚠ Erreur de chargement';
+});
 
 // ── Popup builder ─────────────────────────────────────────────
 

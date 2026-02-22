@@ -169,13 +169,28 @@ def build_geojson(input_path: str, output_path: str):
 
     print(f"Written {len(features)} stations to {output_path}")
 
-    # Also write data.js for use without a local server (file:// protocol)
-    js_path = str(pathlib.Path(output_path).parent / 'data.js')
-    with open(js_path, 'w', encoding='utf-8') as f:
-        f.write('const STATIONS_DATA = '
-                + json.dumps(geojson, ensure_ascii=False, separators=(',', ':'))
-                + ';')
-    print(f"Written {js_path}")
+    # Write stations.parquet — compact columnar format for DuckDB WASM in the browser.
+    parquet_path = str(pathlib.Path(output_path).parent / 'stations.parquet')
+    con.execute(f"""
+        COPY (
+            SELECT
+                CAST(lon          AS DOUBLE)  AS lon,
+                CAST(lat          AS DOUBLE)  AS lat,
+                id_station_itinerance         AS id,
+                COALESCE(nom_station, '')     AS nom_station,
+                COALESCE(adresse_station, '') AS adresse,
+                COALESCE(nom_operateur, '')   AS operateur,
+                COALESCE(NULLIF(nom_enseigne, ''), nom_operateur, '') AS enseigne,
+                COALESCE(CAST(nbre_pdc AS VARCHAR), '') AS nbre_pdc,
+                CAST(max_power_kw   AS FLOAT)   AS max_power_kw,
+                CAST(nbre_ccs_fast  AS INTEGER)  AS nbre_ccs_fast,
+                COALESCE(horaires, '')            AS horaires,
+                station_type
+            FROM final_stations
+            ORDER BY id_station_itinerance
+        ) TO '{parquet_path}' (FORMAT PARQUET, COMPRESSION ZSTD)
+    """)
+    print(f"Written {parquet_path}")
 
 
 if __name__ == '__main__':
