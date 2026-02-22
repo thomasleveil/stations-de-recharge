@@ -1,0 +1,5 @@
+irve_raw.csv
+*.csv
+node_modules/
+.next/
+.env*.local

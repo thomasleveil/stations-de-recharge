@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bornes de recharge — Autoroutes</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Top-left control panel -->
+  <div id="panel">
+    <div class="panel-title">Bornes rapides ≥ 150 kW</div>
+    <div class="panel-sub">Accessibles sans sortir de l'autoroute</div>
+    <div id="mw-filters"></div>
+  </div>
+
+  <!-- Bottom-right legend -->
+  <div id="legend">
+    <div class="legend-title">Opérateurs</div>
+    <div id="legend-items"></div>
+    <div class="legend-hint">Taille du cercle = puissance max</div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
