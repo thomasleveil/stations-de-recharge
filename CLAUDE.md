@@ -9,36 +9,39 @@ Interactive map of EV charging stations at highway rest areas along all major Fr
 ## Data Source
 
 **Base nationale des IRVE** (Infrastructures de Recharge pour Véhicules Électriques)
-Source: [transport.data.gouv.fr](https://transport.data.gouv.fr/datasets/fichier-consolide-des-bornes-de-recharge-pour-vehicules-electriques)
-Updated: daily. Raw CSV is ~122MB, 188k rows (one row per connector/PDC).
+Source: [data.gouv.fr](https://www.data.gouv.fr/datasets/base-nationale-des-irve-infrastructures-de-recharge-pour-vehicules-electriques)
+Updated: daily. Parquet file is ~6 MB (188k rows, one row per connector/PDC).
 
-**Pre-filtered data** is already in `stations_autoroutes.geojson` (379 stations ≥150 kW, no motorway exit required, one feature per station). Do not commit the raw CSV — it is gitignored.
+**Pre-filtered data** is already in `stations_autoroutes.geojson` (one feature per station ≥150 kW). Do not commit the raw Parquet — it is gitignored.
 
-To regenerate the GeoJSON from a fresh CSV download:
+To regenerate the GeoJSON from a fresh Parquet download:
 ```bash
-wget -O irve_raw.csv "https://www.data.gouv.fr/api/1/datasets/r/eb76d20a-8501-400e-b336-d85724de5435"
+wget -O irve_raw.parquet "https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet"
 python3 filter_stations.py
 ```
 
 `filter_stations.py` applies filters in order:
-1. **Motorway match** — station address/name mentions one of the 8 target motorways
-2. **No exit required** — excludes stations with "sortie", "ZAC", commercial brands (Bricomarché etc.), or city-street address patterns
+1. **Dedicated fast-charging station** — `implantation_station = 'Station dédiée à la recharge rapide'` pre-filters to standalone fast-charging stations (excludes retail / street parking)
+2. **Rest-area identification** — requires "Aire de" / "Aire d'" in the station name or address *across all connectors*, OR address starts with a motorway reference (e.g. `A6 - LYON PARIS`). Catches TotalEnergies "RELAIS" stations and unnamed Zunder stations on motorways.
 3. **Power ≥ 150 kW** — at least one connector per station meets the threshold
-4. **Coordinate deduplication** — same physical station registered multiple times is collapsed to one record (highest power kept)
-5. **Geographic bounding box** — rejects stations whose GPS coordinates fall outside the motorway's expected corridor (catches IRVE coordinate errors)
-
-Note: `implantation_station` is inconsistently assigned in the IRVE data (genuine rest-area chargers appear as "Voirie" or "Parking privé") — do not use it as a filter.
+4. **Geographic motorway assignment** — closest normalised bounding-box centre assigns the motorway label; stations outside all target corridors are dropped
+5. **Coordinate deduplication** — same physical station registered multiple times is collapsed to one record (highest power kept)
+6. **Geographic bounding box** — rejects stations whose GPS coordinates fall outside the assigned motorway's expected corridor (catches IRVE coordinate errors)
 
 ### Key Operators on Target Motorways (after filtering)
 
-| Operator | Motorways |
-|----------|-----------|
-| TotalEnergies | A7 (8), A8 (7), A89 (2), A85 (1), A47 (1) |
-| IONITY | A7 (7), A8 (3), A85 (2), A89 (1) |
-| Allego / Electra | A7 |
-| Fastned | A72, A89 |
-| ENGIE Vianeo | A8, A89 |
-| Zunder, e-Vadea, Tesla | scattered |
+357 stations total from the Parquet run.
+
+| Operator | Top motorways |
+|----------|--------------|
+| TotalEnergies | A26 (18), A6 (11), A7 (8), A10 (8) … total 97 |
+| IONITY | A10 (12), A6 (8), A7 (8), A11 (7) … total 89 |
+| ENGIE Vianeo | A26 (13), A6 (10), A4 (6) … total 67 |
+| Fastned | A26 (9), A4 (6), A40 (3) … total 33 |
+| Allego / Electra | A9, A10, A7, A11 … total 18 |
+| Zunder | A63 (4), A71, A10 … total 9 |
+| bp pulse | A10 (6) … total 7 |
+| e-Vadea | A36 |
 
 ### GeoJSON Schema
 
@@ -88,7 +91,7 @@ open index.html
 ## Updating the data
 
 ```bash
-wget -O irve_raw.csv "<URL from transport.data.gouv.fr>"
+wget -O irve_raw.parquet "https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet"
 python3 filter_stations.py
 # Regenerates both stations_autoroutes.geojson and data.js
 ```

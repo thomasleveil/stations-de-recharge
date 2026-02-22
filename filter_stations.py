@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
 """
-Filters the national IRVE CSV to keep only EV charging stations on the target
-motorways that are accessible without exiting (no péage required) and provide
-≥ 150 kW fast charging.
+Filters the national IRVE Parquet file to keep only EV charging stations on
+the target motorways that are accessible without exiting (no péage required)
+and provide ≥ 150 kW fast charging.
+
+Uses DuckDB with the spatial extension for fast in-process SQL + geometry ops.
+Station selection relies on the IRVE field:
+    implantation_station = 'Station dédiée à la recharge rapide'
+which identifies dedicated fast-charging stations (rest-area/motorway chargers).
+Motorway assignment is geographic: closest normalised bounding-box centre.
 
 Usage:
-    wget -O irve_raw.csv "<IRVE_CSV_URL>"
-    python3 filter_stations.py [--input irve_raw.csv] [--output stations_autoroutes.geojson]
+    wget -O irve_raw.parquet "https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet"
+    python3 filter_stations.py [--input irve_raw.parquet] [--output stations_autoroutes.geojson]
 
 Also writes data.js (embedded JS constant) so the map works without a local server.
 """
-import csv
-import re
 import json
-import sys
 import argparse
 import collections
 import pathlib
+import duckdb
 
 TARGET_MOTORWAYS = [
     'A1', 'A2', 'A4', 'A6', 'A7', 'A8', 'A9',
@@ -25,14 +29,14 @@ TARGET_MOTORWAYS = [
     'A51', 'A54', 'A57', 'A61', 'A62', 'A63', 'A64',
     'A71', 'A72', 'A75', 'A85', 'A89',
     # Voies express gratuites — Bretagne et Normandie
-    'N12', 'RN12', 'N24', 'RN24', 'N164', 'RN164', 'N165', 'RN165',
+    'N12', 'N24', 'N164', 'N165',
 ]
 MIN_POWER_KW = 150
 COORD_GRID_DECIMALS = 3  # ~111m, removes duplicate registrations
 
 # Geographic bounding boxes per motorway (lon_min, lon_max, lat_min, lat_max).
 # Rejects stations whose GPS coordinates fall outside the motorway's corridor,
-# even if the station name/address mentions the motorway (IRVE coordinate errors).
+# even if implantation_station is correct (IRVE coordinate errors).
 MOTORWAY_BOUNDS = {
     # ── Existing ──────────────────────────────────────────────────────
     'A7':  (4.3,  5.5,  43.1, 45.9),   # Lyon → Marseille (Rhône valley)
@@ -75,225 +79,229 @@ MOTORWAY_BOUNDS = {
     'A63': (-2.1, -0.4, 43.3, 44.9),   # Bordeaux → Bayonne → Spanish border
     'A64': (-1.9, 1.7,  43.1, 43.8),   # Bayonne → Tarbes → Toulouse
     # ── Voies express gratuites — Bretagne ────────────────────────────
-    # RN* variants are normalized to N* in detect_motorway(), so only N* bounds needed
     'N12':  (-4.6, 1.8,  47.8, 49.0), # Paris → Alençon → Rennes → Brest
     'N24':  (-3.5, -1.6, 47.7, 48.2), # Rennes → Ploërmel → Lorient
     'N164': (-4.1, -2.0, 48.0, 48.5), # Rennes → Loudéac → Carhaix → Châteaulin
     'N165': (-4.6, -1.4, 47.2, 48.0), # Nantes → Vannes → Lorient → Quimper → Brest
 }
 
-_MOTORWAY_PAT = re.compile(r'(?<![A-Za-z0-9])(' + '|'.join(TARGET_MOTORWAYS) + r')(?![A-Za-z0-9])', re.IGNORECASE)
-_EXIT_PATTERNS = [
-    re.compile(r'\bsortie\b', re.IGNORECASE),
-    re.compile(r'\bZAC\b', re.IGNORECASE),
-]
-_COMMERCIAL_NAMES = ['bricomar', 'campanile', 'hotel', 'hôtel', 'carrefour', 'leclerc']
-
-
-def parse_power(val: str) -> float:
-    try:
-        return float(str(val).replace(',', '.'))
-    except (ValueError, AttributeError):
-        return 0.0
-
-
-# Normalize variant spellings to canonical route label
-_ROUTE_NORMALIZE = {'RN12': 'N12', 'RN24': 'N24', 'RN164': 'N164', 'RN165': 'N165'}
-
-
-def detect_motorway(row: dict) -> str | None:
-    text = ' '.join([row.get('nom_station', ''), row.get('adresse_station', ''), row.get('observations', '')])
-    for m in TARGET_MOTORWAYS:
-        if re.search(r'(?<![A-Za-z0-9])' + m + r'(?![A-Za-z0-9])', text, re.IGNORECASE):
-            return _ROUTE_NORMALIZE.get(m, m)
-    return None
-
-
-def detect_motorway_by_coords(lat: float, lon: float) -> str | None:
-    """Return the motorway whose bounding box contains (lat, lon).
-
-    When multiple boxes overlap, pick the one whose centre the station is
-    closest to in *normalised* coordinates (i.e. relative to the box size).
-    This avoids false positives from large corridors that happen to clip a
-    nearby motorway's area (e.g. A4 vs A31 near Verdun).
-    """
-    candidates = []
-    for mw, (lon_min, lon_max, lat_min, lat_max) in MOTORWAY_BOUNDS.items():
-        if lon_min <= lon <= lon_max and lat_min <= lat <= lat_max:
-            nx = (lon - lon_min) / (lon_max - lon_min)
-            ny = (lat - lat_min) / (lat_max - lat_min)
-            dist = ((nx - 0.5) ** 2 + (ny - 0.5) ** 2) ** 0.5
-            candidates.append((dist, mw))
-    if not candidates:
-        return None
-    candidates.sort()
-    return candidates[0][1]
-
-
-def is_exit_required(row: dict) -> bool:
-    """Return True if the station is only reachable by exiting the motorway."""
-    addr = row.get('adresse_station', '')
-    name = row.get('nom_station', '')
-    combined = (addr + ' ' + name).lower()
-
-    for pat in _EXIT_PATTERNS:
-        if pat.search(addr):
-            return True
-    for brand in _COMMERCIAL_NAMES:
-        if brand in combined:
-            return True
-    # City street pattern without motorway/aire context
-    if re.search(r'\broute de\b', addr, re.IGNORECASE) and \
-       not re.search(r'\baire\b|\bautoroute\b', addr, re.IGNORECASE):
-        return True
-    return False
-
-
-def within_motorway_bounds(motorway: str, lat: float, lon: float) -> bool:
-    """Return True if (lat, lon) falls within the expected corridor for motorway."""
-    bounds = MOTORWAY_BOUNDS.get(motorway)
-    if bounds is None:
-        return True  # unknown motorway — don't filter
-    lon_min, lon_max, lat_min, lat_max = bounds
-    return lon_min <= lon <= lon_max and lat_min <= lat <= lat_max
-
-
-def coord_key(row: dict):
-    try:
-        lat = round(float(row.get('consolidated_latitude') or 0), COORD_GRID_DECIMALS)
-        lon = round(float(row.get('consolidated_longitude') or 0), COORD_GRID_DECIMALS)
-        return (lat, lon) if lat != 0 else None
-    except (ValueError, TypeError):
-        return None
+IMPLANTATION_FILTER = 'Station dédiée à la recharge rapide'
 
 
 def build_geojson(input_path: str, output_path: str):
-    # --- Pass 1: collect all connectors per station ID, filtered by motorway ---
-    stations: dict[str, list[dict]] = collections.defaultdict(list)
-    with open(input_path, encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            text = ' '.join([row.get('nom_station', ''), row.get('adresse_station', ''), row.get('observations', '')])
-            if _MOTORWAY_PAT.search(text):
-                stations[row['id_station_itinerance']].append(row)
+    con = duckdb.connect()
+    con.execute("INSTALL spatial; LOAD spatial;")
 
-    # --- Pass 1.5: geographic fallback for rest-area stations with no motorway text ---
-    # "Aire de …" stations on real motorways often omit the motorway name from their IRVE record.
-    # Include them if: address contains "aire de", no exit-required patterns, coords fall within
-    # a known motorway corridor.  We only open the file a second time for unmissed stations.
-    seen_sids = set(stations.keys())
-    with open(input_path, encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            sid = row['id_station_itinerance']
-            if sid in seen_sids:
-                continue
-            addr = row.get('adresse_station', '')
-            name = row.get('nom_station', '')
-            combined = (addr + ' ' + name).lower()
-            if 'aire de' not in combined and 'aire d\'' not in combined:
-                continue
-            if is_exit_required(row):
-                continue
-            try:
-                lat = float(row.get('consolidated_latitude') or 0)
-                lon = float(row.get('consolidated_longitude') or 0)
-            except (ValueError, TypeError):
-                continue
-            if lat == 0 or lon == 0:
-                continue
-            mw = detect_motorway_by_coords(lat, lon)
-            if mw is None:
-                continue
-            stations[sid].append(row)
-            seen_sids.add(sid)
+    # ── 1. Load Parquet — add lat / lon / power_kw / geom columns ────────────
+    print("Loading Parquet…")
+    con.execute("""
+        CREATE TABLE irve AS
+        WITH raw AS (
+            SELECT *,
+                TRY_CAST(consolidated_latitude  AS DOUBLE) AS lat,
+                TRY_CAST(consolidated_longitude AS DOUBLE) AS lon,
+                TRY_CAST(
+                    REPLACE(COALESCE(CAST(puissance_nominale AS VARCHAR), '0'), ',', '.')
+                    AS DOUBLE
+                ) AS power_kw
+            FROM read_parquet(?)
+        )
+        SELECT *,
+            CASE WHEN lat IS NOT NULL AND lat != 0
+                      AND lon IS NOT NULL AND lon != 0
+                 THEN ST_Point(lon, lat)
+                 ELSE NULL
+            END AS geom
+        FROM raw
+    """, [input_path])
 
-    # --- Pass 2: apply exit and power filters ---
-    accepted: dict[str, tuple[dict, float]] = {}
-    for sid, connectors in stations.items():
-        first = connectors[0]
-        if is_exit_required(first):
-            continue
-        max_power = max(parse_power(c['puissance_nominale']) for c in connectors)
-        if max_power < MIN_POWER_KW:
-            continue
-        accepted[sid] = (first, max_power)
+    # ── 2. Motorway bounding boxes as spatial envelopes ──────────────────────
+    con.execute("""
+        CREATE TABLE mw_bounds (
+            motorway VARCHAR,
+            lon_min  DOUBLE, lon_max DOUBLE,
+            lat_min  DOUBLE, lat_max DOUBLE,
+            envelope GEOMETRY
+        )
+    """)
+    # ST_MakeEnvelope(xmin=lon_min, ymin=lat_min, xmax=lon_max, ymax=lat_max)
+    con.executemany(
+        "INSERT INTO mw_bounds VALUES (?, ?, ?, ?, ?, ST_MakeEnvelope(?, ?, ?, ?))",
+        [(mw, lo, hi, la, ha, lo, la, hi, ha)
+         for mw, (lo, hi, la, ha) in MOTORWAY_BOUNDS.items()],
+    )
 
-    # --- Pass 3: deduplicate by coordinates (multiple registrations per physical station) ---
-    seen_coords: dict = {}
-    final: dict[str, tuple[dict, float]] = {}
-    for sid, (row, power) in accepted.items():
-        key = coord_key(row)
-        if key is None:
-            final[sid] = (row, power)
-            continue
-        if key in seen_coords:
-            prev_sid = seen_coords[key]
-            if power > final[prev_sid][1]:
-                del final[prev_sid]
-                seen_coords[key] = sid
-                final[sid] = (row, power)
-        else:
-            seen_coords[key] = sid
-            final[sid] = (row, power)
+    # ── 3. First connector per station (representative row) ──────────────────
+    con.execute("""
+        CREATE TABLE station_first AS
+        WITH rn AS (
+            SELECT *,
+                ROW_NUMBER() OVER (PARTITION BY id_station_itinerance ORDER BY rowid) AS _rn
+            FROM irve
+        )
+        SELECT * FROM rn WHERE _rn = 1
+    """)
 
-    # --- Build GeoJSON ---
+    # ── 4. Max power per station (all connectors) ────────────────────────────
+    con.execute("""
+        CREATE TABLE station_power AS
+        SELECT id_station_itinerance, MAX(power_kw) AS max_power_kw
+        FROM irve
+        GROUP BY id_station_itinerance
+    """)
+
+    # ── 4.5. Rest-area identification (all connectors) ───────────────────────
+    # Scans ALL connectors (not just station_first) to handle stations where
+    # only a secondary connector carries "Aire de" in its name/address.
+    # Also matches TotalEnergies "RELAIS" stations and Zunder stations whose
+    # address begins with a motorway reference (e.g. "A6 - LYON PARIS").
+    con.execute(r"""
+        CREATE TABLE aire_sids AS
+        SELECT DISTINCT id_station_itinerance FROM irve
+        WHERE lower(COALESCE(nom_station, ''))     LIKE '%aire de%'
+           OR lower(COALESCE(nom_station, ''))     LIKE '%aire d''%'
+           OR lower(COALESCE(adresse_station, '')) LIKE '%aire de%'
+           OR lower(COALESCE(adresse_station, '')) LIKE '%aire d''%'
+           OR regexp_matches(COALESCE(adresse_station, ''), '^\s*[ANan][0-9]')
+    """)
+
+    # ── 5. Geographic motorway assignment (closest normalised bbox centre) ───
+    # Uses ST_Within for initial candidate filtering, then picks the motorway
+    # whose normalised centre is nearest — resolves overlapping corridors
+    # (e.g. A4 / A31 near Verdun, A6 / A71 in the Allier).
+    con.execute("""
+        CREATE TABLE geo_motorway AS
+        WITH candidates AS (
+            SELECT sf.id_station_itinerance, b.motorway,
+                SQRT(
+                    POWER((sf.lon - b.lon_min) / (b.lon_max - b.lon_min) - 0.5, 2) +
+                    POWER((sf.lat - b.lat_min) / (b.lat_max - b.lat_min) - 0.5, 2)
+                ) AS centre_dist
+            FROM station_first sf
+            JOIN mw_bounds b ON ST_Within(sf.geom, b.envelope)
+            WHERE sf.geom IS NOT NULL
+        ),
+        ranked AS (
+            SELECT *,
+                ROW_NUMBER() OVER (PARTITION BY id_station_itinerance ORDER BY centre_dist) AS rn
+            FROM candidates
+        )
+        SELECT id_station_itinerance, motorway AS geo_motorway
+        FROM ranked WHERE rn = 1
+    """)
+
+    # ── 6. Apply filters: dedicated fast-charging + rest-area + power ≥ 150 kW
+    # implantation_station = 'Station dédiée à la recharge rapide' narrows to
+    # dedicated fast-charging stations (excludes retail / street parking).
+    # JOIN on aire_sids further restricts to rest-area stations ("Aire de" in
+    # any connector, or address starts with a motorway reference).
+    # JOIN on geo_motorway assigns to a specific motorway corridor.
+    con.execute(f"""
+        CREATE TABLE pre_bounds AS
+        SELECT sf.*,
+               sp.max_power_kw,
+               gm.geo_motorway AS motorway
+        FROM station_first  sf
+        JOIN station_power  sp   ON sf.id_station_itinerance = sp.id_station_itinerance
+        JOIN geo_motorway   gm   ON sf.id_station_itinerance = gm.id_station_itinerance
+        JOIN aire_sids      airs ON sf.id_station_itinerance = airs.id_station_itinerance
+        WHERE sf.implantation_station = '{IMPLANTATION_FILTER}'
+          AND sp.max_power_kw >= {MIN_POWER_KW}
+          AND sf.geom IS NOT NULL
+    """)
+
+    # ── 7. Bounds validation + coordinate deduplication ──────────────────────
+    con.execute(f"""
+        CREATE TABLE final_stations AS
+        WITH bounded AS (
+            SELECT pb.*
+            FROM pre_bounds pb
+            LEFT JOIN mw_bounds mb ON pb.motorway = mb.motorway
+            -- allow if no bounds defined for this motorway, or station is within corridor
+            WHERE mb.motorway IS NULL OR ST_Within(pb.geom, mb.envelope)
+        ),
+        deduped AS (
+            SELECT *,
+                ROW_NUMBER() OVER (
+                    PARTITION BY ROUND(lat, {COORD_GRID_DECIMALS}),
+                                 ROUND(lon, {COORD_GRID_DECIMALS})
+                    ORDER BY max_power_kw DESC, id_station_itinerance ASC
+                ) AS _coord_rn
+            FROM bounded
+        )
+        SELECT * FROM deduped WHERE _coord_rn = 1
+    """)
+
+    # ── 8. Report stations rejected by the bounds check ──────────────────────
+    skipped = con.execute("""
+        SELECT pb.nom_station, pb.motorway, pb.lon, pb.lat
+        FROM pre_bounds pb
+        LEFT JOIN mw_bounds mb ON pb.motorway = mb.motorway
+        WHERE mb.motorway IS NOT NULL AND NOT ST_Within(pb.geom, mb.envelope)
+        ORDER BY mb.motorway, pb.nom_station
+    """).fetchall()
+
+    if skipped:
+        print(f"Skipped {len(skipped)} stations outside motorway bounds:")
+        for nom, mw, lo, la in skipped:
+            print(f"  [{mw}] {nom} (lon={lo:.4f}, lat={la:.4f})")
+
+    # ── 9. Build GeoJSON ──────────────────────────────────────────────────────
+    rows = con.execute("""
+        SELECT lon, lat,
+               id_station_itinerance,
+               COALESCE(nom_station, '')                             AS nom_station,
+               COALESCE(adresse_station, '')                         AS adresse,
+               COALESCE(nom_operateur, '')                           AS operateur,
+               COALESCE(NULLIF(nom_enseigne, ''), nom_operateur, '') AS enseigne,
+               COALESCE(CAST(nbre_pdc AS VARCHAR), '')               AS nbre_pdc,
+               max_power_kw,
+               motorway                                              AS autoroute,
+               COALESCE(horaires, '')                                AS horaires
+        FROM final_stations
+        ORDER BY id_station_itinerance
+    """).fetchall()
+
     features = []
-    skipped_bounds = []
-    for sid, (row, max_power) in final.items():
-        try:
-            lat = float(row['consolidated_latitude'])
-            lon = float(row['consolidated_longitude'])
-        except (ValueError, TypeError, KeyError):
-            continue
-
-        motorway = detect_motorway(row) or detect_motorway_by_coords(lat, lon)
-        if not within_motorway_bounds(motorway, lat, lon):
-            skipped_bounds.append((row['nom_station'], motorway, lon, lat))
-            continue
-
+    for lon, lat, sid, nom, addr, oper, ens, nbre, pw, mw, hor in rows:
         features.append({
             "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [round(lon, 6), round(lat, 6)]},
             "properties": {
-                "id": sid,
-                "nom_station": row['nom_station'],
-                "adresse": row['adresse_station'],
-                "operateur": row['nom_operateur'],
-                "enseigne": row.get('nom_enseigne') or row.get('nom_operateur', ''),
-                "nbre_pdc": row.get('nbre_pdc', ''),
-                "max_power_kw": max_power,
-                "autoroute": motorway,
-                "horaires": row.get('horaires', ''),
-            }
+                "id":           sid,
+                "nom_station":  nom,
+                "adresse":      addr,
+                "operateur":    oper,
+                "enseigne":     ens,
+                "nbre_pdc":     nbre,
+                "max_power_kw": pw,
+                "autoroute":    mw,
+                "horaires":     hor,
+            },
         })
 
     geojson = {"type": "FeatureCollection", "features": features}
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(geojson, f, ensure_ascii=False, indent=2)
 
-    if skipped_bounds:
-        print(f"Skipped {len(skipped_bounds)} stations outside motorway bounds:")
-        for name, mw, lon, lat in skipped_bounds:
-            print(f"  [{mw}] {name} (lon={lon:.4f}, lat={lat:.4f})")
-
     print(f"Written {len(features)} stations to {output_path}")
     by_mw = collections.Counter(f['properties']['autoroute'] for f in features)
     for m in TARGET_MOTORWAYS:
-        print(f"  {m}: {by_mw.get(m, 0)} stations")
+        if by_mw.get(m, 0) > 0:
+            print(f"  {m}: {by_mw[m]} stations")
 
     # Also write data.js for use without a local server (file:// protocol)
-    js_path = output_path.replace('.geojson', '').rstrip('/') + '_datajs'
     js_path = str(pathlib.Path(output_path).parent / 'data.js')
-    js_content = 'const STATIONS_DATA = ' + json.dumps(geojson, ensure_ascii=False, separators=(',', ':')) + ';'
     with open(js_path, 'w', encoding='utf-8') as f:
-        f.write(js_content)
+        f.write('const STATIONS_DATA = '
+                + json.dumps(geojson, ensure_ascii=False, separators=(',', ':'))
+                + ';')
     print(f"Written {js_path}")
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--input', default='irve_raw.csv')
+    parser.add_argument('--input',  default='irve_raw.parquet')
     parser.add_argument('--output', default='stations_autoroutes.geojson')
     args = parser.parse_args()
     build_geojson(args.input, args.output)
