@@ -101,8 +101,9 @@ html, body {
 }
 .route-btn-clear:hover:not(:disabled) { background: #e2e8f0; opacity: 1; }
 
-.route-stat  { font-size: 11px; color: #1D4ED8; font-weight: 600; }
-.route-error { font-size: 11px; color: #dc2626; }
+.route-stat     { font-size: 11px; color: #1D4ED8; font-weight: 600; }
+.route-error    { font-size: 11px; color: #dc2626; }
+.route-progress { font-size: 11px; color: #64748b; }
 
 /* ── Legend (bottom-right) ─────────────────────────────────── */
 

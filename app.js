@@ -226,12 +226,19 @@ async function fetchRoute(from, to) {
   return data.routes[0];
 }
 
-function applyRouteFilter(routeLine) {
-  markers.forEach(m => {
-    const snap = turf.nearestPointOnLine(routeLine, turf.point([m._lon, m._lat]), { units: 'kilometers' });
-    m._distFromRoute  = snap.properties.dist;
-    m._distAlongRoute = snap.properties.location;
-  });
+async function applyRouteFilter(routeLine, onProgress) {
+  const CHUNK = 200;
+  for (let i = 0; i < markers.length; i += CHUNK) {
+    const end = Math.min(i + CHUNK, markers.length);
+    for (let j = i; j < end; j++) {
+      const m = markers[j];
+      const snap = turf.nearestPointOnLine(routeLine, turf.point([m._lon, m._lat]), { units: 'kilometers' });
+      m._distFromRoute  = snap.properties.dist;
+      m._distAlongRoute = snap.properties.location;
+    }
+    if (onProgress) onProgress(end, markers.length);
+    await new Promise(r => requestAnimationFrame(r));
+  }
   updateVisibility();
 }
 
@@ -257,12 +264,28 @@ document.getElementById('route-go').addEventListener('click', async () => {
   const info = document.getElementById('route-info');
   btn.disabled = true;
   btn.textContent = '…';
-  info.className = '';
-  info.textContent = 'Calcul en cours…';
+  info.className = 'route-progress';
+
+  // Yield to browser so each step label actually renders before the next await
+  const step = msg => new Promise(r => {
+    info.textContent = msg;
+    requestAnimationFrame(() => requestAnimationFrame(r));
+  });
+
+  const t0 = performance.now();
 
   try {
-    const [from, to] = await Promise.all([geocode(startVal), geocode(endVal)]);
+    await step('📍 Géocodage du départ…');
+    const t1 = performance.now();
+    const from = await geocode(startVal);
+    await step('📍 Géocodage de l\'arrivée…');
+    const to = await geocode(endVal);
+    console.log(`geocode: ${Math.round(performance.now() - t1)} ms`);
+
+    await step('🗺 Calcul d\'itinéraire…');
+    const t2 = performance.now();
     const route = await fetchRoute(from, to);
+    console.log(`osrm: ${Math.round(performance.now() - t2)} ms`);
 
     if (routeLayer) map.removeLayer(routeLayer);
     routeLayer = L.geoJSON(route.geometry, {
@@ -270,8 +293,18 @@ document.getElementById('route-go').addEventListener('click', async () => {
     }).addTo(map);
     map.fitBounds(routeLayer.getBounds(), { padding: [40, 40] });
 
+    info.className = 'route-progress';
+    info.textContent = `⚡ Filtrage 0/${markers.length}…`;
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const t3 = performance.now();
     routeActive = true;
-    applyRouteFilter(turf.lineString(route.geometry.coordinates));
+    await applyRouteFilter(
+      turf.lineString(route.geometry.coordinates),
+      (done, total) => { info.textContent = `⚡ Filtrage ${done}/${total}…`; }
+    );
+    console.log(`applyRouteFilter: ${Math.round(performance.now() - t3)} ms`);
+
+    console.log(`total: ${Math.round(performance.now() - t0)} ms`);
 
     const km = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
     info.className = 'route-stat';
