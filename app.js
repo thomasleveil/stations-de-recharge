@@ -54,6 +54,12 @@ L.tileLayer(
 ).addTo(map);
 
 
+// ── Route state (declared early — used by isVisible) ─────────
+
+const ROUTE_BUFFER_KM = 0.2;
+let routeActive = false;
+let routeLayer  = null;
+
 // ── Draw markers ──────────────────────────────────────────────
 
 const markers = [];
@@ -79,21 +85,87 @@ STATIONS_DATA.features.forEach(feature => {
     offset: [0, -8],
   });
 
-  circle._motorway = p.autoroute;
-  circle._lon = lon;
-  circle._lat = lat;
+  circle._op   = op;
+  circle._type = p.station_type || 'dedicee';
+  circle._lon  = lon;
+  circle._lat  = lat;
   circle.addTo(map);
   markers.push(circle);
 });
 
+// ── Visibility + legend (reactive) ───────────────────────────
+
+const subEl    = document.querySelector('.panel-sub');
+const legendEl = document.getElementById('legend-items');
+
+function isVisible(m) {
+  const includeParking = document.getElementById('check-parking').checked;
+  const typeOk  = m._type === 'dedicee' || includeParking;
+  const routeOk = !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
+  return typeOk && routeOk;
+}
+
 function updateVisibility() {
+  let count = 0;
   markers.forEach(m => {
-    const visible = !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
+    const visible = isVisible(m);
+    if (visible) count++;
     m.setStyle({ opacity: visible ? 1 : 0, fillOpacity: visible ? 0.9 : 0 });
     const el = m.getElement();
     if (el) el.style.pointerEvents = visible ? '' : 'none';
   });
+
+  if (routeActive) {
+    subEl.textContent = `${count} station${count !== 1 ? 's' : ''} sur le trajet`;
+  } else {
+    subEl.textContent = `${count} station${count !== 1 ? 's' : ''} · CCS ≥ 150 kW`;
+  }
+
+  updateLegend();
 }
+
+function updateLegend() {
+  legendEl.innerHTML = '';
+
+  // Count visible stations per operator
+  const opCounts = new Map();
+  let autreCount = 0;
+  markers.forEach(m => {
+    if (!isVisible(m)) return;
+    // Known operator?
+    const isKnown = OPERATORS.some(op => op.name === m._op.name);
+    if (isKnown) {
+      const key = m._op.name;
+      if (!opCounts.has(key)) opCounts.set(key, { op: m._op, count: 0 });
+      opCounts.get(key).count++;
+    } else {
+      autreCount++;
+    }
+  });
+
+  // Render in predefined order
+  OPERATORS.forEach(op => {
+    const entry = opCounts.get(op.name);
+    if (!entry) return;
+    appendLegendItem(op.name, op.color, entry.count);
+  });
+
+  // Catch-all "Autre"
+  if (autreCount > 0) appendLegendItem('Autre', '#6B7280', autreCount);
+}
+
+function appendLegendItem(name, color, count) {
+  const div = document.createElement('div');
+  div.className = 'legend-item';
+  div.innerHTML =
+    `<div class="legend-dot" style="background:${color}"></div>` +
+    `<span class="legend-name">${name}</span>` +
+    `<span class="legend-count">${count}</span>`;
+  legendEl.appendChild(div);
+}
+
+// Initial render
+updateVisibility();
 
 // ── Popup builder ─────────────────────────────────────────────
 
@@ -103,14 +175,15 @@ function buildPopup(p, op) {
   const shortHours = hours.length > 50 ? hours.slice(0, 50) + '…' : hours;
   const addr = fmt(p.adresse);
   const shortAddr = addr.length > 60 ? addr.slice(0, 60) + '…' : addr;
+  const typeLabel = p.station_type === 'parking' ? 'Parking privé' : 'Aire dédiée';
 
   return `
     <div>
       <div class="popup-station">${fmt(p.nom_station)}</div>
       <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
       <div class="popup-grid">
-        <span class="popup-label">Autoroute</span>
-        <strong>${fmt(p.autoroute)}</strong>
+        <span class="popup-label">Type</span>
+        <span>${typeLabel}</span>
 
         <span class="popup-label">Puissance max</span>
         <span class="popup-power">${p.max_power_kw} kW</span>
@@ -127,48 +200,7 @@ function buildPopup(p, op) {
     </div>`;
 }
 
-// ── Legend ────────────────────────────────────────────────────
-
-const legendEl = document.getElementById('legend-items');
-
-// Determine which operators actually appear in the data
-const presentOps = new Map();
-STATIONS_DATA.features.forEach(f => {
-  const op = getOperator(f.properties);
-  if (!presentOps.has(op.name)) presentOps.set(op.name, op.color);
-});
-
-// Render in the predefined order, then catch-all "Autre"
-const renderedNames = new Set();
-OPERATORS.forEach(op => {
-  if (!presentOps.has(op.name)) return;
-  appendLegendItem(op.name, op.color);
-  renderedNames.add(op.name);
-});
-
-presentOps.forEach((color, name) => {
-  if (!renderedNames.has(name)) appendLegendItem(name, color);
-});
-
-function appendLegendItem(name, color) {
-  const div = document.createElement('div');
-  div.className = 'legend-item';
-  div.innerHTML =
-    `<div class="legend-dot" style="background:${color}"></div><span>${name}</span>`;
-  legendEl.appendChild(div);
-}
-
-// ── Station count display ─────────────────────────────────────
-
-const subEl = document.querySelector('.panel-sub');
-subEl.textContent =
-  `${STATIONS_DATA.features.length} stations · sans sortie de péage`;
-
 // ── Route planning ────────────────────────────────────────────
-
-const ROUTE_BUFFER_KM = 5;
-let routeActive = false;
-let routeLayer  = null;
 
 async function geocode(query) {
   const r = await fetch(
@@ -204,7 +236,6 @@ function clearRoute() {
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   markers.forEach(m => { delete m._distFromRoute; delete m._distAlongRoute; });
   updateVisibility();
-  subEl.textContent = `${STATIONS_DATA.features.length} stations · sans sortie de péage`;
   document.getElementById('route-info').textContent = '';
   document.getElementById('route-clear').style.display = 'none';
   const btn = document.getElementById('route-go');
@@ -238,14 +269,9 @@ document.getElementById('route-go').addEventListener('click', async () => {
     routeActive = true;
     applyRouteFilter(turf.lineString(route.geometry.coordinates));
 
-    const onRoute = markers.filter(m =>
-      m._distFromRoute <= ROUTE_BUFFER_KM
-    );
     const km = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
-
-    subEl.textContent = `${onRoute.length} station${onRoute.length !== 1 ? 's' : ''} sur le trajet`;
     info.className = 'route-stat';
-    info.textContent = `${km} km · corridor ±${ROUTE_BUFFER_KM} km`;
+    info.textContent = `${km} km · corridor ±${ROUTE_BUFFER_KM * 1000} m`;
 
     document.getElementById('route-clear').style.display = '';
     btn.style.display = 'none';
@@ -258,6 +284,8 @@ document.getElementById('route-go').addEventListener('click', async () => {
 });
 
 document.getElementById('route-clear').addEventListener('click', clearRoute);
+
+document.getElementById('check-parking').addEventListener('change', updateVisibility);
 
 ['route-start', 'route-end'].forEach(id =>
   document.getElementById(id).addEventListener('keydown', e => {
