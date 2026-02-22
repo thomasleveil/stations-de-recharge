@@ -1,4 +1,52 @@
-# Stations de recharges
+# Stations de recharge — Autoroutes
 
-Problème : pour plannifier un voyage en voiture électrique, il est utile de connaître à l'avance les réseaux d'opérateurs de stations de recharge afin de décider auprès desquel prendre un abonnement afin de bénéficier de tarifs réduits.
-Objectif : faire une carte intéractive qui indique avec une icone toutes les aires de repos des autoroute A85, A72, A47, A89, A7, A8 pour chacun des opérateurs de station de recharge de véhicule électrique.
+## Problématique
+
+Pour planifier un voyage en voiture électrique, il est utile de connaître à l'avance les réseaux d'opérateurs de stations de recharge afin de décider auprès desquels prendre un abonnement pour bénéficier de tarifs réduits.
+
+## Ce que fait l'application
+
+Carte interactive des bornes de recharge rapide (≥ 150 kW, CCS Combo) sur les principales autoroutes françaises. Permet de :
+
+- visualiser toutes les stations par opérateur (TotalEnergies, IONITY, Allego/Electra, Fastned, ENGIE Vianeo, Tesla, Zunder…)
+- calculer un itinéraire et n'afficher que les stations dans un corridor de 200 m autour du trajet
+- filtrer pour inclure ou exclure les parkings privés à usage public
+
+## Architecture
+
+Application 100 % statique — aucun backend, aucune étape de build.
+
+| Fichier | Rôle |
+|---|---|
+| `index.html` | Shell HTML |
+| `app.js` | Carte Leaflet, fetch IRVE, filtrage DuckDB WASM, cache IndexedDB, itinéraire |
+| `filter-worker.js` | Web Worker pour le filtrage de corridor (off-thread) |
+| `style.css` | Styles |
+
+## Données
+
+Source : **Base nationale des IRVE** publiée sur [data.gouv.fr](https://www.data.gouv.fr/datasets/base-nationale-des-irve-infrastructures-de-recharge-pour-vehicules-electriques), mise à jour quotidienne (~6 MB, 188 000 lignes, une par connecteur).
+
+L'application télécharge le fichier Parquet directement depuis data.gouv.fr au premier chargement, exécute le filtrage en SQL via **DuckDB WASM** dans le navigateur, puis met le résultat en cache dans **IndexedDB** pour 24 heures.
+
+```
+Premier chargement  →  fetch data.gouv.fr (~6 MB)  →  DuckDB WASM filter  →  IndexedDB
+Chargements suivants  →  IndexedDB (instantané, sans réseau)
+```
+
+### Critères de filtrage
+
+- `implantation_station` = "Station dédiée à la recharge rapide" ou "Parking privé à usage public"
+- Puissance maximale ≥ 150 kW (au moins un connecteur)
+- Au moins un connecteur CCS Combo
+- Au moins 4 points de charge par station
+- Exclusion des stations camions/poids lourds
+
+## Lancement en local
+
+```bash
+python3 -m http.server 8765
+# ouvrir http://localhost:8765
+```
+
+> Le protocole `file://` est incompatible avec les Web Workers requis par DuckDB WASM — un serveur HTTP est nécessaire.
