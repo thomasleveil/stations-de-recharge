@@ -48,5 +48,3 @@ Chargements suivants  →  IndexedDB (instantané, sans réseau)
 python3 -m http.server 8765
 # ouvrir http://localhost:8765
 ```
-
-> Le protocole `file://` est incompatible avec les Web Workers requis par DuckDB WASM — un serveur HTTP est nécessaire.
