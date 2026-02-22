@@ -337,3 +337,14 @@ document.getElementById('check-parking').addEventListener('change', updateVisibi
     if (e.key === 'Enter') document.getElementById('route-go').click();
   })
 );
+
+// Warm up the connection to Nominatim on first input focus so the TCP+TLS
+// handshake is already done by the time the user clicks "Calculer".
+let nominatimWarmedUp = false;
+['route-start', 'route-end'].forEach(id =>
+  document.getElementById(id).addEventListener('focus', () => {
+    if (nominatimWarmedUp) return;
+    nominatimWarmedUp = true;
+    fetch('https://nominatim.openstreetmap.org/status.php', { method: 'HEAD' }).catch(() => {});
+  }, { once: false })
+);
