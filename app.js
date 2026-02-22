@@ -29,9 +29,9 @@ function getOperator(props) {
 
 // ── Marker sizing (radius in px) ──────────────────────────────
 
-function powerRadius(kw) {
-  // 150 kW → 7 px, 400 kW → 13 px
-  return 7 + Math.min((kw - 150) / 250, 1) * 6;
+function countRadius(n) {
+  // Log2 scale: 1 PDC → 8px, 4 → 10px, 8 → 12px, 16+ → 14px
+  return 6 + Math.log2((n || 1) + 1) * 2;
 }
 
 // ── Map initialisation ────────────────────────────────────────
@@ -69,8 +69,9 @@ STATIONS_DATA.features.forEach(feature => {
   const op = getOperator(p);
   const [lon, lat] = feature.geometry.coordinates;
 
+  const displayCount = p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : (parseInt(p.nbre_pdc) || 1);
   const circle = L.circleMarker([lat, lon], {
-    radius:      powerRadius(p.max_power_kw),
+    radius:      countRadius(displayCount),
     fillColor:   op.color,
     color:       '#ffffff',
     weight:      2,
@@ -188,7 +189,10 @@ function buildPopup(p, op) {
         <span class="popup-label">Puissance max</span>
         <span class="popup-power">${p.max_power_kw} kW</span>
 
-        <span class="popup-label">Nb. de bornes</span>
+        <span class="popup-label">Bornes CCS ≥ 150 kW</span>
+        <span>${p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : '—'}</span>
+
+        <span class="popup-label">Nb. de bornes total</span>
         <span>${fmt(p.nbre_pdc)}</span>
 
         <span class="popup-label">Horaires</span>

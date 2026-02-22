@@ -67,7 +67,18 @@ def build_geojson(input_path: str, output_path: str):
         WHERE prise_type_combo_ccs = TRUE
     """)
 
-    # ── 4.5. Truck-only station detection (any connector signals truck use) ───
+    # ── 4.5. Count CCS fast connectors per station (power ≥ 150 kW) ─────────
+    con.execute(f"""
+        CREATE TABLE station_ccs_fast AS
+        SELECT id_station_itinerance,
+               COUNT(*) AS nbre_ccs_fast
+        FROM irve
+        WHERE prise_type_combo_ccs = TRUE
+          AND power_kw >= {MIN_POWER_KW}
+        GROUP BY id_station_itinerance
+    """)
+
+    # ── 4.6. Truck-only station detection (any connector signals truck use) ───
     # Combines:
     #   • restriction_gabarit containing 'poids lourd' (explicit IRVE field)
     #   • nom_station keywords: truck / camion / poids lourd(s)
@@ -92,13 +103,15 @@ def build_geojson(input_path: str, output_path: str):
         CREATE TABLE final_stations AS
         SELECT sf.*,
                sp.max_power_kw,
+               COALESCE(cf.nbre_ccs_fast, 0) AS nbre_ccs_fast,
                CASE WHEN sf.implantation_station = '{IMPLANTATION_FILTER}'
                     THEN 'dedicee' ELSE 'parking'
                END AS station_type
-        FROM station_first  sf
-        JOIN station_power  sp  ON sf.id_station_itinerance = sp.id_station_itinerance
-        JOIN ccs_sids       ccs ON sf.id_station_itinerance = ccs.id_station_itinerance
-        LEFT JOIN truck_sids ts ON sf.id_station_itinerance = ts.id_station_itinerance
+        FROM station_first      sf
+        JOIN station_power       sp  ON sf.id_station_itinerance = sp.id_station_itinerance
+        JOIN ccs_sids            ccs ON sf.id_station_itinerance = ccs.id_station_itinerance
+        LEFT JOIN station_ccs_fast cf ON sf.id_station_itinerance = cf.id_station_itinerance
+        LEFT JOIN truck_sids     ts  ON sf.id_station_itinerance = ts.id_station_itinerance
         WHERE sf.implantation_station IN ('{IMPLANTATION_FILTER}', '{PARKING_IMPLANTATION}')
           AND sp.max_power_kw >= {MIN_POWER_KW}
           AND COALESCE(TRY_CAST(sf.nbre_pdc AS INTEGER), 0) >= {MIN_PDC}
@@ -117,6 +130,7 @@ def build_geojson(input_path: str, output_path: str):
                COALESCE(NULLIF(nom_enseigne, ''), nom_operateur, '') AS enseigne,
                COALESCE(CAST(nbre_pdc AS VARCHAR), '')               AS nbre_pdc,
                max_power_kw,
+               nbre_ccs_fast,
                COALESCE(horaires, '')                                AS horaires,
                station_type
         FROM final_stations
@@ -124,7 +138,7 @@ def build_geojson(input_path: str, output_path: str):
     """).fetchall()
 
     features = []
-    for lon, lat, sid, nom, addr, oper, ens, nbre, pw, hor, stype in rows:
+    for lon, lat, sid, nom, addr, oper, ens, nbre, pw, nccs, hor, stype in rows:
         features.append({
             "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [round(lon, 6), round(lat, 6)]},
@@ -134,10 +148,11 @@ def build_geojson(input_path: str, output_path: str):
                 "adresse":      addr,
                 "operateur":    oper,
                 "enseigne":     ens,
-                "nbre_pdc":     nbre,
-                "max_power_kw": pw,
-                "horaires":     hor,
-                "station_type": stype,
+                "nbre_pdc":      nbre,
+                "max_power_kw":  pw,
+                "nbre_ccs_fast": nccs,
+                "horaires":      hor,
+                "station_type":  stype,
             },
         })
 
