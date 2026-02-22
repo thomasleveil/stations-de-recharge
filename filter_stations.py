@@ -82,7 +82,7 @@ MOTORWAY_BOUNDS = {
     'N165': (-4.6, -1.4, 47.2, 48.0), # Nantes → Vannes → Lorient → Quimper → Brest
 }
 
-_MOTORWAY_PAT = re.compile(r'\b(' + '|'.join(TARGET_MOTORWAYS) + r')\b', re.IGNORECASE)
+_MOTORWAY_PAT = re.compile(r'(?<![A-Za-z0-9])(' + '|'.join(TARGET_MOTORWAYS) + r')(?![A-Za-z0-9])', re.IGNORECASE)
 _EXIT_PATTERNS = [
     re.compile(r'\bsortie\b', re.IGNORECASE),
     re.compile(r'\bZAC\b', re.IGNORECASE),
@@ -104,9 +104,30 @@ _ROUTE_NORMALIZE = {'RN12': 'N12', 'RN24': 'N24', 'RN164': 'N164', 'RN165': 'N16
 def detect_motorway(row: dict) -> str | None:
     text = ' '.join([row.get('nom_station', ''), row.get('adresse_station', ''), row.get('observations', '')])
     for m in TARGET_MOTORWAYS:
-        if re.search(r'\b' + m + r'\b', text, re.IGNORECASE):
+        if re.search(r'(?<![A-Za-z0-9])' + m + r'(?![A-Za-z0-9])', text, re.IGNORECASE):
             return _ROUTE_NORMALIZE.get(m, m)
     return None
+
+
+def detect_motorway_by_coords(lat: float, lon: float) -> str | None:
+    """Return the motorway whose bounding box contains (lat, lon).
+
+    When multiple boxes overlap, pick the one whose centre the station is
+    closest to in *normalised* coordinates (i.e. relative to the box size).
+    This avoids false positives from large corridors that happen to clip a
+    nearby motorway's area (e.g. A4 vs A31 near Verdun).
+    """
+    candidates = []
+    for mw, (lon_min, lon_max, lat_min, lat_max) in MOTORWAY_BOUNDS.items():
+        if lon_min <= lon <= lon_max and lat_min <= lat <= lat_max:
+            nx = (lon - lon_min) / (lon_max - lon_min)
+            ny = (lat - lat_min) / (lat_max - lat_min)
+            dist = ((nx - 0.5) ** 2 + (ny - 0.5) ** 2) ** 0.5
+            candidates.append((dist, mw))
+    if not candidates:
+        return None
+    candidates.sort()
+    return candidates[0][1]
 
 
 def is_exit_required(row: dict) -> bool:
@@ -156,6 +177,37 @@ def build_geojson(input_path: str, output_path: str):
             if _MOTORWAY_PAT.search(text):
                 stations[row['id_station_itinerance']].append(row)
 
+    # --- Pass 1.5: geographic fallback for rest-area stations with no motorway text ---
+    # "Aire de …" stations on real motorways often omit the motorway name from their IRVE record.
+    # Include them if: address contains "aire de", no exit-required patterns, coords fall within
+    # a known motorway corridor.  We only open the file a second time for unmissed stations.
+    seen_sids = set(stations.keys())
+    with open(input_path, encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            sid = row['id_station_itinerance']
+            if sid in seen_sids:
+                continue
+            addr = row.get('adresse_station', '')
+            name = row.get('nom_station', '')
+            combined = (addr + ' ' + name).lower()
+            if 'aire de' not in combined and 'aire d\'' not in combined:
+                continue
+            if is_exit_required(row):
+                continue
+            try:
+                lat = float(row.get('consolidated_latitude') or 0)
+                lon = float(row.get('consolidated_longitude') or 0)
+            except (ValueError, TypeError):
+                continue
+            if lat == 0 or lon == 0:
+                continue
+            mw = detect_motorway_by_coords(lat, lon)
+            if mw is None:
+                continue
+            stations[sid].append(row)
+            seen_sids.add(sid)
+
     # --- Pass 2: apply exit and power filters ---
     accepted: dict[str, tuple[dict, float]] = {}
     for sid, connectors in stations.items():
@@ -195,7 +247,7 @@ def build_geojson(input_path: str, output_path: str):
         except (ValueError, TypeError, KeyError):
             continue
 
-        motorway = detect_motorway(row)
+        motorway = detect_motorway(row) or detect_motorway_by_coords(lat, lon)
         if not within_motorway_bounds(motorway, lat, lon):
             skipped_bounds.append((row['nom_station'], motorway, lon, lat))
             continue
@@ -211,7 +263,7 @@ def build_geojson(input_path: str, output_path: str):
                 "enseigne": row.get('nom_enseigne') or row.get('nom_operateur', ''),
                 "nbre_pdc": row.get('nbre_pdc', ''),
                 "max_power_kw": max_power,
-                "autoroute": detect_motorway(row),
+                "autoroute": motorway,
                 "horaires": row.get('horaires', ''),
             }
         })
