@@ -11,6 +11,7 @@ const OPERATORS = [
   { match: ['e-vadea', 'vadea'],   name: 'e-Vadea',          color: '#2563EB' },
   { match: ['atlante'],            name: 'Atlante',          color: '#D97706' },
   { match: ['plenitude'],          name: 'Plenitude',        color: '#059669' },
+  { match: ['bp pulse', 'bp '],    name: 'bp pulse',         color: '#10B981' },
 ];
 
 // Try enseigne first, fall back to operateur field
@@ -30,7 +31,9 @@ function getOperator(props) {
 const MOTORWAYS = {
   A7:  { color: '#EF4444', bg: '#FEE2E2' },
   A8:  { color: '#0EA5E9', bg: '#E0F2FE' },
-  A47: { color: '#10B981', bg: '#D1FAE5' },
+  A11: { color: '#10B981', bg: '#D1FAE5' },
+  A57: { color: '#F97316', bg: '#FFEDD5' },
+  A71: { color: '#EC4899', bg: '#FCE7F3' },
   A72: { color: '#F59E0B', bg: '#FEF3C7' },
   A85: { color: '#3B82F6', bg: '#DBEAFE' },
   A89: { color: '#8B5CF6', bg: '#EDE9FE' },

@@ -18,9 +18,23 @@ import argparse
 import collections
 import pathlib
 
-TARGET_MOTORWAYS = ['A85', 'A72', 'A47', 'A89', 'A7', 'A8']
+TARGET_MOTORWAYS = ['A11', 'A57', 'A71', 'A72', 'A85', 'A89', 'A7', 'A8']
 MIN_POWER_KW = 150
 COORD_GRID_DECIMALS = 3  # ~111m, removes duplicate registrations
+
+# Geographic bounding boxes per motorway (lon_min, lon_max, lat_min, lat_max).
+# Rejects stations whose GPS coordinates fall outside the motorway's corridor,
+# even if the station name/address mentions the motorway (IRVE coordinate errors).
+MOTORWAY_BOUNDS = {
+    'A7':  (4.3,  5.5,  43.1, 45.9),   # Lyon → Marseille (Rhône valley)
+    'A8':  (5.2,  7.6,  43.2, 43.95),  # Aix-en-Provence → Menton
+    'A11': (-2.0, 2.0,  47.0, 48.7),   # Paris → Nantes (L'Océane)
+    'A57': (5.8,  6.6,  43.1, 43.5),   # Toulon → Le Muy (jonction A8)
+    'A71': (1.8,  3.2,  45.7, 48.0),   # Orléans → Clermont-Ferrand (L'Arverne)
+    'A72': (3.3,  4.6,  45.3, 46.0),   # Saint-Étienne → Clermont-Ferrand
+    'A85': (-0.6, 1.9,  47.0, 47.8),   # Tours → Angers
+    'A89': (-0.5, 4.4,  44.6, 46.2),   # Bordeaux → Lyon via Clermont
+}
 
 _MOTORWAY_PAT = re.compile(r'\b(' + '|'.join(TARGET_MOTORWAYS) + r')\b', re.IGNORECASE)
 _EXIT_PATTERNS = [
@@ -62,6 +76,15 @@ def is_exit_required(row: dict) -> bool:
        not re.search(r'\baire\b|\bautoroute\b', addr, re.IGNORECASE):
         return True
     return False
+
+
+def within_motorway_bounds(motorway: str, lat: float, lon: float) -> bool:
+    """Return True if (lat, lon) falls within the expected corridor for motorway."""
+    bounds = MOTORWAY_BOUNDS.get(motorway)
+    if bounds is None:
+        return True  # unknown motorway — don't filter
+    lon_min, lon_max, lat_min, lat_max = bounds
+    return lon_min <= lon <= lon_max and lat_min <= lat <= lat_max
 
 
 def coord_key(row: dict):
@@ -114,11 +137,17 @@ def build_geojson(input_path: str, output_path: str):
 
     # --- Build GeoJSON ---
     features = []
+    skipped_bounds = []
     for sid, (row, max_power) in final.items():
         try:
             lat = float(row['consolidated_latitude'])
             lon = float(row['consolidated_longitude'])
         except (ValueError, TypeError, KeyError):
+            continue
+
+        motorway = detect_motorway(row)
+        if not within_motorway_bounds(motorway, lat, lon):
+            skipped_bounds.append((row['nom_station'], motorway, lon, lat))
             continue
 
         features.append({
@@ -140,6 +169,11 @@ def build_geojson(input_path: str, output_path: str):
     geojson = {"type": "FeatureCollection", "features": features}
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(geojson, f, ensure_ascii=False, indent=2)
+
+    if skipped_bounds:
+        print(f"Skipped {len(skipped_bounds)} stations outside motorway bounds:")
+        for name, mw, lon, lat in skipped_bounds:
+            print(f"  [{mw}] {name} (lon={lon:.4f}, lat={lat:.4f})")
 
     print(f"Written {len(features)} stations to {output_path}")
     by_mw = collections.Counter(f['properties']['autoroute'] for f in features)

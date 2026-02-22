@@ -6,6 +6,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.240639,
+          47.096021
+        ]
+      },
+      "properties": {
+        "id": "ESZUNP4250223719401303502",
+        "nom_station": "Zunder/122319",
+        "adresse": " A71/E11, km200, Aire de Bourges-Marmagne, Marmagne 18500 France",
+        "operateur": "Zunder | ES*ZUN",
+        "enseigne": "Zunder",
+        "nbre_pdc": "48",
+        "max_power_kw": 400.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           0.890866,
           47.301975
         ]
@@ -69,6 +90,48 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -0.086755,
+          47.911106
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000248",
+        "nom_station": "Aire de Pirmil Ouest_A11",
+        "adresse": "Aire de Pirmil Ouest A11 km 197 - 72430 Primil",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "13",
+        "max_power_kw": 300.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.083118,
+          47.912292
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000250",
+        "nom_station": "Aire de Pirmil Est_A11",
+        "adresse": "Aire de Pirmil Est  A11 km 197 - 72430 Pirmil",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "13",
+        "max_power_kw": 300.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           5.078895,
           43.75933
         ]
@@ -111,6 +174,69 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.184198,
+          47.145743
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000280",
+        "nom_station": "Aire de Quincy_A71",
+        "adresse": "Aire de Quincy, A71, km 192, 18500- Mehun-sur-Yevre",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "13",
+        "max_power_kw": 300.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.186505,
+          47.144822
+        ]
+      },
+      "properties": {
+        "id": "FRSITE00000274",
+        "nom_station": "Aire de La Chaussee de Cesar_A71",
+        "adresse": "Aire de la Chaussee de Cesar, A71, km 192, 18500- Mehun-sur-Yevre",
+        "operateur": "Allego",
+        "enseigne": "ALLEGO",
+        "nbre_pdc": "13",
+        "max_power_kw": 300.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.186913,
+          47.144086
+        ]
+      },
+      "properties": {
+        "id": "FRALLPGO800468",
+        "nom_station": "Allego - Aire de La Chaussee de Cesar_A71",
+        "adresse": "Aire de la Chaussee de Cesar, A71, km 192",
+        "operateur": "Allego",
+        "enseigne": "Allego - Aire de La Chaussee de Cesar_A71",
+        "nbre_pdc": "3",
+        "max_power_kw": 300.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           2.457271,
           45.622961
         ]
@@ -132,6 +258,90 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.009837,
+          47.546416
+        ]
+      },
+      "properties": {
+        "id": "FRBPEP3EA033",
+        "nom_station": "Aire de la Briganderie ",
+        "adresse": "A71 - Sens Bourges Orléans - Point km 143 41600 Nouan-le-Fuzelier",
+        "operateur": "bp France",
+        "enseigne": "bp pulse",
+        "nbre_pdc": "9",
+        "max_power_kw": 600.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.360588,
+          48.321446
+        ]
+      },
+      "properties": {
+        "id": "FRBPEP3EA037",
+        "nom_station": "Aire de dix sept Setiers",
+        "adresse": "A11 - sens Nantes Paris - point km 75 28120 Ermenonville-la-Grande",
+        "operateur": "bp France",
+        "enseigne": "bp pulse",
+        "nbre_pdc": "13",
+        "max_power_kw": 600.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.00672,
+          47.470652
+        ]
+      },
+      "properties": {
+        "id": "FRBPEP3EA038",
+        "nom_station": "Aire des Maremberts - A71",
+        "adresse": "A71 - sens Orléans Bourges - point km 150 41210 Saint Viatre",
+        "operateur": "bp France",
+        "enseigne": "bp pulse",
+        "nbre_pdc": "12",
+        "max_power_kw": 600.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.464896,
+          48.372502
+        ]
+      },
+      "properties": {
+        "id": "FRBPEP3EA041",
+        "nom_station": "Aire de Ver les Chartres les Souchets",
+        "adresse": "A11 - sens Paris Nantes - point km 66 28630 Ver-lès-Chartres",
+        "operateur": "bp France",
+        "enseigne": "bp pulse",
+        "nbre_pdc": "14",
+        "max_power_kw": 600.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.82935,
           44.111227
         ]
@@ -141,7 +351,7 @@
         "nom_station": "A7 - Aire de Orange Le Grès (direction Marseille)",
         "adresse": "A7, 84100 Orange",
         "operateur": "Electra",
-        "enseigne": "Electra",
+        "enseigne": "A7 - Aire de Orange Le Grès (direction Marseille)",
         "nbre_pdc": "8",
         "max_power_kw": 400.0,
         "autoroute": "A7",
@@ -183,7 +393,7 @@
         "nom_station": "A7 - Aire de la Bouterne (direction Lyon)",
         "adresse": "A7 - Aire de la Bouterne, 26600 Larnage",
         "operateur": "Electra",
-        "enseigne": "Electra",
+        "enseigne": "A7 - Aire de la Bouterne (direction Lyon)",
         "nbre_pdc": "12",
         "max_power_kw": 400.0,
         "autoroute": "A7",
@@ -204,7 +414,7 @@
         "nom_station": "A7 - Aire de Vitrolles Est (direction Orange)",
         "adresse": "A7 - Aire de Vitrolles Est, 13127 Vitrolles",
         "operateur": "Electra",
-        "enseigne": "Electra",
+        "enseigne": "A7 - Aire de Vitrolles Est (direction Orange)",
         "nbre_pdc": "10",
         "max_power_kw": 300.0,
         "autoroute": "A7",
@@ -246,7 +456,7 @@
         "nom_station": "A7 - Aire du Bornaron (direction Marseille)",
         "adresse": "A7 - Aire du Bornaron, 26240 Saint-Barthélémy-de-Vals",
         "operateur": "Electra",
-        "enseigne": "Electra",
+        "enseigne": "A7 - Aire du Bornaron (direction Marseille)",
         "nbre_pdc": "10",
         "max_power_kw": 400.0,
         "autoroute": "A7",
@@ -267,7 +477,7 @@
         "nom_station": "A7 - Aire de Tricastin (direction Montélimar)",
         "adresse": "A7, 26130 Saint-Paul-Trois-Châteaux",
         "operateur": "Electra",
-        "enseigne": "Electra",
+        "enseigne": "A7 - Aire de Tricastin (direction Montélimar)",
         "nbre_pdc": "11",
         "max_power_kw": 400.0,
         "autoroute": "A7",
@@ -594,19 +804,103 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          4.525974,
-          45.495336
+          0.252,
+          48.0553
         ]
       },
       "properties": {
-        "id": "FRHPCPNF078181",
-        "nom_station": "RELAIS PAYS DU GIERS",
-        "adresse": "A47 - AIRE DU PAYS DU GIERS, 42400 SAINT CHAMOND",
+        "id": "FRHPCPNF059902",
+        "nom_station": "SARTHE SARGE LE MANS SUD",
+        "adresse": "A11 - AIRE SARTHE SARGE LE MANSS",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.016955,
+          47.4185
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF069703TOTEM",
+        "nom_station": "RELAIS VARADES PAYS D'ANCENIS",
+        "adresse": "A11 - AIRE DE VARADES PAYS ANCENIS, 44370 VARADES",
         "operateur": "TotalEnergies Marketing France",
         "enseigne": "TotalEnergies Charge Rapide",
         "nbre_pdc": "8",
-        "max_power_kw": 150.0,
-        "autoroute": "A47",
+        "max_power_kw": 175.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.018019,
+          47.418444
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF069703",
+        "nom_station": "RELAIS VARADES PAYS D'ANCENIS",
+        "adresse": "A11-AIRE DE VARADES  PAYS ANCENI",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.11733,
+          46.057926
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF070641TOTEMSA",
+        "nom_station": "AIRE DES VOLCANS D AUVERGNE SAINT AGOULIN",
+        "adresse": "A71 AIRE DES VOLCANS D AUVERGNE, 63260 SAINT AGOULIN",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1146,
+          46.0573
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF070641",
+        "nom_station": "REL.LES VOLCANS-D'AUVERGNE EST VL",
+        "adresse": "A71 - AIRE DES VOLCANS D   AUVER",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A71",
         "horaires": "24/7"
       }
     },
@@ -699,6 +993,111 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          0.2552,
+          48.0558
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080138",
+        "nom_station": "SARTHE SARGE LE MANS NORD",
+        "adresse": "A11-AIRE SARTHE SARGE LE MANS NO",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "8",
+        "max_power_kw": 175.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.014427,
+          47.419479
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080173TOTEM",
+        "nom_station": "RELAIS VARADES PAYS DE LOIRE",
+        "adresse": "A11 - AIRE DE VARADES PAYS DE LOIRE, 44370 VARADES",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.014541,
+          47.419621
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080173",
+        "nom_station": "RELAIS VARADES PAYS DE LOIRE",
+        "adresse": "A11 -AIRE DE VARADES PAYS DE LOI",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 175.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.111322,
+          46.057755
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080175TOTEM",
+        "nom_station": "RELAIS VOLCANS D'AUVERGNE OUEST PL",
+        "adresse": "A71 - AIRE DES VOLCANS D'AUVERGNE, 63440 CHAMPS",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.1123,
+          46.0584
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF080175",
+        "nom_station": "RELAIS VOLCANS D'AUVERGNE OUEST PL",
+        "adresse": "A71 - AIRE DES VOLCANS D' AUVERG",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "16",
+        "max_power_kw": 300.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           6.786,
           43.542
         ]
@@ -762,19 +1161,19 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.134694,
-          47.41925
+          1.580008,
+          48.468782
         ]
       },
       "properties": {
-        "id": "FRIONE402100",
-        "nom_station": "IONITY Longué-les-Cossonnières",
-        "adresse": "Aire de Longue les Cossonieres, A85 -49160 Longué-Jumelles",
+        "id": "FRIONE126400",
+        "nom_station": "IONITY Chartres Gasville",
+        "adresse": "Aire de Chartres-Gasville, A11 - 28300 Gasville-Oiséme",
         "operateur": "IONITY",
         "enseigne": "IONITY GMBH",
         "nbre_pdc": "5",
         "max_power_kw": 350.0,
-        "autoroute": "A85",
+        "autoroute": "A11",
         "horaires": "24/7"
       }
     },
@@ -783,14 +1182,35 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          4.501811,
-          47.30968
+          1.578674,
+          48.467261
         ]
       },
       "properties": {
-        "id": "FRIONE402200",
-        "nom_station": "IONITY Longué la Couaille",
-        "adresse": "Aire de Longué-La Couaille,A85-49160 Longué-Jumelles",
+        "id": "FRIONE126500",
+        "nom_station": "IONITY Chartres Bois Paris",
+        "adresse": "Aire De Chartres Bois,A11 - 28300 Gasville-Oiséme",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.134694,
+          47.41925
+        ]
+      },
+      "properties": {
+        "id": "FRIONE402100",
+        "nom_station": "IONITY Longué-les-Cossonnières",
+        "adresse": "Aire de Longue les Cossonieres, A85 -49160 Longué-Jumelles",
         "operateur": "IONITY",
         "enseigne": "IONITY GMBH",
         "nbre_pdc": "5",
@@ -825,27 +1245,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          1.308488,
-          43.914901
-        ]
-      },
-      "properties": {
-        "id": "FRIONE403500",
-        "nom_station": "IONITY Montélimar Est",
-        "adresse": "A7, Aire de Montélimar Est - 26780 Allan",
-        "operateur": "IONITY",
-        "enseigne": "IONITY GMBH",
-        "nbre_pdc": "5",
-        "max_power_kw": 350.0,
-        "autoroute": "A7",
-        "horaires": "24/7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           4.78134,
           44.513898
         ]
@@ -859,6 +1258,48 @@
         "nbre_pdc": "5",
         "max_power_kw": 350.0,
         "autoroute": "A7",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.622302,
+          48.125475
+        ]
+      },
+      "properties": {
+        "id": "FRIONE404100",
+        "nom_station": "IONITY Villaines la Gonais",
+        "adresse": "Aire de Villaines la Gonais A11-72400 Villaines-la-Gonais",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.623299,
+          48.126677
+        ]
+      },
+      "properties": {
+        "id": "FRIONE404200",
+        "nom_station": "IONITY La Ferté-Bernard",
+        "adresse": "Aire de la Ferté Bernard - A11, 72400 Villaines-la-Gonais",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A11",
         "horaires": "24/7"
       }
     },
@@ -930,6 +1371,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.240714,
+          47.094675
+        ]
+      },
+      "properties": {
+        "id": "FRIONE416100",
+        "nom_station": "IONITY Bourges St Thorettes",
+        "adresse": "Aire de Bourges Sainte Thorette,  A71, 18500 Marmagne",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "3",
+        "max_power_kw": 350.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.225917,
           45.850722
         ]
@@ -951,19 +1413,40 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.598651,
-          45.610095
+          2.417606,
+          46.751623
         ]
       },
       "properties": {
-        "id": "FRIONE413000",
-        "nom_station": "IONITY Saint-Rambert Ouest",
-        "adresse": "Aire de Saint-Rambert-d'Albon Ouest - A7 - 26140 - Saint Rambert d'Albon",
+        "id": "FRIONE431800",
+        "nom_station": "IONITY Centre de la France Sud",
+        "adresse": "Aire du Centre de la France A71 18200 Farges-Allichamps, France",
         "operateur": "IONITY",
         "enseigne": "IONITY GMBH",
         "nbre_pdc": "5",
         "max_power_kw": 350.0,
-        "autoroute": "A7",
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.166865,
+          47.807101
+        ]
+      },
+      "properties": {
+        "id": "FRIONE403400",
+        "nom_station": "IONITY Sarthe Sud",
+        "adresse": "Aire De Parce Est,A11, 72300 Parcé-sur-Sarthe",
+        "operateur": "IONITY",
+        "enseigne": "IONITY GMBH",
+        "nbre_pdc": "5",
+        "max_power_kw": 350.0,
+        "autoroute": "A11",
         "horaires": "24/7"
       }
     },
@@ -1014,6 +1497,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -0.491055,
+          47.500299
+        ]
+      },
+      "properties": {
+        "id": "FRIOYP4Z9Y45MTMW50",
+        "nom_station": "IONITY Portes d'Angers Sud",
+        "adresse": "Autoroute A11, 49480 Saint-Sylvain d'Anjou",
+        "operateur": "Ionity",
+        "enseigne": "IONITY Portes d'Angers Sud",
+        "nbre_pdc": "6",
+        "max_power_kw": 350.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.828,
           45.276391
         ]
@@ -1027,6 +1531,27 @@
         "nbre_pdc": "20",
         "max_power_kw": 400.0,
         "autoroute": "A7",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.417075,
+          46.751937
+        ]
+      },
+      "properties": {
+        "id": "FRIOYP2FDXH5MX6HGI",
+        "nom_station": "IONITY Centre de la France",
+        "adresse": "Aire du Centre de la France A71, 18200 Farges-Allichamps",
+        "operateur": "Ionity",
+        "enseigne": "IONITY Centre de la France",
+        "nbre_pdc": "14",
+        "max_power_kw": 600.0,
+        "autoroute": "A71",
         "horaires": "24/7"
       }
     },
@@ -1056,6 +1581,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -0.4894,
+          47.50139
+        ]
+      },
+      "properties": {
+        "id": "FRPY2P494800028",
+        "nom_station": "Avia Picoty/FR*PY2*P49480*0028",
+        "adresse": " A11, Aire des Portes d'Angers, Verrières-en-Anjou 49480 France",
+        "operateur": "Avia Picoty | FR*PY2",
+        "enseigne": "Avia Picoty",
+        "nbre_pdc": "12",
+        "max_power_kw": 180.0,
+        "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           4.864827,
           44.864843
         ]
@@ -1069,6 +1615,48 @@
         "nbre_pdc": "16",
         "max_power_kw": 250.0,
         "autoroute": "A7",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.929353,
+          47.663705
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103112",
+        "nom_station": "ENGIE Vianeo - A71 La Ferté St-Aubin",
+        "adresse": "Aire de la Ferté Saint-Aubin - A71 - 41600 CHAUMONT-SUR-THARONNE",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.082592,
+          48.239338
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP103110",
+        "nom_station": "ENGIE Vianeo - A11 Brou-Dampierre",
+        "adresse": "Aire de Brou-Dampierre - A11 - 28160 DAMPIERRE-SOUS-BROU",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A11",
         "horaires": "24/7"
       }
     },
@@ -1098,6 +1686,48 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          2.802377,
+          46.355005
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101108",
+        "nom_station": "ENGIE Vianeo - A71 L'Allier Doyet",
+        "adresse": "Aire de l'Allier Doyet A71 - 03170 DOYET",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.802515,
+          46.357285
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP101109",
+        "nom_station": "ENGIE Vianeo - A71 L'Allier Saulzet",
+        "adresse": "Aire de l'Allier Saulzet - A71 - 03170 DOYET",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A71",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           1.93782,
           45.360006
         ]
@@ -1111,6 +1741,27 @@
         "nbre_pdc": "1",
         "max_power_kw": 300.0,
         "autoroute": "A89",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.083104,
+          48.24037
+        ]
+      },
+      "properties": {
+        "id": "FRVIAP104111",
+        "nom_station": "ENGIE Vianeo - A11 Les Manoirs du Perche",
+        "adresse": "Aire des Manoirs du Perche - 28160 Frazé",
+        "operateur": "Greenflux",
+        "enseigne": "ENGIE Vianeo",
+        "nbre_pdc": "1",
+        "max_power_kw": 300.0,
+        "autoroute": "A11",
         "horaires": "24/7"
       }
     }

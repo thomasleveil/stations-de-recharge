@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Purpose
 
-Interactive map of EV charging stations at highway rest areas along French motorways **A85, A72, A47, A89, A7, and A8**. Helps plan electric vehicle road trips by showing which charging network operators are present at each rest area, so users can choose subscriptions wisely.
+Interactive map of EV charging stations at highway rest areas along French motorways **A7, A8, A11, A57, A71, A72, A85, and A89**. Helps plan electric vehicle road trips by showing which charging network operators are present at each rest area, so users can choose subscriptions wisely.
 
 ## Data Source
 
@@ -12,19 +12,20 @@ Interactive map of EV charging stations at highway rest areas along French motor
 Source: [transport.data.gouv.fr](https://transport.data.gouv.fr/datasets/fichier-consolide-des-bornes-de-recharge-pour-vehicules-electriques)
 Updated: daily. Raw CSV is ~122MB, 188k rows (one row per connector/PDC).
 
-**Pre-filtered data** is already in `stations_autoroutes.geojson` (44KB, 53 stations ≥150 kW, no motorway exit required, one feature per station). Do not commit the raw CSV — it is gitignored.
+**Pre-filtered data** is already in `stations_autoroutes.geojson` (84 stations ≥150 kW, no motorway exit required, one feature per station). Do not commit the raw CSV — it is gitignored.
 
 To regenerate the GeoJSON from a fresh CSV download:
 ```bash
-wget -O irve_raw.csv "<IRVE_CSV_URL>"
+wget -O irve_raw.csv "https://www.data.gouv.fr/api/1/datasets/r/eb76d20a-8501-400e-b336-d85724de5435"
 python3 filter_stations.py
 ```
 
-`filter_stations.py` applies three filters in order:
-1. **Motorway match** — station address/name mentions one of the 6 target motorways
+`filter_stations.py` applies filters in order:
+1. **Motorway match** — station address/name mentions one of the 8 target motorways
 2. **No exit required** — excludes stations with "sortie", "ZAC", commercial brands (Bricomarché etc.), or city-street address patterns
 3. **Power ≥ 150 kW** — at least one connector per station meets the threshold
 4. **Coordinate deduplication** — same physical station registered multiple times is collapsed to one record (highest power kept)
+5. **Geographic bounding box** — rejects stations whose GPS coordinates fall outside the motorway's expected corridor (catches IRVE coordinate errors)
 
 Note: `implantation_station` is inconsistently assigned in the IRVE data (genuine rest-area chargers appear as "Voirie" or "Parking privé") — do not use it as a filter.
 
