@@ -3534,6 +3534,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -3.453557,
+          48.549366
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078190",
+        "nom_station": "RELAIS PORZ AN PARK",
+        "adresse": "RN12, 22810 PLOUNEVEZ",
+        "operateur": "TotalEnergies Marketing France",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 150.0,
+        "autoroute": "N12",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           3.31121,
           43.86441
         ]
@@ -3757,6 +3778,27 @@
         "nbre_pdc": "10",
         "max_power_kw": 175.0,
         "autoroute": "A61",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.8759,
+          48.1675
+        ]
+      },
+      "properties": {
+        "id": "FRHPCPNF078576",
+        "nom_station": "RELAIS PAYS DE RENNES",
+        "adresse": "RN12 - AIRE DU PAYS DE RENNES",
+        "operateur": "TotalEnergies Charging Services",
+        "enseigne": "TotalEnergies Charge Rapide",
+        "nbre_pdc": "4",
+        "max_power_kw": 150.0,
+        "autoroute": "N12",
         "horaires": "24/7"
       }
     },
@@ -6697,6 +6739,48 @@
         "nbre_pdc": "12",
         "max_power_kw": 180.0,
         "autoroute": "A11",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.63495,
+          48.79192
+        ]
+      },
+      "properties": {
+        "id": "FRPY2P785500029",
+        "nom_station": "Avia Picoty/FR*PY2*P78550*0029",
+        "adresse": " N12, Aire de la Prairie, Maulette 78550 France",
+        "operateur": "Avia Picoty | FR*PY2",
+        "enseigne": "Avia Picoty",
+        "nbre_pdc": "6",
+        "max_power_kw": 180.0,
+        "autoroute": "N12",
+        "horaires": "24/7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.63116,
+          48.79245
+        ]
+      },
+      "properties": {
+        "id": "FRPY2P785500031",
+        "nom_station": "Avia Picoty/FR*PY2*P78550*0031",
+        "adresse": " N12, Aire du Val Raymond, Maulette 78550 France",
+        "operateur": "Avia Picoty | FR*PY2",
+        "enseigne": "Avia Picoty",
+        "nbre_pdc": "6",
+        "max_power_kw": 180.0,
+        "autoroute": "N12",
         "horaires": "24/7"
       }
     },

@@ -24,6 +24,8 @@ TARGET_MOTORWAYS = [
     'A35', 'A36', 'A40', 'A41', 'A42', 'A43',
     'A51', 'A54', 'A57', 'A61', 'A62', 'A63', 'A64',
     'A71', 'A72', 'A75', 'A85', 'A89',
+    # Voies express gratuites — Bretagne et Normandie
+    'N12', 'RN12', 'N24', 'RN24', 'N164', 'RN164', 'N165', 'RN165',
 ]
 MIN_POWER_KW = 150
 COORD_GRID_DECIMALS = 3  # ~111m, removes duplicate registrations
@@ -72,6 +74,12 @@ MOTORWAY_BOUNDS = {
     'A62': (-0.8, 1.6,  43.5, 44.9),   # Bordeaux → Agen → Toulouse
     'A63': (-2.1, -0.4, 43.3, 44.9),   # Bordeaux → Bayonne → Spanish border
     'A64': (-1.9, 1.7,  43.1, 43.8),   # Bayonne → Tarbes → Toulouse
+    # ── Voies express gratuites — Bretagne ────────────────────────────
+    # RN* variants are normalized to N* in detect_motorway(), so only N* bounds needed
+    'N12':  (-4.6, 1.8,  47.8, 49.0), # Paris → Alençon → Rennes → Brest
+    'N24':  (-3.5, -1.6, 47.7, 48.2), # Rennes → Ploërmel → Lorient
+    'N164': (-4.1, -2.0, 48.0, 48.5), # Rennes → Loudéac → Carhaix → Châteaulin
+    'N165': (-4.6, -1.4, 47.2, 48.0), # Nantes → Vannes → Lorient → Quimper → Brest
 }
 
 _MOTORWAY_PAT = re.compile(r'\b(' + '|'.join(TARGET_MOTORWAYS) + r')\b', re.IGNORECASE)
@@ -89,11 +97,15 @@ def parse_power(val: str) -> float:
         return 0.0
 
 
+# Normalize variant spellings to canonical route label
+_ROUTE_NORMALIZE = {'RN12': 'N12', 'RN24': 'N24', 'RN164': 'N164', 'RN165': 'N165'}
+
+
 def detect_motorway(row: dict) -> str | None:
     text = ' '.join([row.get('nom_station', ''), row.get('adresse_station', ''), row.get('observations', '')])
     for m in TARGET_MOTORWAYS:
         if re.search(r'\b' + m + r'\b', text, re.IGNORECASE):
-            return m
+            return _ROUTE_NORMALIZE.get(m, m)
     return None
 
 
