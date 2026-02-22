@@ -234,46 +234,49 @@ async function fetchRoute(from, to) {
   return data.routes[0];
 }
 
+// Singleton Web Worker for off-thread route filtering.
+let _filterWorker = null;
+function getFilterWorker() {
+  if (!_filterWorker) _filterWorker = new Worker('filter-worker.js');
+  return _filterWorker;
+}
+
 async function applyRouteFilter(routeLine, onProgress) {
-  // Pass 1 — fast pre-filter using a simplified route geometry.
-  // turf.nearestPointOnLine is O(route_segments) per station; OSRM's full-
-  // resolution geometry can have 10 000–50 000 points for a long route.
-  // Simplifying to ~500 representative points cuts the work by ~50–100×.
-  // tolerance 0.001° ≈ 111 m, so we widen the candidate threshold by that
-  // amount to avoid false negatives at the corridor boundary.
-  const SIMPLIFICATION_ERROR_KM = 0.15; // generous margin for 0.001° tolerance
-  const simplified = turf.simplify(routeLine, { tolerance: 0.001, highQuality: false });
+  const coords = routeLine.geometry.coordinates;
 
-  const candidates = [];
-  const CHUNK = 500;
-  for (let i = 0; i < markers.length; i += CHUNK) {
-    const end = Math.min(i + CHUNK, markers.length);
-    for (let j = i; j < end; j++) {
-      const m = markers[j];
-      const snap = turf.nearestPointOnLine(simplified, turf.point([m._lon, m._lat]), { units: 'kilometers' });
-      if (snap.properties.dist <= ROUTE_BUFFER_KM + SIMPLIFICATION_ERROR_KM) {
-        candidates.push(m);
+  // Pack coordinates into transferable Float64Arrays (zero-copy to worker).
+  const routeFlat = new Float64Array(coords.length * 2);
+  for (let i = 0; i < coords.length; i++) {
+    routeFlat[i * 2]     = coords[i][0];
+    routeFlat[i * 2 + 1] = coords[i][1];
+  }
+  const stationsFlat = new Float64Array(markers.length * 2);
+  for (let i = 0; i < markers.length; i++) {
+    stationsFlat[i * 2]     = markers[i]._lon;
+    stationsFlat[i * 2 + 1] = markers[i]._lat;
+  }
+
+  return new Promise(resolve => {
+    const worker = getFilterWorker();
+    worker.onmessage = ({ data }) => {
+      if (data.type === 'progress') {
+        if (onProgress) onProgress(data.done, data.total);
       } else {
-        m._distFromRoute  = snap.properties.dist; // definitely outside — store for completeness
-        m._distAlongRoute = snap.properties.location;
+        // data.type === 'done'
+        const results = new Float32Array(data.results);
+        for (let i = 0; i < markers.length; i++) {
+          markers[i]._distFromRoute  = results[i];
+          markers[i]._distAlongRoute = 0;
+        }
+        updateVisibility();
+        resolve();
       }
-    }
-    if (onProgress) onProgress(Math.round(end * 0.8), markers.length);
-    await new Promise(r => requestAnimationFrame(r));
-  }
-
-  // Pass 2 — precise check on the small candidate set only.
-  // Typically ≤ 100 stations for a 200 m corridor, so this is fast even with
-  // the full-resolution route geometry.
-  for (let i = 0; i < candidates.length; i++) {
-    const m = candidates[i];
-    const snap = turf.nearestPointOnLine(routeLine, turf.point([m._lon, m._lat]), { units: 'kilometers' });
-    m._distFromRoute  = snap.properties.dist;
-    m._distAlongRoute = snap.properties.location;
-  }
-  if (onProgress) onProgress(markers.length, markers.length);
-
-  updateVisibility();
+    };
+    worker.postMessage(
+      { routeFlat, stationsFlat, bufferKm: ROUTE_BUFFER_KM },
+      [routeFlat.buffer, stationsFlat.buffer],
+    );
+  });
 }
 
 function clearRoute() {
