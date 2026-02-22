@@ -1,4 +1,10 @@
-// ── Operator definitions ──────────────────────────────────────
+// ── Constants ─────────────────────────────────────────────────────────────
+
+const PARQUET_URL = 'https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet';
+const CACHE_DB    = 'irve-v1';
+const CACHE_TTL   = 24 * 60 * 60 * 1000; // 24 hours in ms
+
+// ── Operator definitions ──────────────────────────────────────────────────
 
 const OPERATORS = [
   { match: ['totalenergies'],      name: 'TotalEnergies',    color: '#F97316' },
@@ -27,14 +33,14 @@ function getOperator(props) {
 }
 
 
-// ── Marker sizing (radius in px) ──────────────────────────────
+// ── Marker sizing (radius in px) ──────────────────────────────────────────
 
 function countRadius(n) {
   // Log2 scale: 1 PDC → 8px, 4 → 10px, 8 → 12px, 16+ → 14px
   return 6 + Math.log2((n || 1) + 1) * 2;
 }
 
-// ── Map initialisation ────────────────────────────────────────
+// ── Map initialisation ────────────────────────────────────────────────────
 
 const map = L.map('map', {
   center: [45.1, 4.8],
@@ -54,17 +60,17 @@ L.tileLayer(
 ).addTo(map);
 
 
-// ── Route state (declared early — used by isVisible) ─────────
+// ── Route state (declared early — used by isVisible) ──────────────────────
 
 const ROUTE_BUFFER_KM = 0.2;
 let routeActive = false;
 let routeLayer  = null;
 
-// ── Draw markers (populated asynchronously by initApp) ────────
+// ── Draw markers (populated asynchronously by initApp) ────────────────────
 
 const markers = [];
 
-// ── Visibility + legend (reactive) ───────────────────────────
+// ── Visibility + legend (reactive) ───────────────────────────────────────
 
 const subEl    = document.querySelector('.panel-sub');
 const legendEl = document.getElementById('legend-items');
@@ -135,60 +141,120 @@ function appendLegendItem(name, color, count) {
   legendEl.appendChild(div);
 }
 
-// ── DuckDB WASM initialisation ────────────────────────────────
-// Loads stations.parquet from the server and populates the markers array.
-// Uses the single-threaded MVP/EH bundle — no COEP headers required.
+// ── IndexedDB cache helpers ───────────────────────────────────────────────
 
-async function initApp() {
-  subEl.textContent = 'Chargement DuckDB…';
+function openCache() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(CACHE_DB, 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('data');
+    req.onsuccess       = e => resolve(e.target.result);
+    req.onerror         = e => reject(e.target.error);
+  });
+}
 
-  // Dynamic import so the heavy WASM bundle is fetched only when needed.
-  const duckdb = await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@latest/+esm');
+async function cacheGet(key) {
+  const db = await openCache();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction('data', 'readonly').objectStore('data').get(key);
+    req.onsuccess = () => resolve(req.result ?? null);
+    req.onerror   = e => reject(e.target.error);
+  });
+}
 
-  // selectBundle picks the best available bundle (mvp or eh) for this browser.
-  const bundle = await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+async function cachePut(key, value) {
+  const db = await openCache();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction('data', 'readwrite').objectStore('data').put(value, key);
+    req.onsuccess = () => resolve();
+    req.onerror   = e => reject(e.target.error);
+  });
+}
 
-  // The DuckDB worker must share our origin — wrap the CDN worker in a Blob URL.
-  const workerUrl = URL.createObjectURL(
-    new Blob([`importScripts("${bundle.mainWorker}");`], { type: 'text/javascript' }),
-  );
-  const db = new duckdb.AsyncDuckDB(
-    new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
-    new Worker(workerUrl),
-  );
-  await db.instantiate(bundle.mainModule, bundle.pthreadWorker ?? null);
-  URL.revokeObjectURL(workerUrl);
+// ── DuckDB WASM filter SQL ────────────────────────────────────────────────
+// Replicates filter_stations.py logic entirely.
+// Reads irve_raw.parquet (registered in DuckDB virtual FS) and returns
+// one row per station with the same columns as the old stations.parquet.
 
-  subEl.textContent = 'Chargement des stations…';
+const FILTER_SQL = `
+WITH lat_lon AS (
+    SELECT *,
+        TRY_CAST(consolidated_latitude  AS DOUBLE) AS lat,
+        TRY_CAST(consolidated_longitude AS DOUBLE) AS lon,
+        TRY_CAST(
+            REPLACE(COALESCE(CAST(puissance_nominale AS VARCHAR), '0'), ',', '.')
+            AS DOUBLE
+        ) AS power_kw
+    FROM read_parquet('irve_raw.parquet')
+),
+station_first AS (
+    SELECT * FROM lat_lon
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY id_station_itinerance ORDER BY id_pdc_itinerance) = 1
+),
+station_power AS (
+    SELECT id_station_itinerance, MAX(power_kw) AS max_power_kw
+    FROM lat_lon
+    GROUP BY id_station_itinerance
+),
+ccs_sids AS (
+    SELECT DISTINCT id_station_itinerance FROM lat_lon
+    WHERE prise_type_combo_ccs = TRUE
+),
+station_ccs_fast AS (
+    SELECT ll.id_station_itinerance,
+           LEAST(
+               COUNT(DISTINCT ll.id_pdc_itinerance),
+               COALESCE(TRY_CAST(sf.nbre_pdc AS INTEGER), 999)
+           ) AS nbre_ccs_fast
+    FROM lat_lon ll
+    JOIN station_first sf ON ll.id_station_itinerance = sf.id_station_itinerance
+    WHERE ll.prise_type_combo_ccs = TRUE AND ll.power_kw >= 150
+    GROUP BY ll.id_station_itinerance, sf.nbre_pdc
+),
+truck_sids AS (
+    SELECT DISTINCT id_station_itinerance FROM lat_lon
+    WHERE lower(COALESCE(restriction_gabarit, '')) LIKE '%poids lourd%'
+       OR lower(COALESCE(nom_station, ''))         LIKE '%truck%'
+       OR lower(COALESCE(nom_station, ''))         LIKE '%camion%'
+       OR lower(COALESCE(nom_station, ''))         LIKE '%poids lourd%'
+)
+SELECT
+    sf.lon, sf.lat,
+    sf.id_station_itinerance                                   AS id,
+    COALESCE(sf.nom_station,    '')                            AS nom_station,
+    COALESCE(sf.adresse_station,'')                            AS adresse,
+    COALESCE(sf.nom_operateur,  '')                            AS operateur,
+    COALESCE(NULLIF(sf.nom_enseigne,''), sf.nom_operateur, '') AS enseigne,
+    COALESCE(CAST(sf.nbre_pdc AS VARCHAR), '')                 AS nbre_pdc,
+    sp.max_power_kw,
+    COALESCE(cf.nbre_ccs_fast, 0)                              AS nbre_ccs_fast,
+    COALESCE(sf.horaires, '')                                  AS horaires,
+    CASE WHEN sf.implantation_station = 'Station dédiée à la recharge rapide'
+         THEN 'dedicee' ELSE 'parking'
+    END AS station_type
+FROM station_first sf
+JOIN station_power      sp  ON sf.id_station_itinerance = sp.id_station_itinerance
+JOIN ccs_sids           ccs ON sf.id_station_itinerance = ccs.id_station_itinerance
+LEFT JOIN station_ccs_fast cf ON sf.id_station_itinerance = cf.id_station_itinerance
+LEFT JOIN truck_sids    ts  ON sf.id_station_itinerance = ts.id_station_itinerance
+WHERE sf.implantation_station IN (
+    'Station dédiée à la recharge rapide',
+    'Parking privé à usage public'
+)
+  AND sp.max_power_kw >= 150
+  AND COALESCE(TRY_CAST(sf.nbre_pdc AS INTEGER), 0) >= 4
+  AND sf.lat IS NOT NULL AND sf.lat != 0
+  AND sf.lon IS NOT NULL AND sf.lon != 0
+  AND ts.id_station_itinerance IS NULL
+ORDER BY sf.id_station_itinerance
+`;
 
-  // Fetch the Parquet file (~175 KB) and hand it to DuckDB's virtual FS.
-  const buf = await fetch('stations.parquet').then(r => r.arrayBuffer());
-  await db.registerFileBuffer('stations.parquet', new Uint8Array(buf));
+// ── Marker builder (shared between cache hit and fresh fetch paths) ───────
 
-  const conn  = await db.connect();
-  const table = await conn.query("SELECT * FROM read_parquet('stations.parquet')");
-  await conn.close();
-
-  // Build Leaflet markers from the Arrow table rows.
-  for (const row of table) {
-    const p = {
-      id:            String(row.id           ?? ''),
-      nom_station:   String(row.nom_station  ?? ''),
-      adresse:       String(row.adresse      ?? ''),
-      operateur:     String(row.operateur    ?? ''),
-      enseigne:      String(row.enseigne     ?? ''),
-      nbre_pdc:      String(row.nbre_pdc     ?? ''),
-      max_power_kw:  Number(row.max_power_kw  ?? 0),
-      nbre_ccs_fast: Number(row.nbre_ccs_fast ?? 0),
-      horaires:      String(row.horaires     ?? ''),
-      station_type:  String(row.station_type ?? 'dedicee'),
-    };
-    const lon = Number(row.lon);
-    const lat = Number(row.lat);
-    const op  = getOperator(p);
-
+function buildMarkers(rows) {
+  for (const p of rows) {
+    const op = getOperator(p);
     const displayCount = p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : (parseInt(p.nbre_pdc) || 1);
-    const circle = L.circleMarker([lat, lon], {
+    const circle = L.circleMarker([p.lat, p.lon], {
       radius:      countRadius(displayCount),
       fillColor:   op.color,
       color:       '#ffffff',
@@ -203,12 +269,98 @@ async function initApp() {
 
     circle._op   = op;
     circle._type = p.station_type || 'dedicee';
-    circle._lon  = lon;
-    circle._lat  = lat;
+    circle._lon  = p.lon;
+    circle._lat  = p.lat;
     circle.addTo(map);
     markers.push(circle);
   }
+}
 
+// ── Main init — cache-first, then live fetch + DuckDB filter ─────────────
+
+async function initApp() {
+  subEl.textContent = 'Chargement…';
+
+  // 1. Try IndexedDB cache (best-effort — failure falls through to live fetch)
+  const cached = await cacheGet('stations').catch(() => null);
+  if (cached && Date.now() - cached.ts < CACHE_TTL) {
+    buildMarkers(cached.rows);
+    updateVisibility();
+    return;
+  }
+
+  // 2. Initialize DuckDB WASM
+  subEl.textContent = 'Chargement DuckDB…';
+  const duckdb = await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@latest/+esm');
+  const bundle = await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+  const workerUrl = URL.createObjectURL(
+    new Blob([`importScripts("${bundle.mainWorker}");`], { type: 'text/javascript' }),
+  );
+  const db = new duckdb.AsyncDuckDB(
+    new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
+    new Worker(workerUrl),
+  );
+  await db.instantiate(bundle.mainModule, bundle.pthreadWorker ?? null);
+  URL.revokeObjectURL(workerUrl);
+
+  // 3. Fetch raw IRVE parquet from data.gouv.fr with progress indication
+  subEl.textContent = 'Téléchargement des données IRVE…';
+  const response = await fetch(PARQUET_URL);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+  const contentLength = response.headers.get('Content-Length');
+  const total = contentLength ? parseInt(contentLength, 10) : null;
+  const reader = response.body.getReader();
+  const chunks = [];
+  let received = 0;
+
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    received += value.length;
+    if (total) {
+      subEl.textContent = `Téléchargement IRVE… ${Math.round(received / total * 100)} %`;
+    }
+  }
+
+  // Reassemble chunks into a single Uint8Array
+  const buf = new Uint8Array(received);
+  let pos = 0;
+  for (const chunk of chunks) { buf.set(chunk, pos); pos += chunk.length; }
+
+  // 4. Register parquet in DuckDB virtual FS and run the filter query
+  subEl.textContent = 'Filtrage des stations…';
+  await db.registerFileBuffer('irve_raw.parquet', buf);
+
+  const conn  = await db.connect();
+  const table = await conn.query(FILTER_SQL);
+  await conn.close();
+
+  // 5. Convert Arrow rows to plain JS objects (required for JSON serialisation)
+  const rows = [];
+  for (const row of table) {
+    rows.push({
+      lon:           Number(row.lon),
+      lat:           Number(row.lat),
+      id:            String(row.id            ?? ''),
+      nom_station:   String(row.nom_station   ?? ''),
+      adresse:       String(row.adresse       ?? ''),
+      operateur:     String(row.operateur     ?? ''),
+      enseigne:      String(row.enseigne      ?? ''),
+      nbre_pdc:      String(row.nbre_pdc      ?? ''),
+      max_power_kw:  Number(row.max_power_kw  ?? 0),
+      nbre_ccs_fast: Number(row.nbre_ccs_fast ?? 0),
+      horaires:      String(row.horaires      ?? ''),
+      station_type:  String(row.station_type  ?? 'dedicee'),
+    });
+  }
+
+  // 6. Persist to IndexedDB for next 24 h (best-effort — never blocks rendering)
+  cachePut('stations', { ts: Date.now(), rows }).catch(() => {});
+
+  // 7. Build markers and refresh map
+  buildMarkers(rows);
   updateVisibility();
 }
 
@@ -217,7 +369,7 @@ initApp().catch(err => {
   subEl.textContent = '⚠ Erreur de chargement';
 });
 
-// ── Popup builder ─────────────────────────────────────────────
+// ── Popup builder ─────────────────────────────────────────────────────────
 
 function buildPopup(p, op) {
   const fmt = (v, fallback = '—') => (v && String(v).trim()) ? v : fallback;
@@ -253,7 +405,7 @@ function buildPopup(p, op) {
     </div>`;
 }
 
-// ── Route planning ────────────────────────────────────────────
+// ── Route planning ─────────────────────────────────────────────────────────
 
 async function geocode(query) {
   const url  = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;

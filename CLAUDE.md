@@ -12,86 +12,59 @@ Interactive map of EV charging stations at highway rest areas along all major Fr
 Source: [data.gouv.fr](https://www.data.gouv.fr/datasets/base-nationale-des-irve-infrastructures-de-recharge-pour-vehicules-electriques)
 Updated: daily. Parquet file is ~6 MB (188k rows, one row per connector/PDC).
 
-**Pre-filtered data** is already in `stations_autoroutes.geojson` (one feature per station ≥150 kW). Do not commit the raw Parquet — it is gitignored.
-
-To regenerate the GeoJSON from a fresh Parquet download:
-```bash
-wget -O irve_raw.parquet "https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet"
-python3 filter_stations.py
+The app fetches the raw Parquet **directly from data.gouv.fr at runtime**:
+```
+https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet
 ```
 
-`filter_stations.py` applies filters in order:
-1. **Dedicated fast-charging station** — `implantation_station = 'Station dédiée à la recharge rapide'` pre-filters to standalone fast-charging stations (excludes retail / street parking)
-2. **Rest-area identification** — requires "Aire de" / "Aire d'" in the station name or address *across all connectors*, OR address starts with a motorway reference (e.g. `A6 - LYON PARIS`). Catches TotalEnergies "RELAIS" stations and unnamed Zunder stations on motorways.
-3. **Power ≥ 150 kW** — at least one connector per station meets the threshold
-4. **Geographic motorway assignment** — closest normalised bounding-box centre assigns the motorway label; stations outside all target corridors are dropped
-5. **Coordinate deduplication** — same physical station registered multiple times is collapsed to one record (highest power kept)
-6. **Geographic bounding box** — rejects stations whose GPS coordinates fall outside the assigned motorway's expected corridor (catches IRVE coordinate errors)
-
-### Key Operators on Target Motorways (after filtering)
-
-357 stations total from the Parquet run.
-
-| Operator | Top motorways |
-|----------|--------------|
-| TotalEnergies | A26 (18), A6 (11), A7 (8), A10 (8) … total 97 |
-| IONITY | A10 (12), A6 (8), A7 (8), A11 (7) … total 89 |
-| ENGIE Vianeo | A26 (13), A6 (10), A4 (6) … total 67 |
-| Fastned | A26 (9), A4 (6), A40 (3) … total 33 |
-| Allego / Electra | A9, A10, A7, A11 … total 18 |
-| Zunder | A63 (4), A71, A10 … total 9 |
-| bp pulse | A10 (6) … total 7 |
-| e-Vadea | A36 |
-
-### GeoJSON Schema
-
-Each feature in `stations_autoroutes.geojson`:
-```json
-{
-  "type": "Feature",
-  "geometry": { "type": "Point", "coordinates": [lon, lat] },
-  "properties": {
-    "id": "string",
-    "nom_station": "string",
-    "adresse": "string",
-    "operateur": "string",
-    "enseigne": "string (brand name)",
-    "nbre_pdc": "number of charging points",
-    "max_power_kw": 350,
-    "autoroute": "A7",
-    "horaires": "string (e.g. 24/7)"
-  }
-}
-```
+No pre-processing step is required. The filter logic runs in DuckDB WASM in the browser.
 
 ## Architecture
 
-Static frontend — no backend, no build step. Four files:
+Static frontend — no backend, no build step. Three files:
 
 | File | Role |
 |------|------|
-| `index.html` | Shell — loads Leaflet CDN, `data.js`, `app.js`, `style.css` |
-| `app.js` | Map init (CartoDB Positron tiles), markers, filters, popups, legend |
+| `index.html` | Shell — loads Leaflet CDN, turf.js, `app.js`, `style.css` |
+| `app.js` | Map init, DuckDB WASM filter, IndexedDB cache, markers, route filtering |
 | `style.css` | Panel, legend, popup, marker styles |
-| `data.js` | Embedded GeoJSON constant (`STATIONS_DATA`) — enables `file://` use |
+| `filter-worker.js` | Web Worker for off-thread route corridor filtering |
 
-**Stack:** Leaflet 1.9.4 (CDN) + CartoDB Positron tiles (no API key)
+**Stack:** Leaflet 1.9.4 + CartoDB Positron tiles + DuckDB WASM (CDN) + turf.js
+
+### Data Flow
+
+1. **Cache hit** (< 24h): reads filtered rows from IndexedDB, builds markers immediately — no network call to data.gouv.fr.
+2. **Cache miss**: initialises DuckDB WASM, downloads raw parquet (~6 MB) from data.gouv.fr with progress display, runs `FILTER_SQL` (CTE chain in `app.js`), stores result in IndexedDB, builds markers.
+
+### Filter Logic (`FILTER_SQL` in `app.js`)
+
+Replicates the former `filter_stations.py` exactly:
+1. **Power computation** — parses `puissance_nominale` (handles French decimal comma)
+2. **Station deduplication** — one representative connector per `id_station_itinerance`
+3. **Max power per station** — across all connectors
+4. **CCS Combo detection** — any connector with `prise_type_combo_ccs = TRUE`
+5. **CCS fast count** — connectors with CCS and power ≥ 150 kW, capped by `nbre_pdc`
+6. **Truck exclusion** — `restriction_gabarit LIKE '%poids lourd%'` or name keywords
+7. **Final filter**: implantation IN (dedicated / private parking), max_power ≥ 150 kW, nbre_pdc ≥ 4, valid GPS, not truck
+
+### Cache
+
+- **Storage**: IndexedDB database `irve-v1`, object store `data`, key `stations`
+- **Entry**: `{ ts: Date.now(), rows: [...] }` — plain JS objects
+- **TTL**: 24 hours
 
 ## Development
 
 ```bash
-# Open the map locally
 python3 -m http.server 8765
 # then open http://localhost:8765
-
-# Or open directly (works because data is embedded in data.js)
-open index.html
 ```
 
-## Updating the data
+The app requires a HTTP server (not `file://`) because DuckDB WASM uses Web Workers
+which are blocked on the `file://` protocol.
 
-```bash
-wget -O irve_raw.parquet "https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet"
-python3 filter_stations.py
-# Regenerates both stations_autoroutes.geojson and data.js
-```
+## Legacy
+
+`filter_stations.py` is kept for reference — it documents the business logic that
+is now ported to `FILTER_SQL` in `app.js`. It is no longer needed to run the app.

@@ -1,5 +1,7 @@
 irve_raw.csv
+irve_raw.parquet
 *.csv
+__pycache__/
 node_modules/
 .next/
 .env*.local
