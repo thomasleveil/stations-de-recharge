@@ -45,12 +45,23 @@ function countRadius(n) {
 
 // ── Map initialisation ────────────────────────────────────────────────────
 
+const _savedLat  = parseFloat(localStorage.getItem('irve-map-lat'))  || 45.1;
+const _savedLon  = parseFloat(localStorage.getItem('irve-map-lon'))  || 4.8;
+const _savedZoom = parseInt(localStorage.getItem('irve-map-zoom'), 10) || 7;
+
 const map = L.map('map', {
-  center: [45.1, 4.8],
-  zoom: 7,
+  center: [_savedLat, _savedLon],
+  zoom: _savedZoom,
   zoomControl: false,
 });
 L.control.zoom({ position: 'topright' }).addTo(map);
+
+map.on('moveend zoomend', () => {
+  const c = map.getCenter();
+  localStorage.setItem('irve-map-lat',  c.lat.toFixed(6));
+  localStorage.setItem('irve-map-lon',  c.lng.toFixed(6));
+  localStorage.setItem('irve-map-zoom', map.getZoom());
+});
 
 const cartoTile = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
