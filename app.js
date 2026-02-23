@@ -56,11 +56,15 @@ const map = L.map('map', {
 });
 L.control.zoom({ position: 'topright' }).addTo(map);
 
+let _saveMapTimer = null;
 map.on('moveend zoomend', () => {
-  const c = map.getCenter();
-  localStorage.setItem('irve-map-lat',  c.lat.toFixed(6));
-  localStorage.setItem('irve-map-lon',  c.lng.toFixed(6));
-  localStorage.setItem('irve-map-zoom', map.getZoom());
+  clearTimeout(_saveMapTimer);
+  _saveMapTimer = setTimeout(() => {
+    const c = map.getCenter();
+    localStorage.setItem('irve-map-lat',  c.lat.toFixed(6));
+    localStorage.setItem('irve-map-lon',  c.lng.toFixed(6));
+    localStorage.setItem('irve-map-zoom', map.getZoom());
+  }, 500);
 });
 
 const cartoTile = L.tileLayer(
