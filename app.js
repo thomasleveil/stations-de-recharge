@@ -722,6 +722,9 @@ function clearRoute() {
   btn.style.display = '';
   btn.disabled = false;
   btn.textContent = 'Calculer →';
+
+  // Mobile: restore full panel
+  document.getElementById('panel').classList.remove('route-calculated', 'panel-expanded');
 }
 
 let currentRouteKm = 0;
@@ -800,6 +803,12 @@ async function calculateRoute() {
 
     document.getElementById('route-clear').style.display = '';
     btn.style.display = 'none';
+
+    // Mobile: collapse panel to corridor + parkings only
+    if (window.matchMedia('(max-width: 640px)').matches) {
+      document.getElementById('panel').classList.add('route-calculated');
+      document.getElementById('panel').classList.remove('panel-expanded');
+    }
   } catch (e) {
     info.className = 'route-error';
     info.textContent = '⚠ ' + e.message;
@@ -983,5 +992,26 @@ setupAutocomplete('route-end');
     req.onsuccess = () => window.location.reload();
     req.onerror   = () => window.location.reload();
     req.onblocked = () => window.location.reload();
+  });
+}());
+
+// ── Panel title toggle (mobile, post-route-calculation) ──────────────────
+(function () {
+  document.getElementById('panel-title').addEventListener('click', () => {
+    const panel = document.getElementById('panel');
+    if (window.matchMedia('(max-width: 640px)').matches && panel.classList.contains('route-calculated')) {
+      panel.classList.toggle('panel-expanded');
+    }
+  });
+}());
+
+// ── Legend toggle (mobile only) ───────────────────────────────────────────
+(function () {
+  const legend = document.getElementById('legend');
+  const toggle = document.getElementById('legend-toggle');
+  toggle.addEventListener('click', () => {
+    if (window.matchMedia('(max-width: 640px)').matches) {
+      legend.classList.toggle('open');
+    }
   });
 }());
