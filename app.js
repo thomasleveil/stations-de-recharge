@@ -336,6 +336,7 @@ LEFT JOIN truck_sids  ts ON sf.id_station_itinerance = ts.id_station_itinerance
 WHERE sf.lat IS NOT NULL AND sf.lat != 0
   AND sf.lon IS NOT NULL AND sf.lon != 0
   AND ts.id_station_itinerance IS NULL
+  AND sf.id_station_itinerance NOT LIKE 'FRTSL%'
 ORDER BY sf.id_station_itinerance
 `;
 
