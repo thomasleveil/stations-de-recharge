@@ -503,3 +503,44 @@ html, body {
   background: none !important;
   border: none !important;
 }
+
+/* ── Geolocation arrow marker ──────────────────────────────── */
+
+.geoloc-marker-outer {
+  background: none !important;
+  border: none !important;
+}
+
+.geoloc-marker {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
+}
+
+/* ── Locate control button ─────────────────────────────────── */
+
+.leaflet-control-locate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  cursor: pointer;
+  color: #333;
+  font-family: inherit;
+}
+
+.leaflet-control-locate:hover:not(:disabled) {
+  background: #f4f4f4;
+}
+
+.leaflet-control-locate:disabled {
+  color: #bbb;
+  cursor: default;
+}
+
+.leaflet-control-locate.geoloc-retry {
+  color: #f59e0b;
+}

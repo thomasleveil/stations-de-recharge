@@ -779,7 +779,7 @@ async function calculateRoute() {
   const endInput   = document.getElementById('route-end');
   const startVal   = startInput.value.trim();
   const endVal     = endInput.value.trim();
-  if (!startVal || !endVal) return;
+  if (!endVal || (!startVal && !geoState.available)) return;
 
   const btn  = document.getElementById('route-go');
   const info = document.getElementById('route-info');
@@ -796,9 +796,10 @@ async function calculateRoute() {
   const t0 = performance.now();
 
   try {
-    await step('📍 Géocodage du départ…');
+    const useGeoStart = !startVal && geoState.available;
+    await step(useGeoStart ? '📍 Position GPS du départ…' : '📍 Géocodage du départ…');
     const t1 = performance.now();
-    const from = startInput._coords || await geocode(startVal);
+    const from = useGeoStart ? [geoState.lng, geoState.lat] : (startInput._coords || await geocode(startVal));
     await step('📍 Géocodage de l\'arrivée…');
     const to = endInput._coords || await geocode(endVal);
     console.log(`geocode: ${Math.round(performance.now() - t1)} ms`);
@@ -1058,3 +1059,146 @@ setupAutocomplete('route-end');
     }
   });
 }());
+
+// ── Geolocation ────────────────────────────────────────────────────────────
+
+const geoState = { available: false, lat: null, lng: null, heading: 0 };
+const _geoHistory = [];   // rolling buffer of last positions for bearing
+let _geoMarker    = null;
+let _geoLocateBtn = null;
+let _geoWatchId   = null;
+
+function _geoComputeBearing(lat1, lon1, lat2, lon2) {
+  const toRad = x => x * Math.PI / 180;
+  const y = Math.sin(toRad(lon2 - lon1)) * Math.cos(toRad(lat2));
+  const x = Math.cos(toRad(lat1)) * Math.sin(toRad(lat2))
+          - Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(toRad(lon2 - lon1));
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+
+function _geoHaversineM(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const toRad = x => x * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) ** 2
+          + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function _makeArrowIcon(heading) {
+  return L.divIcon({
+    className: 'geoloc-marker-outer',
+    html: `<div class="geoloc-marker" style="transform:rotate(${Math.round(heading)}deg)">` +
+          `<svg width="24" height="24" viewBox="0 0 24 24">` +
+          `<path d="M12 2 L20 20 L12 16 L4 20 Z" fill="#EF4444" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>` +
+          `</svg></div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  });
+}
+
+function _onGeoSuccess(pos) {
+  const lat = pos.coords.latitude;
+  const lng = pos.coords.longitude;
+
+  _geoHistory.push({ lat, lng });
+  if (_geoHistory.length > 5) _geoHistory.shift();
+
+  // Prefer native heading (mobile GPS), fall back to computed from history
+  let heading = (pos.coords.heading != null && !isNaN(pos.coords.heading))
+    ? pos.coords.heading : null;
+
+  if (heading === null && _geoHistory.length >= 2) {
+    const last = _geoHistory[_geoHistory.length - 1];
+    for (let i = _geoHistory.length - 2; i >= 0; i--) {
+      const p = _geoHistory[i];
+      if (_geoHaversineM(p.lat, p.lng, last.lat, last.lng) >= 10) {
+        heading = _geoComputeBearing(p.lat, p.lng, last.lat, last.lng);
+        break;
+      }
+    }
+  }
+  // Keep last known heading when stationary
+  if (heading === null) heading = geoState.heading;
+
+  geoState.available = true;
+  geoState.lat = lat;
+  geoState.lng = lng;
+  geoState.heading = heading;
+
+  const icon = _makeArrowIcon(heading);
+  if (!_geoMarker) {
+    _geoMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000, interactive: false }).addTo(map);
+  } else {
+    _geoMarker.setLatLng([lat, lng]);
+    _geoMarker.setIcon(icon);
+  }
+
+  if (_geoLocateBtn) {
+    _geoLocateBtn.disabled = false;
+    _geoLocateBtn.title = 'Centrer sur ma position';
+    _geoLocateBtn.classList.remove('geoloc-retry');
+  }
+
+  const startInput = document.getElementById('route-start');
+  if (startInput && !startInput.value) startInput.placeholder = 'Ma position (GPS)';
+}
+
+function _onGeoError(err) {
+  geoState.available = false;
+  if (err.code !== 1) console.warn('Géolocalisation :', err.message);
+  // Permission refusée : activer le bouton pour permettre une nouvelle tentative
+  if (err.code === 1 && _geoLocateBtn) {
+    _geoLocateBtn.disabled = false;
+    _geoLocateBtn.title = 'Activer la géolocalisation';
+    _geoLocateBtn.classList.add('geoloc-retry');
+  }
+}
+
+// Locate button — custom Leaflet control positioned below zoom buttons
+(function () {
+  const LocateControl = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd() {
+      const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+      const btn = L.DomUtil.create('button', 'leaflet-control-locate', container);
+      btn.type = 'button';
+      btn.title = 'Géolocalisation indisponible';
+      btn.disabled = true;
+      btn.innerHTML =
+        `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">` +
+        `<circle cx="12" cy="12" r="4"/>` +
+        `<line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/>` +
+        `<line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/>` +
+        `</svg>`;
+      L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation);
+      L.DomEvent.on(btn, 'click', () => {
+        if (geoState.available) {
+          map.setView([geoState.lat, geoState.lng], 14);
+        } else if (navigator.geolocation) {
+          // Re-demander la permission (déclenche le dialog navigateur si pas encore refus permanent)
+          navigator.geolocation.getCurrentPosition(
+            pos => { _onGeoSuccess(pos); _startWatch(); },
+            _onGeoError,
+            { enableHighAccuracy: true, timeout: 10000 },
+          );
+        }
+      });
+      _geoLocateBtn = btn;
+      return container;
+    },
+  });
+  new LocateControl().addTo(map);
+}());
+
+function _startWatch() {
+  if (_geoWatchId !== null) navigator.geolocation.clearWatch(_geoWatchId);
+  _geoWatchId = navigator.geolocation.watchPosition(_onGeoSuccess, _onGeoError, {
+    enableHighAccuracy: true,
+    maximumAge: 5000,
+    timeout: 30000,
+  });
+}
+
+// Start watching — triggers the browser's permission prompt at page load
+if (navigator.geolocation) _startWatch();
