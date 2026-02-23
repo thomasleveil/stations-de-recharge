@@ -218,3 +218,71 @@ html, body {
   font-weight: 800;
   color: #1e293b;
 }
+
+/* ── Autocomplete ──────────────────────────────────────────── */
+
+.autocomplete-wrap {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.autocomplete-wrap .route-input {
+  margin-bottom: 0;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1.5px solid #3b82f6;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  z-index: 2000;
+  max-height: 180px;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.autocomplete-item {
+  padding: 6px 8px;
+  font-size: 12px;
+  color: #1e293b;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover { background: #eff6ff; }
+
+/* ── Corridor row ──────────────────────────────────────────── */
+
+#corridor-row {
+  margin-bottom: 4px;
+}
+
+#corridor-label {
+  font-size: 11px;
+  color: #64748b;
+  cursor: pointer;
+  user-select: none;
+}
+
+#corridor-label strong {
+  color: #1D4ED8;
+}
+
+#corridor-label:hover strong {
+  text-decoration: underline;
+}
+
+#corridor-slider {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  accent-color: #1D4ED8;
+}

@@ -48,7 +48,7 @@ const map = L.map('map', {
   zoomControl: true,
 });
 
-L.tileLayer(
+const cartoTile = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
   {
     attribution:
@@ -59,10 +59,27 @@ L.tileLayer(
   }
 ).addTo(map);
 
+const aerialTile = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {
+    attribution: 'Tiles &copy; Esri &mdash; Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP',
+    maxZoom: 19,
+  }
+);
+
+map.on('zoomend', () => {
+  const z = map.getZoom();
+  if (z >= 18) {
+    if (map.hasLayer(cartoTile)) { map.removeLayer(cartoTile); aerialTile.addTo(map); }
+  } else {
+    if (map.hasLayer(aerialTile)) { map.removeLayer(aerialTile); cartoTile.addTo(map); }
+  }
+});
+
 
 // ── Route state (declared early — used by isVisible) ──────────────────────
 
-const ROUTE_BUFFER_KM = 0.2;
+let ROUTE_BUFFER_KM = 0.2;
 let routeActive = false;
 let routeLayer  = null;
 
@@ -120,12 +137,10 @@ function updateLegend() {
     }
   });
 
-  // Render in predefined order
-  OPERATORS.forEach(op => {
-    const entry = opCounts.get(op.name);
-    if (!entry) return;
-    appendLegendItem(op.name, op.color, entry.count);
-  });
+  // Render sorted by station count descending
+  [...opCounts.values()]
+    .sort((a, b) => b.count - a.count)
+    .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count));
 
   // Catch-all "Autre"
   if (autreCount > 0) appendLegendItem('Autre', '#6B7280', autreCount);
@@ -493,9 +508,13 @@ function clearRoute() {
   btn.textContent = 'Calculer →';
 }
 
-document.getElementById('route-go').addEventListener('click', async () => {
-  const startVal = document.getElementById('route-start').value.trim();
-  const endVal   = document.getElementById('route-end').value.trim();
+let currentRouteKm = 0;
+
+async function calculateRoute() {
+  const startInput = document.getElementById('route-start');
+  const endInput   = document.getElementById('route-end');
+  const startVal   = startInput.value.trim();
+  const endVal     = endInput.value.trim();
   if (!startVal || !endVal) return;
 
   const btn  = document.getElementById('route-go');
@@ -515,9 +534,9 @@ document.getElementById('route-go').addEventListener('click', async () => {
   try {
     await step('📍 Géocodage du départ…');
     const t1 = performance.now();
-    const from = await geocode(startVal);
+    const from = startInput._coords || await geocode(startVal);
     await step('📍 Géocodage de l\'arrivée…');
-    const to = await geocode(endVal);
+    const to = endInput._coords || await geocode(endVal);
     console.log(`geocode: ${Math.round(performance.now() - t1)} ms`);
 
     await step('🗺 Calcul d\'itinéraire…');
@@ -529,6 +548,7 @@ document.getElementById('route-go').addEventListener('click', async () => {
     routeLayer = L.geoJSON(route.geometry, {
       style: { color: '#1D4ED8', weight: 4, opacity: 0.75 },
     }).addTo(map);
+    routeLayer.bringToBack();
     map.fitBounds(routeLayer.getBounds(), { padding: [40, 40] });
 
     info.className = 'route-progress';
@@ -544,9 +564,9 @@ document.getElementById('route-go').addEventListener('click', async () => {
 
     console.log(`total: ${Math.round(performance.now() - t0)} ms`);
 
-    const km = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
+    currentRouteKm = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
     info.className = 'route-stat';
-    info.textContent = `${km} km · corridor ±${ROUTE_BUFFER_KM * 1000} m`;
+    info.textContent = `${currentRouteKm} km · corridor ±${ROUTE_BUFFER_KM * 1000} m`;
 
     document.getElementById('route-clear').style.display = '';
     btn.style.display = 'none';
@@ -556,7 +576,9 @@ document.getElementById('route-go').addEventListener('click', async () => {
     btn.disabled = false;
     btn.textContent = 'Calculer →';
   }
-});
+}
+
+document.getElementById('route-go').addEventListener('click', calculateRoute);
 
 document.getElementById('route-clear').addEventListener('click', clearRoute);
 
@@ -564,7 +586,7 @@ document.getElementById('check-parking').addEventListener('change', updateVisibi
 
 ['route-start', 'route-end'].forEach(id =>
   document.getElementById(id).addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('route-go').click();
+    if (e.key === 'Enter') calculateRoute();
   })
 );
 
@@ -578,3 +600,71 @@ let nominatimWarmedUp = false;
     fetch('https://nominatim.openstreetmap.org/status.php', { method: 'HEAD' }).catch(() => {});
   }, { once: false })
 );
+
+// ── Corridor slider ────────────────────────────────────────────────────────
+
+document.getElementById('corridor-label').addEventListener('click', () => {
+  const slider = document.getElementById('corridor-slider');
+  slider.style.display = slider.style.display === 'none' ? 'block' : 'none';
+});
+
+document.getElementById('corridor-slider').addEventListener('input', () => {
+  const v = parseInt(document.getElementById('corridor-slider').value, 10);
+  ROUTE_BUFFER_KM = v / 10;
+  document.getElementById('corridor-value').textContent = (v * 100) + ' m';
+  if (routeActive) {
+    const info = document.getElementById('route-info');
+    info.className = 'route-stat';
+    info.textContent = `${currentRouteKm} km · corridor ±${ROUTE_BUFFER_KM * 1000} m`;
+    updateVisibility();
+  }
+});
+
+// ── Autocomplete ───────────────────────────────────────────────────────────
+
+function setupAutocomplete(inputId) {
+  const input    = document.getElementById(inputId);
+  const dropdown = document.createElement('div');
+  dropdown.className = 'autocomplete-dropdown';
+  input.parentNode.appendChild(dropdown);
+
+  let debounceTimer = null;
+
+  input.addEventListener('input', () => {
+    input._coords = null;
+    const q = input.value.trim();
+    clearTimeout(debounceTimer);
+    dropdown.innerHTML = '';
+    if (q.length < 3) return;
+    debounceTimer = setTimeout(() => fetchAutocompleteSuggestions(q, dropdown, input), 300);
+  });
+
+  input.addEventListener('blur', () => {
+    setTimeout(() => { dropdown.innerHTML = ''; }, 200);
+  });
+}
+
+async function fetchAutocompleteSuggestions(q, dropdown, input) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=fr,be,ch,lu`;
+    const data = await fetch(url, { headers: { 'Accept-Language': 'fr' } }).then(r => r.json());
+    dropdown.innerHTML = '';
+    data.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'autocomplete-item';
+      // Show a short label: first two comma-separated parts of display_name
+      const parts  = item.display_name.split(',');
+      div.textContent = parts.slice(0, 2).join(',').trim();
+      div.title = item.display_name;
+      div.addEventListener('mousedown', () => {
+        input.value  = parts.slice(0, 2).join(',').trim();
+        input._coords = [parseFloat(item.lon), parseFloat(item.lat)];
+        dropdown.innerHTML = '';
+      });
+      dropdown.appendChild(div);
+    });
+  } catch (_) { /* silent */ }
+}
+
+setupAutocomplete('route-start');
+setupAutocomplete('route-end');

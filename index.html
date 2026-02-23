@@ -18,11 +18,19 @@
     <!-- Route planning -->
     <div id="route-section">
       <div class="route-label">Itinéraire</div>
-      <input id="route-start" class="route-input" type="text" placeholder="Départ" autocomplete="off" />
-      <input id="route-end"   class="route-input" type="text" placeholder="Arrivée" autocomplete="off" />
+      <div class="autocomplete-wrap">
+        <input id="route-start" class="route-input" type="text" placeholder="Départ" autocomplete="off" />
+      </div>
+      <div class="autocomplete-wrap">
+        <input id="route-end" class="route-input" type="text" placeholder="Arrivée" autocomplete="off" />
+      </div>
       <div class="route-actions">
         <button id="route-go"    class="route-btn">Calculer →</button>
         <button id="route-clear" class="route-btn route-btn-clear" style="display:none">✕ Effacer</button>
+      </div>
+      <div id="corridor-row">
+        <span id="corridor-label">Corridor : <strong id="corridor-value">200 m</strong></span>
+        <input type="range" id="corridor-slider" min="2" max="10" step="1" value="2" style="display:none" />
       </div>
       <div id="route-info"></div>
     </div>
