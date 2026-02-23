@@ -812,6 +812,7 @@ async function calculateRoute() {
     if (routeLayer) map.removeLayer(routeLayer);
     routeLayer = L.geoJSON(route.geometry, {
       style: { color: '#1D4ED8', weight: 4, opacity: 0.75 },
+      renderer: canvasRenderer,
     }).addTo(map);
     routeLayer.bringToBack();
     map.fitBounds(routeLayer.getBounds(), { padding: [40, 40] });
