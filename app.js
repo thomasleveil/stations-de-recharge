@@ -879,3 +879,29 @@ async function fetchAutocompleteSuggestions(q, dropdown, input) {
 
 setupAutocomplete('route-start');
 setupAutocomplete('route-end');
+
+// ── Settings menu ──────────────────────────────────────────────────────────
+
+(function setupSettings() {
+  const btn  = document.getElementById('settings-btn');
+  const menu = document.getElementById('settings-menu');
+  const bustBtn = document.getElementById('cache-bust-btn');
+
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  });
+
+  document.addEventListener('click', () => {
+    menu.style.display = 'none';
+  });
+
+  menu.addEventListener('click', e => e.stopPropagation());
+
+  bustBtn.addEventListener('click', () => {
+    const req = indexedDB.deleteDatabase('irve-v1');
+    req.onsuccess = () => window.location.reload();
+    req.onerror   = () => window.location.reload();
+    req.onblocked = () => window.location.reload();
+  });
+}());
