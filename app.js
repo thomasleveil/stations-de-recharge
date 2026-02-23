@@ -127,10 +127,7 @@ const subEl    = document.querySelector('.panel-sub');
 const legendEl = document.getElementById('legend-items');
 
 function isVisible(m) {
-  const includeParking = document.getElementById('check-parking').checked;
-  const typeOk  = m._type === 'dedicee' || includeParking;
-  const routeOk = !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
-  return typeOk && routeOk;
+  return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
 }
 
 function isCheapVisible(m) {
@@ -425,9 +422,8 @@ function buildMarkers(rows) {
     circle.bindPopup(L.popup({ maxWidth: 300 }).setContent(buildPopup(p, op)));
     circle.bindTooltip(p.nom_station, { direction: 'top', offset: [0, -8] });
 
-    circle._op   = op;
-    circle._type = p.station_type || 'dedicee';
-    circle._lon  = p.lon;
+    circle._op  = op;
+    circle._lon = p.lon;
     circle._lat  = p.lat;
     circle.addTo(map);
     markers.push(circle);
@@ -826,8 +822,6 @@ async function calculateRoute() {
 document.getElementById('route-go').addEventListener('click', calculateRoute);
 
 document.getElementById('route-clear').addEventListener('click', clearRoute);
-
-document.getElementById('check-parking').addEventListener('change', updateVisibility);
 
 // Keyboard Enter on route inputs is handled inside setupAutocomplete below.
 
