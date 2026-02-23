@@ -53,8 +53,12 @@ const map = L.map('map', {
   center: [_savedLat, _savedLon],
   zoom: _savedZoom,
   zoomControl: false,
+  preferCanvas: true,
 });
 L.control.zoom({ position: 'topright' }).addTo(map);
+
+// Shared canvas renderer with padding so markers near viewport edges stay visible during panning.
+const canvasRenderer = L.canvas({ padding: 0.5 });
 
 let _saveMapTimer = null;
 map.on('moveend zoomend', () => {
@@ -418,6 +422,7 @@ function buildMarkers(rows) {
     const op = getOperator(p);
     const displayCount = p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : (parseInt(p.nbre_pdc) || 1);
     const circle = L.circleMarker([p.lat, p.lon], {
+      renderer:    canvasRenderer,
       radius:      countRadius(displayCount),
       fillColor:   op.color,
       color:       '#ffffff',
@@ -474,6 +479,7 @@ function buildCheapMarkers(rows) {
       circle.setStyle = (opts) => circle.setOpacity(opts.opacity ?? 1);
     } else {
       circle = L.circleMarker([p.lat, p.lon], {
+        renderer:    canvasRenderer,
         radius:      7,
         fillColor:   op.color,
         color:       '#ffffff',
