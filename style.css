@@ -274,7 +274,14 @@ html, body {
 }
 
 .autocomplete-item:last-child { border-bottom: none; }
-.autocomplete-item:hover { background: #eff6ff; }
+.autocomplete-item:hover,
+.autocomplete-item-active { background: #eff6ff; }
+
+/* ── Zoom control (below settings button) ─────────────────── */
+
+.leaflet-top.leaflet-right {
+  top: 52px; /* settings btn: 10px top + 32px height + 10px gap */
+}
 
 /* ── Settings button (top-right) ──────────────────────────── */
 

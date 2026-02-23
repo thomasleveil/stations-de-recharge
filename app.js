@@ -48,8 +48,9 @@ function countRadius(n) {
 const map = L.map('map', {
   center: [45.1, 4.8],
   zoom: 7,
-  zoomControl: true,
+  zoomControl: false,
 });
+L.control.zoom({ position: 'topright' }).addTo(map);
 
 const cartoTile = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
@@ -795,11 +796,7 @@ document.getElementById('route-clear').addEventListener('click', clearRoute);
 
 document.getElementById('check-parking').addEventListener('change', updateVisibility);
 
-['route-start', 'route-end'].forEach(id =>
-  document.getElementById(id).addEventListener('keydown', e => {
-    if (e.key === 'Enter') calculateRoute();
-  })
-);
+// Keyboard Enter on route inputs is handled inside setupAutocomplete below.
 
 // Warm up the connection to Nominatim on first input focus so the TCP+TLS
 // handshake is already done by the time the user clicks "Calculer".
@@ -840,9 +837,49 @@ function setupAutocomplete(inputId) {
   input.parentNode.appendChild(dropdown);
 
   let debounceTimer = null;
+  let activeIdx = -1;
+
+  function items() { return dropdown.querySelectorAll('.autocomplete-item'); }
+
+  function setActive(idx) {
+    const els = items();
+    els.forEach(el => el.classList.remove('autocomplete-item-active'));
+    activeIdx = Math.max(-1, Math.min(idx, els.length - 1));
+    if (activeIdx >= 0) els[activeIdx].classList.add('autocomplete-item-active');
+  }
+
+  function selectActive() {
+    const els = items();
+    if (activeIdx >= 0 && els[activeIdx]) {
+      els[activeIdx].dispatchEvent(new MouseEvent('mousedown'));
+      return true;
+    }
+    return false;
+  }
+
+  input.addEventListener('keydown', e => {
+    const els = items();
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActive(activeIdx + 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActive(activeIdx <= 0 ? -1 : activeIdx - 1);
+    } else if (e.key === 'Enter') {
+      if (selectActive()) {
+        e.stopImmediatePropagation();
+      } else {
+        calculateRoute();
+      }
+    } else if (e.key === 'Escape') {
+      dropdown.innerHTML = '';
+      activeIdx = -1;
+    }
+  });
 
   input.addEventListener('input', () => {
     input._coords = null;
+    activeIdx = -1;
     const q = input.value.trim();
     clearTimeout(debounceTimer);
     dropdown.innerHTML = '';
@@ -851,7 +888,7 @@ function setupAutocomplete(inputId) {
   });
 
   input.addEventListener('blur', () => {
-    setTimeout(() => { dropdown.innerHTML = ''; }, 200);
+    setTimeout(() => { dropdown.innerHTML = ''; activeIdx = -1; }, 200);
   });
 }
 
