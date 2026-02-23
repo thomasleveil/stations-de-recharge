@@ -3,6 +3,7 @@
 const PARQUET_URL = 'https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet';
 const CACHE_DB    = 'irve-v1';
 const CACHE_TTL   = 24 * 60 * 60 * 1000; // 24 hours in ms
+const CHEAP_CORRIDOR_KM = 20;            // Fixed 20-km corridor for budget networks
 
 // ── Operator definitions ──────────────────────────────────────────────────
 
@@ -18,6 +19,8 @@ const OPERATORS = [
   { match: ['atlante'],            name: 'Atlante',          color: '#D97706' },
   { match: ['plenitude'],          name: 'Plenitude',        color: '#059669' },
   { match: ['bp pulse', 'bp '],    name: 'bp pulse',         color: '#10B981' },
+  { match: ['iecharge', 'ie charge', 'ie-charge'], name: 'IECharge',    color: '#06B6D4' },
+  { match: ['izivia'],                             name: 'IZIVIA Fast', color: '#F59E0B' },
 ];
 
 // Try enseigne first, fall back to operateur field
@@ -86,6 +89,7 @@ let routeLayer  = null;
 // ── Draw markers (populated asynchronously by initApp) ────────────────────
 
 const markers = [];
+const cheapMarkers = [];
 
 // ── Visibility + legend (reactive) ───────────────────────────────────────
 
@@ -99,12 +103,46 @@ function isVisible(m) {
   return typeOk && routeOk;
 }
 
+function isCheapVisible(m) {
+  return routeActive && m._distFromRoute !== undefined && m._distFromRoute <= CHEAP_CORRIDOR_KM;
+}
+
+// Equirectangular nearest-distance (km) from point to polyline flat array.
+// Mirror of nearestDist in filter-worker.js — used in main thread for cheap markers.
+function nearestDistMain(lon, lat, flat) {
+  const cosLat = Math.cos(lat * Math.PI / 180);
+  const K = 111.32;
+  let minD2 = Infinity;
+  const len = flat.length;
+  for (let i = 0; i < len - 2; i += 2) {
+    const ax = flat[i],     ay = flat[i + 1];
+    const bx = flat[i + 2], by = flat[i + 3];
+    const dx = bx - ax, dy = by - ay;
+    const len2 = dx * dx + dy * dy;
+    const t = len2 > 0
+      ? Math.max(0, Math.min(1, ((lon - ax) * dx + (lat - ay) * dy) / len2))
+      : 0;
+    const ex = (ax + t * dx - lon) * cosLat * K;
+    const ey = (ay + t * dy - lat) * K;
+    const d2 = ex * ex + ey * ey;
+    if (d2 < minD2) minD2 = d2;
+  }
+  return Math.sqrt(minD2);
+}
+
 function updateVisibility() {
   let count = 0;
   markers.forEach(m => {
     const visible = isVisible(m);
     if (visible) count++;
     m.setStyle({ opacity: visible ? 1 : 0, fillOpacity: visible ? 0.9 : 0 });
+    const el = m.getElement();
+    if (el) el.style.pointerEvents = visible ? '' : 'none';
+  });
+
+  cheapMarkers.forEach(m => {
+    const visible = isCheapVisible(m);
+    m.setStyle({ opacity: visible ? 1 : 0, fillOpacity: visible ? 0.75 : 0 });
     const el = m.getElement();
     if (el) el.style.pointerEvents = visible ? '' : 'none';
   });
@@ -121,12 +159,11 @@ function updateVisibility() {
 function updateLegend() {
   legendEl.innerHTML = '';
 
-  // Count visible stations per operator
+  // Count visible stations per operator (main CCS markers)
   const opCounts = new Map();
   let autreCount = 0;
   markers.forEach(m => {
     if (!isVisible(m)) return;
-    // Known operator?
     const isKnown = OPERATORS.some(op => op.name === m._op.name);
     if (isKnown) {
       const key = m._op.name;
@@ -137,20 +174,42 @@ function updateLegend() {
     }
   });
 
-  // Render sorted by station count descending
   [...opCounts.values()]
     .sort((a, b) => b.count - a.count)
-    .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count));
+    .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count, false));
 
-  // Catch-all "Autre"
-  if (autreCount > 0) appendLegendItem('Autre', '#6B7280', autreCount);
+  if (autreCount > 0) appendLegendItem('Autre', '#6B7280', autreCount, false);
+
+  // Budget networks section (only when route is active)
+  if (routeActive) {
+    const cheapOpCounts = new Map();
+    cheapMarkers.forEach(m => {
+      if (!isCheapVisible(m)) return;
+      const key = m._op.name;
+      if (!cheapOpCounts.has(key)) cheapOpCounts.set(key, { op: m._op, count: 0 });
+      cheapOpCounts.get(key).count++;
+    });
+    if (cheapOpCounts.size > 0) {
+      const hr = document.createElement('hr');
+      hr.style.cssText = 'border:none;border-top:1px solid #e2e8f0;margin:6px 0';
+      legendEl.appendChild(hr);
+      const label = document.createElement('div');
+      label.style.cssText = 'font-size:10px;color:#9ca3af;margin-bottom:4px;font-style:italic';
+      label.textContent = '€ Abordables (±20 km)';
+      legendEl.appendChild(label);
+      [...cheapOpCounts.values()]
+        .sort((a, b) => b.count - a.count)
+        .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count, true));
+    }
+  }
 }
 
-function appendLegendItem(name, color, count) {
+function appendLegendItem(name, color, count, cheap) {
   const div = document.createElement('div');
   div.className = 'legend-item';
+  const dotClass = cheap ? 'legend-dot legend-dot-cheap' : 'legend-dot';
   div.innerHTML =
-    `<div class="legend-dot" style="background:${color}"></div>` +
+    `<div class="${dotClass}" style="${cheap ? `border-color:${color}` : `background:${color}`}"></div>` +
     `<span class="legend-name">${name}</span>` +
     `<span class="legend-count">${count}</span>`;
   legendEl.appendChild(div);
@@ -263,6 +322,67 @@ WHERE sf.implantation_station IN (
 ORDER BY sf.id_station_itinerance
 `;
 
+// ── Budget networks SQL (ENGIE Vianeo + IECharge, no power/CCS constraint) ───
+
+const CHEAP_FILTER_SQL = `
+WITH lat_lon AS (
+    SELECT *,
+        TRY_CAST(consolidated_latitude  AS DOUBLE) AS lat,
+        TRY_CAST(consolidated_longitude AS DOUBLE) AS lon,
+        TRY_CAST(
+            REPLACE(COALESCE(CAST(puissance_nominale AS VARCHAR), '0'), ',', '.')
+            AS DOUBLE
+        ) AS power_kw
+    FROM read_parquet('irve_raw.parquet')
+),
+station_first AS (
+    SELECT * FROM lat_lon
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY id_station_itinerance ORDER BY id_pdc_itinerance) = 1
+),
+station_power AS (
+    SELECT id_station_itinerance, MAX(power_kw) AS max_power_kw
+    FROM lat_lon
+    GROUP BY id_station_itinerance
+),
+cheap_sids AS (
+    -- Use id_station_itinerance AFIREV prefix — more reliable than text fields.
+    -- nom_enseigne is optional in practice (IECharge puts commune names there),
+    -- nom_operateur is optional per schema. The AFIREV code is immutable.
+    --   FRVIA* → ENGIE Vianeo   (operator code VIA)
+    --   FRIEN* → IECharge       (operator code IEN)
+    --   FRIZF* → IZIVIA Fast    (operator code IZF — McDonald's only)
+    SELECT DISTINCT id_station_itinerance FROM lat_lon
+    WHERE id_station_itinerance LIKE 'FRVIA%'
+       OR id_station_itinerance LIKE 'FRIEN%'
+       OR id_station_itinerance LIKE 'FRIZF%'
+),
+truck_sids AS (
+    SELECT DISTINCT id_station_itinerance FROM lat_lon
+    WHERE lower(COALESCE(restriction_gabarit, '')) LIKE '%poids lourd%'
+       OR lower(COALESCE(nom_station, ''))         LIKE '%truck%'
+       OR lower(COALESCE(nom_station, ''))         LIKE '%camion%'
+       OR lower(COALESCE(nom_station, ''))         LIKE '%poids lourd%'
+)
+SELECT
+    sf.lon, sf.lat,
+    sf.id_station_itinerance                                   AS id,
+    COALESCE(sf.nom_station,    '')                            AS nom_station,
+    COALESCE(sf.adresse_station,'')                            AS adresse,
+    COALESCE(sf.nom_operateur,  '')                            AS operateur,
+    COALESCE(NULLIF(sf.nom_enseigne,''), sf.nom_operateur, '') AS enseigne,
+    COALESCE(CAST(sf.nbre_pdc AS VARCHAR), '')                 AS nbre_pdc,
+    sp.max_power_kw,
+    COALESCE(sf.horaires, '')                                  AS horaires
+FROM station_first sf
+JOIN station_power  sp ON sf.id_station_itinerance = sp.id_station_itinerance
+JOIN cheap_sids     cs ON sf.id_station_itinerance = cs.id_station_itinerance
+LEFT JOIN truck_sids ts ON sf.id_station_itinerance = ts.id_station_itinerance
+WHERE sf.lat IS NOT NULL AND sf.lat != 0
+  AND sf.lon IS NOT NULL AND sf.lon != 0
+  AND ts.id_station_itinerance IS NULL
+ORDER BY sf.id_station_itinerance
+`;
+
 // ── Marker builder (shared between cache hit and fresh fetch paths) ───────
 
 function buildMarkers(rows) {
@@ -291,15 +411,71 @@ function buildMarkers(rows) {
   }
 }
 
+// ── Budget network marker builder ─────────────────────────────────────────
+
+function buildCheapMarkers(rows) {
+  for (const p of rows) {
+    const op = getOperator(p);
+    const circle = L.circleMarker([p.lat, p.lon], {
+      radius:      7,
+      fillColor:   op.color,
+      color:       '#ffffff',
+      dashArray:   '3,3',
+      weight:      2,
+      opacity:     0,
+      fillOpacity: 0,
+      interactive: true,
+    });
+    circle.bindPopup(L.popup({ maxWidth: 300 }).setContent(buildCheapPopup(p, op)));
+    circle.bindTooltip(`${p.nom_station} €`, { direction: 'top', offset: [0, -8] });
+    circle._op  = op;
+    circle._lon = p.lon;
+    circle._lat = p.lat;
+    circle.addTo(map);
+    cheapMarkers.push(circle);
+  }
+}
+
+function buildCheapPopup(p, op) {
+  const fmt = (v, fallback = '—') => (v && String(v).trim()) ? v : fallback;
+  const addr = fmt(p.adresse);
+  const shortAddr = addr.length > 60 ? addr.slice(0, 60) + '…' : addr;
+  return `
+    <div>
+      <div class="popup-station">${fmt(p.nom_station)}</div>
+      <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
+      <span class="popup-cheap-badge">€ Abordable</span>
+      <div class="popup-grid">
+        <span class="popup-label">Puissance max</span>
+        <span class="popup-power">${p.max_power_kw ? p.max_power_kw + ' kW' : '—'}</span>
+
+        <span class="popup-label">Nb. de bornes</span>
+        <span>${fmt(p.nbre_pdc)}</span>
+
+        <span class="popup-label">Horaires</span>
+        <span>${fmt(p.horaires).length > 50 ? fmt(p.horaires).slice(0, 50) + '…' : fmt(p.horaires)}</span>
+
+        <span class="popup-label">Adresse</span>
+        <span>${shortAddr}</span>
+      </div>
+    </div>`;
+}
+
 // ── Main init — cache-first, then live fetch + DuckDB filter ─────────────
 
 async function initApp() {
   subEl.textContent = 'Chargement…';
 
-  // 1. Try IndexedDB cache (best-effort — failure falls through to live fetch)
-  const cached = await cacheGet('stations').catch(() => null);
-  if (cached && Date.now() - cached.ts < CACHE_TTL) {
+  // 1. Try IndexedDB cache for both datasets (both must be valid to skip fetch)
+  const [cached, cachedCheap] = await Promise.all([
+    cacheGet('stations').catch(() => null),
+    cacheGet('stations-cheap').catch(() => null),
+  ]);
+  if (cached && cachedCheap &&
+      Date.now() - cached.ts < CACHE_TTL &&
+      Date.now() - cachedCheap.ts < CACHE_TTL) {
     buildMarkers(cached.rows);
+    buildCheapMarkers(cachedCheap.rows);
     updateVisibility();
     return;
   }
@@ -348,8 +524,9 @@ async function initApp() {
   subEl.textContent = 'Filtrage des stations…';
   await db.registerFileBuffer('irve_raw.parquet', buf);
 
-  const conn  = await db.connect();
-  const table = await conn.query(FILTER_SQL);
+  const conn       = await db.connect();
+  const table      = await conn.query(FILTER_SQL);
+  const cheapTable = await conn.query(CHEAP_FILTER_SQL);
   await conn.close();
 
   // 5. Convert Arrow rows to plain JS objects (required for JSON serialisation)
@@ -371,11 +548,30 @@ async function initApp() {
     });
   }
 
-  // 6. Persist to IndexedDB for next 24 h (best-effort — never blocks rendering)
-  cachePut('stations', { ts: Date.now(), rows }).catch(() => {});
+  // Convert cheap Arrow rows to plain JS objects
+  const cheapRows = [];
+  for (const row of cheapTable) {
+    cheapRows.push({
+      lon:          Number(row.lon),
+      lat:          Number(row.lat),
+      id:           String(row.id           ?? ''),
+      nom_station:  String(row.nom_station  ?? ''),
+      adresse:      String(row.adresse      ?? ''),
+      operateur:    String(row.operateur    ?? ''),
+      enseigne:     String(row.enseigne     ?? ''),
+      nbre_pdc:     String(row.nbre_pdc     ?? ''),
+      max_power_kw: Number(row.max_power_kw ?? 0),
+      horaires:     String(row.horaires     ?? ''),
+    });
+  }
+
+  // 6. Persist both datasets to IndexedDB (best-effort — never blocks rendering)
+  cachePut('stations',       { ts: Date.now(), rows }).catch(() => {});
+  cachePut('stations-cheap', { ts: Date.now(), rows: cheapRows }).catch(() => {});
 
   // 7. Build markers and refresh map
   buildMarkers(rows);
+  buildCheapMarkers(cheapRows);
   updateVisibility();
 }
 
@@ -499,6 +695,7 @@ function clearRoute() {
   routeActive = false;
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   markers.forEach(m => { delete m._distFromRoute; delete m._distAlongRoute; });
+  cheapMarkers.forEach(m => { delete m._distFromRoute; });
   updateVisibility();
   document.getElementById('route-info').textContent = '';
   document.getElementById('route-clear').style.display = 'none';
@@ -561,6 +758,20 @@ async function calculateRoute() {
       (done, total) => { info.textContent = `⚡ Filtrage ${done}/${total}…`; }
     );
     console.log(`applyRouteFilter: ${Math.round(performance.now() - t3)} ms`);
+
+    // Compute distances for budget network markers in main thread (20-km corridor)
+    if (cheapMarkers.length > 0) {
+      const coords = route.geometry.coordinates;
+      const cheapRouteFlat = new Float64Array(coords.length * 2);
+      for (let i = 0; i < coords.length; i++) {
+        cheapRouteFlat[i * 2]     = coords[i][0];
+        cheapRouteFlat[i * 2 + 1] = coords[i][1];
+      }
+      for (const m of cheapMarkers) {
+        m._distFromRoute = nearestDistMain(m._lon, m._lat, cheapRouteFlat);
+      }
+      updateVisibility();
+    }
 
     console.log(`total: ${Math.round(performance.now() - t0)} ms`);
 

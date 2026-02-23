@@ -29,6 +29,10 @@ Application 100 % statique — aucun backend, aucune étape de build.
 
 Source : **Base nationale des IRVE** publiée sur [data.gouv.fr](https://www.data.gouv.fr/datasets/base-nationale-des-irve-infrastructures-de-recharge-pour-vehicules-electriques), mise à jour quotidienne (~6 MB, 188 000 lignes, une par connecteur).
 
+Schémas de référence :
+- [Schéma IRVE statique](https://schema.data.gouv.fr/etalab/schema-irve-statique/latest/documentation.html)
+- [Schéma IRVE dynamique](https://schema.data.gouv.fr/etalab/schema-irve-dynamique/)
+
 L'application télécharge le fichier Parquet directement depuis data.gouv.fr au premier chargement, exécute le filtrage en SQL via **DuckDB WASM** dans le navigateur, puis met le résultat en cache dans **IndexedDB** pour 24 heures.
 
 ```
