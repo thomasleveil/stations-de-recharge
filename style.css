@@ -232,6 +232,12 @@ html, body {
   color: #1e293b;
 }
 
+.popup-avail { color: #94a3b8; }
+.popup-avail a { color: #3b82f6; text-decoration: none; }
+.popup-avail a:hover { text-decoration: underline; }
+.popup-avail-ok   { font-weight: 700; color: #16a34a; }
+.popup-avail-none { font-weight: 700; color: #dc2626; }
+
 .popup-cheap-badge {
   display: inline-block;
   font-size: 11px;

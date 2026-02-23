@@ -5,6 +5,10 @@ const CACHE_DB    = 'irve-v1';
 const CACHE_TTL   = 24 * 60 * 60 * 1000; // 24 hours in ms
 const CHEAP_CORRIDOR_KM = 5;             // Fixed 5-km corridor for budget networks
 
+// TomTom API key for real-time charging availability (free tier: 2500 req/day).
+// Get yours at https://developer.tomtom.com — restrict it to your domain in the console.
+const TOMTOM_API_KEY = '';
+
 // ── Operator definitions ──────────────────────────────────────────────────
 
 const OPERATORS = [
@@ -438,6 +442,14 @@ function buildMarkers(rows) {
     circle._op  = op;
     circle._lon = p.lon;
     circle._lat  = p.lat;
+
+    circle.on('popupopen', () => {
+      fetchAvailability(circle).then(html => {
+        const el = circle.getPopup()?.getElement()?.querySelector('.popup-avail');
+        if (el) el.innerHTML = html;
+      });
+    });
+
     circle.addTo(map);
     markers.push(circle);
   }
@@ -676,8 +688,79 @@ function buildPopup(p, op) {
 
         <span class="popup-label">Adresse</span>
         <span>${shortAddr}</span>
+
+        <span class="popup-label">Disponibilité CCS2</span>
+        <span class="popup-avail">⟳</span>
       </div>
     </div>`;
+}
+
+// ── Real-time availability (TomTom) ───────────────────────────────────────
+
+const AVAIL_TTL = 3 * 60 * 1000; // 3 minutes — matches TomTom refresh cadence
+const BISON_FUTE_URL = 'https://www.bison-fute.gouv.fr/recharge-electrique.html';
+
+async function fetchAvailability(circle) {
+  // Return cached result if still fresh.
+  const now = Date.now();
+  if (circle._availCache && now - circle._availCache.ts < AVAIL_TTL) {
+    return circle._availCache.html;
+  }
+
+  // No key configured — show external link immediately.
+  if (!TOMTOM_API_KEY) {
+    const html = `<a href="${BISON_FUTE_URL}" target="_blank" rel="noopener">Voir sur Bison Futé ↗</a>`;
+    circle._availCache = { ts: now, html };
+    return html;
+  }
+
+  try {
+    // Step 1: find the TomTom place ID by proximity (cached across sessions).
+    if (!circle._tomtomId) {
+      const url = `https://api.tomtom.com/search/2/nearbySearch/.json` +
+        `?key=${TOMTOM_API_KEY}&lat=${circle._lat}&lon=${circle._lon}` +
+        `&radius=100&categorySet=7309&limit=5`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`nearbySearch ${res.status}`);
+      const data = await res.json();
+      const result = data.results?.[0];
+      if (!result) {
+        const html = `<a href="${BISON_FUTE_URL}" target="_blank" rel="noopener">Voir sur Bison Futé ↗</a>`;
+        circle._availCache = { ts: now, html };
+        return html;
+      }
+      circle._tomtomId = result.id;
+    }
+
+    // Step 2: query real-time availability.
+    const url2 = `https://api.tomtom.com/search/2/chargingAvailability.json` +
+      `?key=${TOMTOM_API_KEY}&chargingAvailability=${encodeURIComponent(circle._tomtomId)}`;
+    const res2 = await fetch(url2);
+    if (!res2.ok) throw new Error(`chargingAvailability ${res2.status}`);
+    const data2 = await res2.json();
+
+    // Filter CCS2 (IEC_62196_T2_COMBO) connectors rated ≥ 150 kW.
+    const ccs2 = (data2.connectorAvailabilities ?? [])
+      .filter(c => c.type === 'IEC_62196_T2_COMBO' && (c.ratedPowerKW ?? 0) >= 150);
+
+    let html;
+    if (ccs2.length === 0) {
+      html = `<a href="${BISON_FUTE_URL}" target="_blank" rel="noopener">Voir sur Bison Futé ↗</a>`;
+    } else {
+      const available = ccs2.reduce((s, c) => s + (c.availability?.available ?? 0), 0);
+      const total     = ccs2.reduce((s, c) => s + (c.availability?.total     ?? 0), 0);
+      const cls = available > 0 ? 'popup-avail-ok' : 'popup-avail-none';
+      html = `<span class="${cls}">${available} / ${total} disponible${available > 1 ? 's' : ''}</span>`;
+    }
+
+    circle._availCache = { ts: now, html };
+    return html;
+  } catch (e) {
+    console.warn('TomTom availability:', e.message);
+    const html = `<a href="${BISON_FUTE_URL}" target="_blank" rel="noopener">Voir sur Bison Futé ↗</a>`;
+    circle._availCache = { ts: now, html };
+    return html;
+  }
 }
 
 // ── Route planning ─────────────────────────────────────────────────────────
