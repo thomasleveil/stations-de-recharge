@@ -278,33 +278,30 @@ WITH lat_lon AS (
             AS DOUBLE
         ) AS power_kw
     FROM read_parquet('irve_raw.parquet')
+    WHERE condition_acces = 'Accès libre'
+      AND prise_type_combo_ccs = TRUE
+      AND TRIM(COALESCE(horaires, '')) = '24/7'
+),
+qualifying AS (
+    SELECT * FROM lat_lon WHERE power_kw >= 150
 ),
 station_first AS (
-    SELECT * FROM lat_lon
+    SELECT * FROM qualifying
     QUALIFY ROW_NUMBER() OVER (PARTITION BY id_station_itinerance ORDER BY id_pdc_itinerance) = 1
 ),
 station_power AS (
     SELECT id_station_itinerance, MAX(power_kw) AS max_power_kw
-    FROM lat_lon
+    FROM qualifying
     GROUP BY id_station_itinerance
 ),
-ccs_sids AS (
-    SELECT DISTINCT id_station_itinerance FROM lat_lon
-    WHERE prise_type_combo_ccs = TRUE
-),
 station_ccs_fast AS (
-    SELECT ll.id_station_itinerance,
-           LEAST(
-               COUNT(DISTINCT ll.id_pdc_itinerance),
-               COALESCE(TRY_CAST(sf.nbre_pdc AS INTEGER), 999)
-           ) AS nbre_ccs_fast
-    FROM lat_lon ll
-    JOIN station_first sf ON ll.id_station_itinerance = sf.id_station_itinerance
-    WHERE ll.prise_type_combo_ccs = TRUE AND ll.power_kw >= 150
-    GROUP BY ll.id_station_itinerance, sf.nbre_pdc
+    SELECT id_station_itinerance,
+           COUNT(DISTINCT id_pdc_itinerance) AS nbre_ccs_fast
+    FROM qualifying
+    GROUP BY id_station_itinerance
 ),
 truck_sids AS (
-    SELECT DISTINCT id_station_itinerance FROM lat_lon
+    SELECT DISTINCT id_station_itinerance FROM qualifying
     WHERE lower(COALESCE(restriction_gabarit, '')) LIKE '%poids lourd%'
        OR lower(COALESCE(nom_station, ''))         LIKE '%truck%'
        OR lower(COALESCE(nom_station, ''))         LIKE '%camion%'
@@ -319,23 +316,16 @@ SELECT
     COALESCE(NULLIF(sf.nom_enseigne,''), sf.nom_operateur, '') AS enseigne,
     COALESCE(CAST(sf.nbre_pdc AS VARCHAR), '')                 AS nbre_pdc,
     sp.max_power_kw,
-    COALESCE(cf.nbre_ccs_fast, 0)                              AS nbre_ccs_fast,
+    cf.nbre_ccs_fast,
     COALESCE(sf.horaires, '')                                  AS horaires,
     CASE WHEN sf.implantation_station = 'Station dédiée à la recharge rapide'
          THEN 'dedicee' ELSE 'parking'
     END AS station_type
 FROM station_first sf
-JOIN station_power      sp  ON sf.id_station_itinerance = sp.id_station_itinerance
-JOIN ccs_sids           ccs ON sf.id_station_itinerance = ccs.id_station_itinerance
-LEFT JOIN station_ccs_fast cf ON sf.id_station_itinerance = cf.id_station_itinerance
-LEFT JOIN truck_sids    ts  ON sf.id_station_itinerance = ts.id_station_itinerance
-WHERE sf.implantation_station IN (
-    'Station dédiée à la recharge rapide',
-    'Parking privé à usage public'
-)
-  AND sp.max_power_kw >= 150
-  AND COALESCE(TRY_CAST(sf.nbre_pdc AS INTEGER), 0) >= 4
-  AND sf.lat IS NOT NULL AND sf.lat != 0
+JOIN station_power    sp ON sf.id_station_itinerance = sp.id_station_itinerance
+JOIN station_ccs_fast cf ON sf.id_station_itinerance = cf.id_station_itinerance
+LEFT JOIN truck_sids  ts ON sf.id_station_itinerance = ts.id_station_itinerance
+WHERE sf.lat IS NOT NULL AND sf.lat != 0
   AND sf.lon IS NOT NULL AND sf.lon != 0
   AND ts.id_station_itinerance IS NULL
 ORDER BY sf.id_station_itinerance
@@ -367,13 +357,15 @@ cheap_sids AS (
     -- Use id_station_itinerance AFIREV prefix — more reliable than text fields.
     -- nom_enseigne is optional in practice (IECharge puts commune names there),
     -- nom_operateur is optional per schema. The AFIREV code is immutable.
-    --   FRVIA* → ENGIE Vianeo   (operator code VIA)
+    --   FRVIA* + nom_station ILIKE '%B&B HOTEL%' → ENGIE Vianeo chez B&B Hotels uniquement
     --   FRIEN* → IECharge       (operator code IEN)
     --   FRIZF* → IZIVIA Fast    (operator code IZF — McDonald's only)
+    --   FRTSL* → Tesla          (Superchargers open to all EVs)
     SELECT DISTINCT id_station_itinerance FROM lat_lon
-    WHERE id_station_itinerance LIKE 'FRVIA%'
+    WHERE (id_station_itinerance LIKE 'FRVIA%' AND nom_station ILIKE '%B&B HOTEL%')
        OR id_station_itinerance LIKE 'FRIEN%'
        OR id_station_itinerance LIKE 'FRIZF%'
+       OR id_station_itinerance LIKE 'FRTSL%'
 ),
 truck_sids AS (
     SELECT DISTINCT id_station_itinerance FROM lat_lon
@@ -399,6 +391,7 @@ LEFT JOIN truck_sids ts ON sf.id_station_itinerance = ts.id_station_itinerance
 WHERE sf.lat IS NOT NULL AND sf.lat != 0
   AND sf.lon IS NOT NULL AND sf.lon != 0
   AND ts.id_station_itinerance IS NULL
+  AND sf.condition_acces = 'Accès libre'
 ORDER BY sf.id_station_itinerance
 `;
 
