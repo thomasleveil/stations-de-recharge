@@ -1,0 +1,24 @@
+{
+  "name": "stations-de-recharge",
+  "version": "1.0.0",
+  "description": "**https://thomasleveil.github.io/stations-de-recharge/**",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomasleveil/stations-de-recharge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/thomasleveil/stations-de-recharge/issues"
+  },
+  "homepage": "https://github.com/thomasleveil/stations-de-recharge#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}
