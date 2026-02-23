@@ -3,7 +3,7 @@
 const PARQUET_URL = 'https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet';
 const CACHE_DB    = 'irve-v1';
 const CACHE_TTL   = 24 * 60 * 60 * 1000; // 24 hours in ms
-const CHEAP_CORRIDOR_KM = 20;            // Fixed 20-km corridor for budget networks
+const CHEAP_CORRIDOR_KM = 5;             // Fixed 5-km corridor for budget networks
 
 // ── Operator definitions ──────────────────────────────────────────────────
 
@@ -225,7 +225,7 @@ function updateLegend() {
       legendEl.appendChild(hr);
       const label = document.createElement('div');
       label.style.cssText = 'font-size:10px;color:#9ca3af;margin-bottom:4px;font-style:italic';
-      label.textContent = '€ Abordables (±20 km)';
+      label.textContent = `€ Abordables (±${CHEAP_CORRIDOR_KM} km)`;
       legendEl.appendChild(label);
       [...cheapOpCounts.values()]
         .sort((a, b) => b.count - a.count)
