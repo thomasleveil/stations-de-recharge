@@ -63,13 +63,31 @@ const cartoTile = L.tileLayer(
   }
 ).addTo(map);
 
-const aerialTile = L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-  {
+const AERIAL_SOURCES = {
+  esri: {
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP',
-    maxZoom: 19,
-  }
-);
+  },
+  ign: {
+    url: 'https://data.geopf.fr/wmts?service=WMTS&request=GetTile&version=1.0.0' +
+         '&tilematrixset=PM&tilematrix={z}&tilecol={x}&tilerow={y}' +
+         '&layer=ORTHOIMAGERY.ORTHOPHOTOS&format=image/jpeg&style=normal',
+    attribution: 'IGN-F/Géoportail',
+  },
+};
+
+let aerialTile = null;
+
+function setAerialSource(src) {
+  const wasShowing = aerialTile && map.hasLayer(aerialTile);
+  if (aerialTile) map.removeLayer(aerialTile);
+  const s = AERIAL_SOURCES[src] || AERIAL_SOURCES.esri;
+  aerialTile = L.tileLayer(s.url, { attribution: s.attribution, maxZoom: 19 });
+  if (wasShowing) aerialTile.addTo(map);
+  localStorage.setItem('irve-aerial-source', src);
+}
+
+setAerialSource(localStorage.getItem('irve-aerial-source') || 'esri');
 
 map.on('zoomend', () => {
   const z = map.getZoom();
@@ -883,6 +901,7 @@ function setupAutocomplete(inputId) {
     const q = input.value.trim();
     clearTimeout(debounceTimer);
     dropdown.innerHTML = '';
+    localStorage.setItem('irve-' + input.id, JSON.stringify({ text: q }));
     if (q.length < 3) return;
     debounceTimer = setTimeout(() => fetchAutocompleteSuggestions(q, dropdown, input), 300);
   });
@@ -905,9 +924,12 @@ async function fetchAutocompleteSuggestions(q, dropdown, input) {
       div.textContent = parts.slice(0, 2).join(',').trim();
       div.title = item.display_name;
       div.addEventListener('mousedown', () => {
-        input.value  = parts.slice(0, 2).join(',').trim();
-        input._coords = [parseFloat(item.lon), parseFloat(item.lat)];
+        const text = parts.slice(0, 2).join(',').trim();
+        const coords = [parseFloat(item.lon), parseFloat(item.lat)];
+        input.value   = text;
+        input._coords = coords;
         dropdown.innerHTML = '';
+        localStorage.setItem('irve-' + input.id, JSON.stringify({ text, coords }));
       });
       dropdown.appendChild(div);
     });
@@ -917,12 +939,33 @@ async function fetchAutocompleteSuggestions(q, dropdown, input) {
 setupAutocomplete('route-start');
 setupAutocomplete('route-end');
 
+// Restore last departure/arrival from localStorage (text + coords, no auto-route)
+['route-start', 'route-end'].forEach(id => {
+  try {
+    const saved = localStorage.getItem('irve-' + id);
+    if (!saved) return;
+    const { text, coords } = JSON.parse(saved);
+    const input = document.getElementById(id);
+    if (text)   input.value   = text;
+    if (coords) input._coords = coords;
+  } catch (_) {}
+});
+
 // ── Settings menu ──────────────────────────────────────────────────────────
 
 (function setupSettings() {
   const btn  = document.getElementById('settings-btn');
   const menu = document.getElementById('settings-menu');
   const bustBtn = document.getElementById('cache-bust-btn');
+
+  // Sync radio to current aerial source
+  const savedSrc = localStorage.getItem('irve-aerial-source') || 'esri';
+  const radio = menu.querySelector(`input[name="aerial-src"][value="${savedSrc}"]`);
+  if (radio) radio.checked = true;
+
+  menu.querySelectorAll('input[name="aerial-src"]').forEach(r => {
+    r.addEventListener('change', () => setAerialSource(r.value));
+  });
 
   btn.addEventListener('click', e => {
     e.stopPropagation();

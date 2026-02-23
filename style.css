@@ -322,6 +322,41 @@ html, body {
   min-width: 160px;
 }
 
+.settings-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px 2px;
+}
+
+.settings-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.settings-radio-item:hover { background: #f1f5f9; }
+
+.settings-radio-item input[type="radio"] {
+  accent-color: #1D4ED8;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.settings-divider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 5px 0;
+}
+
 .settings-item {
   display: block;
   width: 100%;

@@ -44,6 +44,16 @@
   <!-- Top-right settings -->
   <div id="settings-btn" title="Paramètres">⚙</div>
   <div id="settings-menu" style="display:none">
+    <div class="settings-section-label">Fond aérien (zoom ≥ 18)</div>
+    <label class="settings-radio-item">
+      <input type="radio" name="aerial-src" value="esri" />
+      <span>Esri World Imagery</span>
+    </label>
+    <label class="settings-radio-item">
+      <input type="radio" name="aerial-src" value="ign" />
+      <span>IGN Géoportail</span>
+    </label>
+    <hr class="settings-divider" />
     <button id="cache-bust-btn" class="settings-item">🗑 Vider le cache</button>
   </div>
 
