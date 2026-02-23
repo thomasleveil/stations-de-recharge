@@ -438,7 +438,9 @@ function buildMarkers(rows) {
 
 function buildCheapMarkers(rows) {
   for (const p of rows) {
-    const op = getOperator(p);
+    let op = getOperator(p);
+    if (op.name === 'ENGIE Vianeo') op = { ...op, name: 'ENGIE Vianeo - B&B HOTELS' };
+    if (op.name === 'IZIVIA Fast')  op = { ...op, name: "IZIVIA Fast - McDonald's" };
     const circle = L.circleMarker([p.lat, p.lon], {
       radius:      7,
       fillColor:   op.color,
