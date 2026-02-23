@@ -234,9 +234,12 @@ function updateLegend() {
 function appendLegendItem(name, color, count, cheap) {
   const div = document.createElement('div');
   div.className = 'legend-item';
-  const dotClass = cheap ? 'legend-dot legend-dot-cheap' : 'legend-dot';
+  const brandHtml = cheap && BRAND_MARKER_HTML[name];
+  const dotHtml = brandHtml
+    ? `<div style="width:14px;height:14px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center"><div style="transform:scale(0.78);transform-origin:center">${brandHtml}</div></div>`
+    : `<div class="${cheap ? 'legend-dot legend-dot-cheap' : 'legend-dot'}" style="${cheap ? `border-color:${color}` : `background:${color}`}"></div>`;
   div.innerHTML =
-    `<div class="${dotClass}" style="${cheap ? `border-color:${color}` : `background:${color}`}"></div>` +
+    dotHtml +
     `<span class="legend-name">${name}</span>` +
     `<span class="legend-count">${count}</span>`;
   legendEl.appendChild(div);
@@ -433,21 +436,50 @@ function buildMarkers(rows) {
 
 // ── Budget network marker builder ─────────────────────────────────────────
 
+// Unified brand icon HTML (18×18px) — used for both map markers and legend.
+// McDonald's + Tesla: official SVG paths from Simple Icons (simpleicons.org, viewBox 0 0 24 24).
+// IECharge + B&B Hotels: not in major icon libraries — custom icons using confirmed brand colors.
+const BRAND_MARKER_HTML = {
+  "IZIVIA Fast - McDonald's":
+    "<div style='width:18px;height:18px;background:#DA291C;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center'><svg width='13' height='13' viewBox='0 0 24 24' fill='#FFC72C'><path d='M17.243 3.006c2.066 0 3.742 8.714 3.742 19.478H24c0-11.588-3.042-20.968-6.766-20.968-2.127 0-4.007 2.81-5.248 7.227-1.241-4.416-3.121-7.227-5.231-7.227C3.031 1.516 0 10.888 0 22.476h3.014c0-10.763 1.658-19.47 3.724-19.47 2.066 0 3.741 8.05 3.741 17.98h2.997c0-9.93 1.684-17.98 3.75-17.98Z'/></svg></div>",
+  'Tesla':
+    "<div style='width:18px;height:18px;background:#CC0000;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center'><svg width='13' height='13' viewBox='0 0 24 24' fill='#fff'><path d='M12 5.362l2.475-3.026s4.245.09 8.471 2.054c-1.082 1.636-3.231 2.438-3.231 2.438-.146-1.439-1.154-1.79-4.354-1.79L12 24 8.619 5.034c-3.18 0-4.188.354-4.335 1.792 0 0-2.146-.795-3.229-2.43C5.28 2.431 9.525 2.34 9.525 2.34L12 5.362l-.004.002H12v-.002zm0-3.899c3.415-.03 7.326.528 11.328 2.28.535-.968.672-1.395.672-1.395C19.625.612 15.528.015 12 0 8.472.015 4.375.61 0 2.349c0 0 .195.525.672 1.396C4.674 1.989 8.585 1.435 12 1.46v.003z'/></svg></div>",
+  'IECharge':
+    "<div style='width:18px;height:18px;background:#004D26;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center'><svg width='11' height='11' viewBox='0 0 100 100'><path d='M60 5 L25 50 L55 50 L40 95 L75 50 L45 50 Z' fill='#00D084'/></svg></div>",
+  'ENGIE Vianeo - B&B HOTELS':
+    "<div style='width:18px;height:18px;background:#081C19;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center'><span style='color:#B1D600;font-weight:900;font-size:11px;font-family:Arial,sans-serif;line-height:1'>B</span></div>",
+};
+
+function makeBrandDivIcon(opName) {
+  const html = BRAND_MARKER_HTML[opName];
+  if (!html) return null;
+  return L.divIcon({ html, iconSize: [18, 18], iconAnchor: [9, 9], popupAnchor: [0, -11], className: 'cheap-brand-marker' });
+}
+
 function buildCheapMarkers(rows) {
   for (const p of rows) {
     let op = getOperator(p);
     if (op.name === 'ENGIE Vianeo') op = { ...op, name: 'ENGIE Vianeo - B&B HOTELS' };
     if (op.name === 'IZIVIA Fast')  op = { ...op, name: "IZIVIA Fast - McDonald's" };
-    const circle = L.circleMarker([p.lat, p.lon], {
-      radius:      7,
-      fillColor:   op.color,
-      color:       '#ffffff',
-      dashArray:   '3,3',
-      weight:      2,
-      opacity:     0,
-      fillOpacity: 0,
-      interactive: true,
-    });
+
+    const brandIcon = makeBrandDivIcon(op.name);
+    let circle;
+    if (brandIcon) {
+      circle = L.marker([p.lat, p.lon], { icon: brandIcon, opacity: 0 });
+      // Polyfill setStyle for compatibility with updateVisibility (L.marker has no setStyle)
+      circle.setStyle = (opts) => circle.setOpacity(opts.opacity ?? 1);
+    } else {
+      circle = L.circleMarker([p.lat, p.lon], {
+        radius:      7,
+        fillColor:   op.color,
+        color:       '#ffffff',
+        dashArray:   '3,3',
+        weight:      2,
+        opacity:     0,
+        fillOpacity: 0,
+        interactive: true,
+      });
+    }
     circle.bindPopup(L.popup({ maxWidth: 300 }).setContent(buildCheapPopup(p, op)));
     circle.bindTooltip(`${p.nom_station} €`, { direction: 'top', offset: [0, -8] });
     circle._op  = op;

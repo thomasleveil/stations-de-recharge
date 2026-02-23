@@ -175,6 +175,7 @@ html, body {
   border: 2px dashed;
 }
 
+
 /* ── Filter checkbox (panel) ───────────────────────────────── */
 
 .filter-check {
@@ -495,4 +496,10 @@ html, body {
   #panel.route-calculated.panel-expanded .panel-title {
     margin-bottom: 2px;
   }
+}
+
+/* Brand icon markers — remove default Leaflet DivIcon white box */
+.cheap-brand-marker {
+  background: none !important;
+  border: none !important;
 }
