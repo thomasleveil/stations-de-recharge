@@ -739,16 +739,18 @@ async function fetchAvailability(circle) {
     if (!res2.ok) throw new Error(`chargingAvailability ${res2.status}`);
     const data2 = await res2.json();
 
-    // Filter CCS2 (IEC_62196_T2_COMBO) connectors rated ≥ 150 kW.
-    const ccs2 = (data2.connectorAvailabilities ?? [])
-      .filter(c => c.type === 'IEC_62196_T2_COMBO' && (c.ratedPowerKW ?? 0) >= 150);
+    // TomTom response: connectors[].type = "IEC62196Type2CCS"
+    // availability is under .availability.current.{available,occupied,...}
+    // total connectors under .total (not inside availability)
+    const ccs2 = (data2.connectors ?? [])
+      .filter(c => c.type === 'IEC62196Type2CCS');
 
     let html;
     if (ccs2.length === 0) {
       html = `<a href="${BISON_FUTE_URL}" target="_blank" rel="noopener">Voir sur Bison Futé ↗</a>`;
     } else {
-      const available = ccs2.reduce((s, c) => s + (c.availability?.available ?? 0), 0);
-      const total     = ccs2.reduce((s, c) => s + (c.availability?.total     ?? 0), 0);
+      const available = ccs2.reduce((s, c) => s + (c.availability?.current?.available ?? 0), 0);
+      const total     = ccs2.reduce((s, c) => s + (c.total ?? 0), 0);
       const cls = available > 0 ? 'popup-avail-ok' : 'popup-avail-none';
       html = `<span class="${cls}">${available} / ${total} disponible${available > 1 ? 's' : ''}</span>`;
     }
