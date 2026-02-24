@@ -47,7 +47,8 @@ Chargements suivants  →  IndexedDB (instantané, sans réseau)
 - Puissance maximale ≥ 150 kW (au moins un connecteur CCS Combo)
 - Accès 24h/24 7j/7
 - Au moins 4 points de charge par station
-- Exclusion des stations Tesla et camions/poids lourds
+- Exclusion des stations camions/poids lourds
+- Exclusion des stations Tesla (classées en catégorie abordable avec corridor ±10 km)
 
 ### Critères de filtrage — stations abordables (€)
 
