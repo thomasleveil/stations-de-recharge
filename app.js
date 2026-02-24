@@ -451,7 +451,7 @@ function buildMarkers(rows) {
       if (refreshBtn) {
         refreshBtn.onclick = () => {
           delete circle._availCache;
-          if (avail) avail.innerHTML = '⟳';
+          if (avail) avail.innerHTML = AVAIL_SPINNER;
           fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
         };
       }
@@ -523,7 +523,7 @@ function buildCheapMarkers(rows) {
       if (refreshBtn) {
         refreshBtn.onclick = () => {
           delete circle._availCache;
-          if (avail) avail.innerHTML = '⟳';
+          if (avail) avail.innerHTML = AVAIL_SPINNER;
           fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
         };
       }
@@ -558,7 +558,7 @@ function buildCheapPopup(p, op) {
 
         <span class="popup-label">Disponibilité CCS2</span>
         <span class="popup-avail-cell">
-          <span class="popup-avail">⟳</span>
+          <span class="popup-avail">${AVAIL_SPINNER}</span>
           <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
         </span>
       </div>
@@ -719,7 +719,7 @@ function buildPopup(p, op) {
 
         <span class="popup-label">Disponibilité CCS2</span>
         <span class="popup-avail-cell">
-          <span class="popup-avail">⟳</span>
+          <span class="popup-avail">${AVAIL_SPINNER}</span>
           <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
         </span>
       </div>
@@ -728,13 +728,14 @@ function buildPopup(p, op) {
 
 // ── Real-time availability (TomTom) ───────────────────────────────────────
 
-const AVAIL_TTL = 3 * 60 * 1000; // 3 minutes — matches TomTom refresh cadence
+const AVAIL_TTL     = 3 * 60 * 1000; // 3 minutes — matches TomTom refresh cadence
+const AVAIL_SPINNER = '<span class="popup-avail-spinner">⟳</span>';
 
 // Retry once after 1 s on 403 (rate-limit transient response from TomTom).
 async function fetchWithRetry(url) {
   const res = await fetch(url);
   if (res.status !== 403) return res;
-  await new Promise(r => setTimeout(r, 1000));
+  await new Promise(r => setTimeout(r, 3000));
   return fetch(url);
 }
 

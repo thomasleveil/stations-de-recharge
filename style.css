@@ -242,6 +242,14 @@ html, body {
 .popup-avail-ok   { font-weight: 700; color: #16a34a; }
 .popup-avail-none { font-weight: 700; color: #dc2626; }
 
+@keyframes avail-spin {
+  to { transform: rotate(360deg); }
+}
+.popup-avail-spinner {
+  display: inline-block;
+  animation: avail-spin 0.9s linear infinite;
+}
+
 .popup-avail-refresh {
   background: none;
   border: none;
