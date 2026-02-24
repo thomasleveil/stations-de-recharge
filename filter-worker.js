@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- * Nearest distance from point (lon, lat) to a polyline stored as a flat
- * Float64Array [lon0,lat0, lon1,lat1, …]. Returns distance in km.
+ * Nearest distance (km) from point (lon, lat) to a polyline stored as a flat
+ * Float64Array [lon0,lat0, lon1,lat1, …].
  * Uses equirectangular approximation — accurate to ~0.1 % within France.
  */
 function nearestDist(lon, lat, flat, len) {
@@ -26,6 +26,33 @@ function nearestDist(lon, lat, flat, len) {
 }
 
 /**
+ * Same as nearestDist but also returns the progress (0–1) of the nearest
+ * projection along the polyline — used for staggered fade-in ordering.
+ */
+function nearestDistAndProgress(lon, lat, flat, len) {
+  const cosLat = Math.cos(lat * Math.PI / 180);
+  const K = 111.32;
+  let minD2 = Infinity;
+  let bestI = 0, bestT = 0;
+  const numSegments = (len >>> 1) - 1; // number of segments
+  for (let i = 0; i < len - 2; i += 2) {
+    const ax = flat[i],     ay = flat[i + 1];
+    const bx = flat[i + 2], by = flat[i + 3];
+    const dx = bx - ax, dy = by - ay;
+    const len2 = dx * dx + dy * dy;
+    const t = len2 > 0
+      ? Math.max(0, Math.min(1, ((lon - ax) * dx + (lat - ay) * dy) / len2))
+      : 0;
+    const ex = (ax + t * dx - lon) * cosLat * K;
+    const ey = (ay + t * dy - lat) * K;
+    const d2 = ex * ex + ey * ey;
+    if (d2 < minD2) { minD2 = d2; bestI = i >>> 1; bestT = t; }
+  }
+  const progress = numSegments > 0 ? (bestI + bestT) / numSegments : 0;
+  return { dist: Math.sqrt(minD2), progress };
+}
+
+/**
  * Stride-based decimation of a flat coord array down to at most maxPts points.
  * O(n), always includes the last coordinate.
  */
@@ -46,22 +73,21 @@ function decimateFlat(flat, maxPts) {
 }
 
 self.onmessage = function ({ data }) {
-  const { routeFlat, stationsFlat, bufferKm } = data;
+  const { routeFlat, stationsFlat, cheapStationsFlat, bufferKm } = data;
   const stationCount = stationsFlat.length >>> 1;
+  const cheapCount   = cheapStationsFlat ? (cheapStationsFlat.length >>> 1) : 0;
 
   // Decimate the route to at most 1 000 points for a fast pre-filter pass.
-  // At 1 000 samples the inter-sample distance is ≤ ~2 km for any French
-  // route, so we add a 1.2 km margin to the candidate threshold to avoid
-  // false negatives at the corridor boundary.
   const DEC_TARGET   = 1000;
   const DEC_ERROR_KM = 1.2;
   const decFlat      = decimateFlat(routeFlat, DEC_TARGET);
   const prefilterBuffer = bufferKm + DEC_ERROR_KM;
 
-  const results    = new Float32Array(stationCount);
-  const candidates = []; // indices of stations that need the precise pass
+  const results      = new Float32Array(stationCount);
+  const progressFlat = new Float32Array(stationCount); // 0–1 progress along route
+  const candidates   = []; // indices of main stations needing precise pass
 
-  // ── Pass 1 : fast sweep against decimated route ───────────────────────
+  // ── Pass 1 : fast sweep (main stations) ───────────────────────────────
   for (let i = 0; i < stationCount; i++) {
     const lon = stationsFlat[i * 2], lat = stationsFlat[i * 2 + 1];
     const d   = nearestDist(lon, lat, decFlat, decFlat.length);
@@ -75,13 +101,49 @@ self.onmessage = function ({ data }) {
     }
   }
 
-  // ── Pass 2 : precise check on candidate set against full-res route ────
+  // ── Pass 2 : precise check on candidates (main stations) ──────────────
   for (let k = 0; k < candidates.length; k++) {
     const i   = candidates[k];
-    results[i] = nearestDist(stationsFlat[i * 2], stationsFlat[i * 2 + 1], routeFlat, routeFlat.length);
+    const lon = stationsFlat[i * 2], lat = stationsFlat[i * 2 + 1];
+    const { dist, progress } = nearestDistAndProgress(lon, lat, routeFlat, routeFlat.length);
+    results[i]      = dist;
+    progressFlat[i] = progress;
+  }
+
+  // ── Cheap stations : two-pass (same algorithm, separate corridor) ──────
+  // bufferKm for cheap is the full 10-km corridor — pass it via the same
+  // bufferKm field; the cheap pre-filter uses a generous 1.2 km margin too.
+  const CHEAP_CORRIDOR_KM = 10;
+  const cheapResults = new Float32Array(cheapCount);
+  if (cheapCount > 0) {
+    const cheapPrefilter = CHEAP_CORRIDOR_KM + DEC_ERROR_KM;
+    const cheapCandidates = [];
+    for (let i = 0; i < cheapCount; i++) {
+      const lon = cheapStationsFlat[i * 2], lat = cheapStationsFlat[i * 2 + 1];
+      const d   = nearestDist(lon, lat, decFlat, decFlat.length);
+      if (d <= cheapPrefilter) {
+        cheapCandidates.push(i);
+      } else {
+        cheapResults[i] = d;
+      }
+    }
+    for (let k = 0; k < cheapCandidates.length; k++) {
+      const i   = cheapCandidates[k];
+      cheapResults[i] = nearestDist(
+        cheapStationsFlat[i * 2], cheapStationsFlat[i * 2 + 1],
+        routeFlat, routeFlat.length
+      );
+    }
   }
 
   self.postMessage({ type: 'progress', done: stationCount, total: stationCount });
-  // Transfer results buffer (zero-copy)
-  self.postMessage({ type: 'done', results: results.buffer }, [results.buffer]);
+
+  // Transfer all result buffers (zero-copy)
+  const transfers = [results.buffer, progressFlat.buffer];
+  if (cheapCount > 0) transfers.push(cheapResults.buffer);
+  self.postMessage(
+    { type: 'done', results: results.buffer, progressFlat: progressFlat.buffer,
+      cheapResults: cheapCount > 0 ? cheapResults.buffer : null },
+    transfers
+  );
 };
