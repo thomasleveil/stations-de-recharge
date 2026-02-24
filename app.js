@@ -436,7 +436,7 @@ function buildMarkers(rows) {
       interactive: true,
     });
 
-    circle.bindPopup(L.popup({ maxWidth: 300 }).setContent(buildPopup(p, op)));
+    circle.bindPopup(() => buildPopup(p, op), { maxWidth: 300 });
     circle.bindTooltip(p.nom_station, { direction: 'top', offset: [0, -8] });
 
     circle._op  = op;
@@ -513,7 +513,7 @@ function buildCheapMarkers(rows) {
         interactive: true,
       });
     }
-    circle.bindPopup(L.popup({ maxWidth: 300 }).setContent(buildCheapPopup(p, op)));
+    circle.bindPopup(() => buildCheapPopup(p, op), { maxWidth: 300 });
     circle.bindTooltip(`${p.nom_station} €`, { direction: 'top', offset: [0, -8] });
     circle._op  = op;
     circle._lon = p.lon;
@@ -854,23 +854,58 @@ function getFilterWorker() {
 async function applyRouteFilter(routeLine, onProgress) {
   const coords = routeLine.geometry.coordinates;
 
-  // Pack coordinates into transferable Float64Arrays (zero-copy to worker).
+  // Pack route into transferable Float64Array (zero-copy to worker).
   const routeFlat = new Float64Array(coords.length * 2);
   for (let i = 0; i < coords.length; i++) {
     routeFlat[i * 2]     = coords[i][0];
     routeFlat[i * 2 + 1] = coords[i][1];
   }
-  const stationsFlat = new Float64Array(markers.length * 2);
+
+  // ── Piste 3.4 : spatial bbox pre-filter ──────────────────────────────────
+  // Compute bounding box of route + generous corridor (~15 km ≈ 0.15°).
+  // Only markers within the bbox are sent to the worker.
+  const BBOX_PAD = 0.15; // degrees (~15 km — well beyond the cheap corridor of 10 km)
+  let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
+  for (let i = 0; i < coords.length; i++) {
+    const lon = coords[i][0], lat = coords[i][1];
+    if (lon < minLon) minLon = lon;
+    if (lon > maxLon) maxLon = lon;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+  }
+  minLon -= BBOX_PAD; maxLon += BBOX_PAD;
+  minLat -= BBOX_PAD; maxLat += BBOX_PAD;
+
+  // Reset distances on ALL markers first (markers outside bbox must not keep stale values)
   for (let i = 0; i < markers.length; i++) {
-    stationsFlat[i * 2]     = markers[i]._lon;
-    stationsFlat[i * 2 + 1] = markers[i]._lat;
+    markers[i]._distFromRoute   = Infinity;
+    markers[i]._progressOnRoute = 0;
+  }
+  for (let i = 0; i < cheapMarkers.length; i++) {
+    cheapMarkers[i]._distFromRoute = Infinity;
   }
 
-  // Pack cheap station coords — distances computed in worker (piste 2.1)
-  const cheapStationsFlat = new Float64Array(cheapMarkers.length * 2);
-  for (let i = 0; i < cheapMarkers.length; i++) {
-    cheapStationsFlat[i * 2]     = cheapMarkers[i]._lon;
-    cheapStationsFlat[i * 2 + 1] = cheapMarkers[i]._lat;
+  // Filter to bbox — typical Paris→Lyon keeps ~400/5535 main + ~150/925 cheap
+  const nearbyMarkers = markers.filter(
+    m => m._lon >= minLon && m._lon <= maxLon && m._lat >= minLat && m._lat <= maxLat
+  );
+  const nearbyCheap = cheapMarkers.filter(
+    m => m._lon >= minLon && m._lon <= maxLon && m._lat >= minLat && m._lat <= maxLat
+  );
+  console.debug(`[Perf] bbox_filter: ${nearbyMarkers.length}/${markers.length} main, ${nearbyCheap.length}/${cheapMarkers.length} cheap`);
+  Perf.results.push({ label: 'main_in_bbox',  ms: nearbyMarkers.length, ts: Date.now() });
+  Perf.results.push({ label: 'cheap_in_bbox', ms: nearbyCheap.length,   ts: Date.now() });
+
+  // Pack only bbox-filtered markers into transferable arrays
+  const stationsFlat = new Float64Array(nearbyMarkers.length * 2);
+  for (let i = 0; i < nearbyMarkers.length; i++) {
+    stationsFlat[i * 2]     = nearbyMarkers[i]._lon;
+    stationsFlat[i * 2 + 1] = nearbyMarkers[i]._lat;
+  }
+  const cheapStationsFlat = new Float64Array(nearbyCheap.length * 2);
+  for (let i = 0; i < nearbyCheap.length; i++) {
+    cheapStationsFlat[i * 2]     = nearbyCheap[i]._lon;
+    cheapStationsFlat[i * 2 + 1] = nearbyCheap[i]._lat;
   }
 
   Perf.start('worker_roundtrip');
@@ -887,16 +922,17 @@ async function applyRouteFilter(routeLine, onProgress) {
         const results      = new Float32Array(data.results);
         const progressFlat = new Float32Array(data.progressFlat);
 
-        for (let i = 0; i < markers.length; i++) {
-          markers[i]._distFromRoute    = results[i];
-          markers[i]._progressOnRoute  = progressFlat[i]; // 0–1 along route
+        // Map results back to the bbox-filtered subset (not the full markers array)
+        for (let i = 0; i < nearbyMarkers.length; i++) {
+          nearbyMarkers[i]._distFromRoute   = results[i];
+          nearbyMarkers[i]._progressOnRoute = progressFlat[i]; // 0–1 along route
         }
 
-        // Apply cheap distances — all computed off-thread (piste 2.1)
+        // Apply cheap distances — also mapped to filtered subset
         if (data.cheapResults) {
           const cheapResults = new Float32Array(data.cheapResults);
-          for (let i = 0; i < cheapMarkers.length; i++) {
-            cheapMarkers[i]._distFromRoute = cheapResults[i];
+          for (let i = 0; i < nearbyCheap.length; i++) {
+            nearbyCheap[i]._distFromRoute = cheapResults[i];
           }
         }
 
