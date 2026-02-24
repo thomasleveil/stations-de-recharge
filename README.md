@@ -48,6 +48,25 @@ Chargements suivants  →  IndexedDB (instantané, sans réseau)
 - Au moins 4 points de charge par station
 - Exclusion des stations camions/poids lourds
 
+## Disponibilité temps réel (optionnel)
+
+L'application peut afficher le nombre de prises CCS disponibles en temps réel au clic sur une station. Cette fonctionnalité utilise l'**API TomTom EV Charging Stations Availability** (gratuite, 2 500 requêtes/jour).
+
+### Créer une clé TomTom gratuite
+
+1. Créer un compte sur [developer.tomtom.com](https://developer.tomtom.com) (aucune carte bancaire requise)
+2. Dans le tableau de bord, aller dans **Keys** → **Create a new key**
+3. Donner un nom à la clé, puis activer les deux produits suivants :
+   - **Search API** — nécessaire pour rechercher une station par coordonnées GPS
+   - **EV Charging Stations Availability** — nécessaire pour récupérer l'état des connecteurs
+4. Sauvegarder
+
+> Sans ces deux produits cochés, les requêtes retournent une erreur 403 "Not authorized".
+
+### Saisir la clé dans l'application
+
+Cliquer sur l'icône ⚙ en haut à droite de la carte, puis coller la clé dans le champ **Clé API TomTom**. La clé est enregistrée localement dans `localStorage` et n'est jamais envoyée à un serveur tiers.
+
 ## Lancement en local
 
 ```bash

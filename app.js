@@ -5,6 +5,10 @@ const CACHE_DB    = 'irve-v1';
 const CACHE_TTL   = 24 * 60 * 60 * 1000; // 24 hours in ms
 const CHEAP_CORRIDOR_KM = 5;             // Fixed 5-km corridor for budget networks
 
+// TomTom API key for real-time charging availability (free tier: 2500 req/day).
+// Set via the ⚙ settings menu — persisted in localStorage.
+let TOMTOM_API_KEY = localStorage.getItem('irve-tomtom-key') || '';
+
 // ── Operator definitions ──────────────────────────────────────────────────
 
 const OPERATORS = [
@@ -438,6 +442,21 @@ function buildMarkers(rows) {
     circle._op  = op;
     circle._lon = p.lon;
     circle._lat  = p.lat;
+
+    circle.on('popupopen', () => {
+      const popupEl = circle.getPopup()?.getElement();
+      const avail      = popupEl?.querySelector('.popup-avail');
+      const refreshBtn = popupEl?.querySelector('.popup-avail-refresh');
+      fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
+      if (refreshBtn) {
+        refreshBtn.onclick = () => {
+          delete circle._availCache;
+          if (avail) avail.innerHTML = AVAIL_SPINNER;
+          fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
+        };
+      }
+    });
+
     circle.addTo(map);
     markers.push(circle);
   }
@@ -495,6 +514,21 @@ function buildCheapMarkers(rows) {
     circle._op  = op;
     circle._lon = p.lon;
     circle._lat = p.lat;
+
+    circle.on('popupopen', () => {
+      const popupEl = circle.getPopup()?.getElement();
+      const avail      = popupEl?.querySelector('.popup-avail');
+      const refreshBtn = popupEl?.querySelector('.popup-avail-refresh');
+      fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
+      if (refreshBtn) {
+        refreshBtn.onclick = () => {
+          delete circle._availCache;
+          if (avail) avail.innerHTML = AVAIL_SPINNER;
+          fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
+        };
+      }
+    });
+
     circle.addTo(map);
     cheapMarkers.push(circle);
   }
@@ -521,6 +555,12 @@ function buildCheapPopup(p, op) {
 
         <span class="popup-label">Adresse</span>
         <span>${shortAddr}</span>
+
+        <span class="popup-label">Disponibilité CCS2</span>
+        <span class="popup-avail-cell">
+          <span class="popup-avail">${AVAIL_SPINNER}</span>
+          <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
+        </span>
       </div>
     </div>`;
 }
@@ -676,8 +716,120 @@ function buildPopup(p, op) {
 
         <span class="popup-label">Adresse</span>
         <span>${shortAddr}</span>
+
+        <span class="popup-label">Disponibilité CCS2</span>
+        <span class="popup-avail-cell">
+          <span class="popup-avail">${AVAIL_SPINNER}</span>
+          <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
+        </span>
       </div>
     </div>`;
+}
+
+// ── Real-time availability (TomTom) ───────────────────────────────────────
+
+const AVAIL_TTL     = 3 * 60 * 1000; // 3 minutes — matches TomTom refresh cadence
+const AVAIL_SPINNER = '<span class="popup-avail-spinner">⟳</span>';
+
+// Fetch with 403 classification:
+//   - Auth errors (Forbidden, Not authorized, Account inactive) → throw immediately, no retry.
+//   - Rate-limit errors (over QPS, over rate limit) → wait 3 s and retry once.
+// The TomTom detailedError body determines the category.
+async function fetchWithRetry(url) {
+  const res = await fetch(url);
+  if (res.status !== 403) return res;
+
+  let body = null;
+  try { body = await res.json(); } catch (_) {}
+  const detail = body?.detailedError ?? {};
+  const combined = `${detail.message ?? ''} ${detail.code ?? ''}`;
+  const isRateLimit = /rate|limit|quota|capacity|queries per second/i.test(combined);
+
+  console.warn(`[TomTom 403 — ${isRateLimit ? 'rate-limit, retry in 3s' : 'auth error, no retry'}]`, JSON.stringify(body));
+
+  if (!isRateLimit) {
+    const err = new Error(`403auth: ${detail.message ?? 'Forbidden'}`);
+    err.tomtomErrorType = 'auth';
+    throw err;
+  }
+
+  await new Promise(r => setTimeout(r, 3000));
+  return fetch(url);
+}
+
+async function fetchAvailability(circle) {
+  // Return cached result if still fresh.
+  const now = Date.now();
+  if (circle._availCache && now - circle._availCache.ts < AVAIL_TTL) {
+    return circle._availCache.html;
+  }
+
+  // No key configured — don't cache so a freshly-entered key takes effect immediately.
+  if (!TOMTOM_API_KEY) {
+    return '—';
+  }
+
+  try {
+    // Step 1: find the TomTom place ID by proximity (cached across sessions).
+    if (!circle._tomtomId) {
+      const url = `https://api.tomtom.com/search/2/nearbySearch/.json` +
+        `?key=${TOMTOM_API_KEY}&lat=${circle._lat}&lon=${circle._lon}` +
+        `&radius=100&categorySet=7309&limit=5`;
+      const res = await fetchWithRetry(url);
+      if (!res.ok) throw new Error(`nearbySearch ${res.status}`);
+      const data = await res.json();
+      const result = data.results?.[0];
+      if (!result) {
+        circle._availCache = { ts: now, html: '—' };
+        return '—';
+      }
+      circle._tomtomId = result.id;
+    }
+
+    // Step 2: query real-time availability — filtered server-side to CCS2 ≥ 150 kW.
+    const url2 = `https://api.tomtom.com/search/2/chargingAvailability.json` +
+      `?key=${TOMTOM_API_KEY}&chargingAvailability=${encodeURIComponent(circle._tomtomId)}` +
+      `&connectorSet=IEC62196Type2CCS&minPowerKW=150`;
+    const res2 = await fetchWithRetry(url2);
+    if (!res2.ok) throw new Error(`chargingAvailability ${res2.status}`);
+    const data2 = await res2.json();
+
+    // TomTom already filtered to CCS2 ≥ 150 kW; keep the client-side type check as a safeguard.
+    const ccs2 = (data2.connectors ?? [])
+      .filter(c => c.type === 'IEC62196Type2CCS');
+
+    let html;
+    if (ccs2.length === 0) {
+      html = '—';
+    } else {
+      const available = ccs2.reduce((s, c) => s + (c.availability?.current?.available    ?? 0), 0);
+      const unknown   = ccs2.reduce((s, c) => s + (c.availability?.current?.unknown      ?? 0), 0);
+      const total     = ccs2.reduce((s, c) => s + (c.total ?? 0), 0);
+      if (available === 0 && unknown === total) {
+        // All connectors report "unknown" status — cannot determine actual availability.
+        html = `<span class="popup-avail">? / ${total}</span>`;
+      } else {
+        const cls = available > 0 ? 'popup-avail-ok' : 'popup-avail-none';
+        html = `<span class="${cls}">${available} / ${total} disponible${available > 1 ? 's' : ''}</span>`;
+      }
+    }
+
+    circle._availCache = { ts: now, html };
+    return html;
+  } catch (e) {
+    console.warn('TomTom availability:', e.message);
+    // Auth errors: key doesn't have the EV API product enabled. Don't cache — user may fix key.
+    if (e.tomtomErrorType === 'auth') {
+      return '<span class="popup-avail-err" title="Activer \'EV Charging Stations Availability\' dans la console TomTom developer">⚠ Clé non autorisée</span>';
+    }
+    // Rate-limit 403 that survived the retry, or other HTTP errors.
+    if (e.message.includes('403')) {
+      return '<span class="popup-avail-err" title="Quota TomTom dépassé — réessaye dans quelques secondes">⚠ Quota dépassé</span>';
+    }
+    const html = '—';
+    circle._availCache = { ts: now, html };
+    return html;
+  }
 }
 
 // ── Route planning ─────────────────────────────────────────────────────────
@@ -1031,6 +1183,14 @@ setupAutocomplete('route-end');
   });
 
   menu.addEventListener('click', e => e.stopPropagation());
+
+  // TomTom API key input
+  const keyInput = document.getElementById('tomtom-key-input');
+  keyInput.value = TOMTOM_API_KEY;
+  keyInput.addEventListener('input', () => {
+    TOMTOM_API_KEY = keyInput.value.trim();
+    localStorage.setItem('irve-tomtom-key', TOMTOM_API_KEY);
+  });
 
   bustBtn.addEventListener('click', () => {
     const req = indexedDB.deleteDatabase('irve-v1');
