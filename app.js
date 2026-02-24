@@ -167,6 +167,11 @@ const cheapMarkers = [];
 const subEl    = document.querySelector('.panel-sub');
 const legendEl = document.getElementById('legend-items');
 
+// Piste 2.2 — delta-updates state: Sets of currently visible markers.
+// null = uninitialised (first call applies to all; subsequent calls diff).
+let _prevVisMain  = null;
+let _prevVisCheap = null;
+
 function isVisible(m) {
   return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
 }
@@ -200,21 +205,47 @@ function nearestDistMain(lon, lat, flat) {
 
 function updateVisibility() {
   Perf.start('updateVisibility');
-  let count = 0;
-  markers.forEach(m => {
-    const visible = isVisible(m);
-    if (visible) count++;
-    m.setStyle({ opacity: visible ? 1 : 0, fillOpacity: visible ? 0.9 : 0 });
-    const el = m.getElement();
-    if (el) el.style.pointerEvents = visible ? '' : 'none';
-  });
 
-  cheapMarkers.forEach(m => {
-    const visible = isCheapVisible(m);
-    m.setStyle({ opacity: visible ? 1 : 0, fillOpacity: visible ? 0.75 : 0 });
-    const el = m.getElement();
-    if (el) el.style.pointerEvents = visible ? '' : 'none';
-  });
+  // ── Piste 2.2 : delta-updates ──────────────────────────────────────────
+  // Compute the next-visible sets first (O(N) but no DOM/canvas touches).
+  const nextVisMain  = new Set();
+  const nextVisCheap = new Set();
+  let count = 0;
+  for (const m of markers)      { if (isVisible(m))      { nextVisMain.add(m);  count++; } }
+  for (const m of cheapMarkers) { if (isCheapVisible(m)) { nextVisCheap.add(m); } }
+
+  // Apply setStyle only to markers whose visibility status changed.
+  // On the first call (_prevVisMain === null) every marker is dirty — fall through to full pass.
+  let setStyleCount = 0;
+  if (_prevVisMain === null) {
+    // First call: apply style to every marker (same as before).
+    for (const m of markers) {
+      const v = nextVisMain.has(m);
+      m.setStyle({ opacity: v ? 1 : 0, fillOpacity: v ? 0.9 : 0 });
+      const el = m.getElement();
+      if (el) el.style.pointerEvents = v ? '' : 'none';
+      setStyleCount++;
+    }
+    for (const m of cheapMarkers) {
+      const v = nextVisCheap.has(m);
+      m.setStyle({ opacity: v ? 1 : 0, fillOpacity: v ? 0.75 : 0 });
+      const el = m.getElement();
+      if (el) el.style.pointerEvents = v ? '' : 'none';
+      setStyleCount++;
+    }
+  } else {
+    // Subsequent calls: only touch markers that changed status.
+    for (const m of nextVisMain)  { if (!_prevVisMain.has(m))  { m.setStyle({ opacity: 1, fillOpacity: 0.9 }); const el = m.getElement(); if (el) el.style.pointerEvents = ''; setStyleCount++; } }
+    for (const m of _prevVisMain) { if (!nextVisMain.has(m))   { m.setStyle({ opacity: 0, fillOpacity: 0 });   const el = m.getElement(); if (el) el.style.pointerEvents = 'none'; setStyleCount++; } }
+    for (const m of nextVisCheap) { if (!_prevVisCheap.has(m)) { m.setStyle({ opacity: 1, fillOpacity: 0.75 }); const el = m.getElement(); if (el) el.style.pointerEvents = ''; setStyleCount++; } }
+    for (const m of _prevVisCheap){ if (!nextVisCheap.has(m))  { m.setStyle({ opacity: 0, fillOpacity: 0 });   const el = m.getElement(); if (el) el.style.pointerEvents = 'none'; setStyleCount++; } }
+  }
+
+  _prevVisMain  = nextVisMain;
+  _prevVisCheap = nextVisCheap;
+
+  Perf.results.push({ label: 'setStyle_count', ms: setStyleCount, ts: Date.now() });
+  console.debug(`[Perf] setStyle_count: ${setStyleCount} / ${markers.length + cheapMarkers.length}`);
 
   if (routeActive) {
     subEl.textContent = `${count} station${count !== 1 ? 's' : ''} sur le trajet`;
@@ -421,6 +452,7 @@ ORDER BY sf.id_station_itinerance
 // ── Marker builder (shared between cache hit and fresh fetch paths) ───────
 
 function buildMarkers(rows) {
+  _prevVisMain = null; // reset delta-update state on marker rebuild
   Perf.start('buildMarkers');
   for (const p of rows) {
     const op = getOperator(p);
@@ -488,6 +520,7 @@ function makeBrandDivIcon(opName) {
 }
 
 function buildCheapMarkers(rows) {
+  _prevVisCheap = null; // reset delta-update state on marker rebuild
   Perf.start('buildCheapMarkers');
   for (const p of rows) {
     let op = getOperator(p);

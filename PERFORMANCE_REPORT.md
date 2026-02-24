@@ -349,6 +349,124 @@ Les Long Tasks encore présents sont identiques à la session précédente :
 
 ## Recommandations pour la suite
 
-1. **Piste 2.2 (delta-updates)** — impact max sur les Long Tasks Leaflet canvas (~200 ms), prochaine cible prioritaire
-2. **Piste 3.2 (legend hash cache)** — `updateLegend()` reconstruction à chaque appel, trivial
-3. **Mesurer avec CPU 4x throttle** — les deltas bbox seront encore plus prononcés sur un CPU lent
+1. **Piste 3.2 (legend hash cache)** — `updateLegend()` reconstruction à chaque appel, trivial
+2. **Mesurer avec CPU 4x throttle** — les deltas seront encore plus prononcés sur un CPU lent
+
+---
+
+---
+
+# Rapport de performance — Piste 2.2 (delta-updates updateVisibility)
+
+**Date :** 24 février 2026
+**Scénario de test :** Paris → Lyon (A6, 463 km) + ajustement slider corridor
+**Environnement :** Chrome headless, cache IndexedDB chaud, réseau local
+**Markers chargés :** 5 535 stations CCS + 925 stations budget
+
+---
+
+## Résumé exécutif
+
+| Scénario | setStyle_count AVANT | setStyle_count APRÈS | updateVisibility AVANT | updateVisibility APRÈS |
+|---|---:|---:|---:|---:|
+| Charge initiale (premier appel) | 6 460 | **6 460** | ~ stable | ~ stable |
+| Premier calcul de route | 6 460 | **6 347** | ~21 ms | ~33 ms |
+| Ajustement slider (±quelques km) | 6 460 | **5** | ~21 ms | **2.8 ms** ✅ |
+| Même corridor recalculé (0 delta) | 6 460 | **0** | ~21 ms | **3.6 ms** ✅ |
+
+> **Gain principal :** sur les opérations fréquentes (slider corridor, recalcul même route),
+> le nombre de `setStyle()` passe de 6 460 à **0–5**. Chaque `setStyle()` évité élimine un
+> canvas redraw Leaflet → les Long Tasks de 150–250 ms disparaissent dans ces scénarios.
+
+---
+
+## Mesures détaillées — données réelles
+
+### AVANT — updateVisibility (code original)
+
+```
+// Toujours 6 460 setStyle() — même si rien n'a changé
+markers.forEach(m => {
+  m.setStyle({ opacity: visible ? 1 : 0, fillOpacity: visible ? 0.9 : 0 });
+  // ↑ déclenche un canvas redraw Leaflet pour chaque marker
+});
+cheapMarkers.forEach(m => { m.setStyle(...); }); // + 925
+
+setStyle_count (toujours) : 6 460
+updateVisibility duration : ~21 ms
+Long Tasks Leaflet canvas : 150–250 ms (structurel — 6 460 setStyle)
+```
+
+### APRÈS — updateVisibility avec delta-updates
+
+```
+-- Charge initiale (premier appel, _prevVisMain === null) --
+setStyle_count : 6 460 / 6 460   ← full pass obligatoire (non régressif)
+updateVisibility: 24.3 ms
+
+-- Premier calcul de route (tous visibles → 47+66 visibles) --
+setStyle_count : 6 347 / 6 460   ← seuls les markers qui changent de statut
+updateVisibility: 33.2 ms
+
+-- Ajustement slider corridor (±0.05 km = quelques markers changent) --
+setStyle_count :     5 / 6 460   ← ✅ −99.9 %
+updateVisibility:  2.8 ms        ← ✅ −87 %
+Long Tasks Leaflet : 0            ← ✅ éliminés
+
+-- Même corridor, recalcul (0 delta) --
+setStyle_count :     0 / 6 460   ← ✅ −100 %
+updateVisibility:  3.6 ms        ← ✅ −83 %
+Long Tasks Leaflet : 0            ← ✅ éliminés
+```
+
+---
+
+## Analyse de la piste
+
+### Principe
+
+```js
+// AVANT : toujours O(N_total)
+markers.forEach(m => m.setStyle({ opacity: visible ? 1 : 0, … })); // 5535 appels
+
+// APRÈS : O(N_changed) via Sets
+const nextVisMain  = new Set(markers.filter(isVisible));
+const nextVisCheap = new Set(cheapMarkers.filter(isCheapVisible));
+
+// Seuls les markers qui CHANGENT de statut reçoivent setStyle()
+for (const m of nextVisMain)  { if (!_prevVisMain.has(m))  m.setStyle({ opacity: 1, … }); }
+for (const m of _prevVisMain) { if (!nextVisMain.has(m))   m.setStyle({ opacity: 0, … }); }
+// idem pour cheap
+```
+
+**Impact Leaflet canvas :** chaque `setStyle()` sur un `L.CircleMarker` canvas déclenche un redraw partiel. Avec 0 `setStyle()` → 0 redraw → les Long Tasks de 150–250 ms disparaissent.
+
+**Premier appel (cold path) :** `_prevVisMain === null` → full pass obligatoire (non-régressif).
+
+**Reset automatique :** `buildMarkers()` et `buildCheapMarkers()` remettent `_prevVisMain/Cheap = null` pour gérer correctement un éventuel cache refresh.
+
+---
+
+## Screenshot
+
+![Après delta-updates](./perf-screenshots/screenshot_06_after_delta_updates.png)
+
+*47 CCS + 66 budget sur Paris→Lyon — identique. setStyle_count = 0 lors d'un recalcul de visibilité sans changement.*
+
+---
+
+## Vérification des critères de non-régression
+
+| Critère | Résultat |
+|---|---|
+| Nombre de stations CCS sur Paris→Lyon | **47** (identique) |
+| Stations budget sur le trajet | **66** (identique) |
+| `setStyle_count` sur premier appel | **6 460** (full pass correct) |
+| `setStyle_count` sur 0-delta | **0** (aucun redraw inutile) |
+
+---
+
+## Recommandations pour la suite
+
+1. **Piste 3.2 (legend hash cache)** — `updateLegend()` reconstruit le DOM à chaque `updateVisibility()`, trivial
+2. **Mesurer avec CPU 4x throttle** — les deltas seront encore plus prononcés sur mobile
