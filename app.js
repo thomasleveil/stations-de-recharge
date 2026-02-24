@@ -789,7 +789,7 @@ async function fetchAvailability(circle) {
     // Step 2: query real-time availability — filtered server-side to CCS2 ≥ 150 kW.
     const url2 = `https://api.tomtom.com/search/2/chargingAvailability.json` +
       `?key=${TOMTOM_API_KEY}&chargingAvailability=${encodeURIComponent(circle._tomtomId)}` +
-      `&connectorSet=IEC_62196_T2_COMBO&minPowerKW=150`;
+      `&connectorSet=IEC62196Type2CCS&minPowerKW=150`;
     const res2 = await fetchWithRetry(url2);
     if (!res2.ok) throw new Error(`chargingAvailability ${res2.status}`);
     const data2 = await res2.json();
