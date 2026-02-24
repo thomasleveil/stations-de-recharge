@@ -143,7 +143,7 @@ function isVisible(m) {
 }
 
 function isCheapVisible(m) {
-  return routeActive && m._distFromRoute !== undefined && m._distFromRoute <= CHEAP_CORRIDOR_KM;
+  return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= CHEAP_CORRIDOR_KM);
 }
 
 // Equirectangular nearest-distance (km) from point to polyline flat array.
