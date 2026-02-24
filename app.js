@@ -3,7 +3,7 @@
 const PARQUET_URL = 'https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet';
 const CACHE_DB    = 'irve-v1';
 const CACHE_TTL   = 24 * 60 * 60 * 1000; // 24 hours in ms
-const CHEAP_CORRIDOR_KM = 5;             // Fixed 5-km corridor for budget networks
+const CHEAP_CORRIDOR_KM = 10;            // Fixed 10-km corridor for budget networks
 
 // TomTom API key for real-time charging availability (free tier: 2500 req/day).
 // Set via the ⚙ settings menu — persisted in localStorage.
@@ -990,7 +990,8 @@ document.getElementById('corridor-label').addEventListener('click', () => {
 document.getElementById('corridor-slider').addEventListener('input', () => {
   const v = parseInt(document.getElementById('corridor-slider').value, 10);
   ROUTE_BUFFER_KM = v / 10;
-  document.getElementById('corridor-value').textContent = (v * 100) + ' m';
+  const km = v / 10;
+  document.getElementById('corridor-value').textContent = km >= 1 ? km.toFixed(1) + ' km' : (v * 100) + ' m';
   if (routeActive) {
     const info = document.getElementById('route-info');
     info.className = 'route-stat';
