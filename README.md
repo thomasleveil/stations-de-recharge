@@ -10,9 +10,10 @@ Pour planifier un voyage en voiture électrique, il est utile de connaître à l
 
 Carte interactive des bornes de recharge rapide (≥ 150 kW, CCS Combo) sur les principales autoroutes françaises. Permet de :
 
-- visualiser toutes les stations par opérateur (TotalEnergies, IONITY, Allego/Electra, Fastned, ENGIE Vianeo, Tesla, Zunder…)
-- calculer un itinéraire et n'afficher que les stations dans un corridor de 200 m autour du trajet
-- filtrer pour inclure ou exclure les parkings privés à usage public
+- visualiser toutes les stations par opérateur (TotalEnergies, IONITY, Allego/Electra, Fastned, ENGIE Vianeo, IZIVIA Fast, Zunder, Tesla…)
+- afficher aussi les stations de réseaux abordables (€) : B&B Hotels, IECharge, McDonald's/IZIVIA Fast, Tesla Supercharger
+- calculer un itinéraire et n'afficher que les stations dans un corridor ajustable (200 m à 3 km) autour du trajet
+- utiliser sa position GPS comme point de départ d'itinéraire
 
 ## Architecture
 
@@ -40,13 +41,24 @@ Premier chargement  →  fetch data.gouv.fr (~6 MB)  →  DuckDB WASM filter  �
 Chargements suivants  →  IndexedDB (instantané, sans réseau)
 ```
 
-### Critères de filtrage
+### Critères de filtrage — stations rapides
 
 - `implantation_station` = "Station dédiée à la recharge rapide" ou "Parking privé à usage public"
-- Puissance maximale ≥ 150 kW (au moins un connecteur)
-- Au moins un connecteur CCS Combo
+- Puissance maximale ≥ 150 kW (au moins un connecteur CCS Combo)
+- Accès 24h/24 7j/7
 - Au moins 4 points de charge par station
-- Exclusion des stations camions/poids lourds
+- Exclusion des stations Tesla et camions/poids lourds
+
+### Critères de filtrage — stations abordables (€)
+
+Stations de réseaux à tarifs réduits avec abonnement, affichées dans un corridor de ±10 km autour de l'itinéraire :
+
+- **ENGIE Vianeo — B&B Hotels** (préfixe `FRVIA*`, nom contenant "B&B HOTEL")
+- **IECharge** (préfixe `FRIEN*`)
+- **IZIVIA Fast / McDonald's** (préfixe `FRIZF*`)
+- **Tesla Supercharger** (préfixe `FRTSL*`, ouvert à tous les VE)
+
+Si une station appartient aux deux catégories, elle est classée "rapide" (priorité à la catégorie fast).
 
 ## Disponibilité temps réel (optionnel)
 
