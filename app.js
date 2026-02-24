@@ -1092,8 +1092,9 @@ async function calculateRoute() {
 
     if (routeLayer) map.removeLayer(routeLayer);
     routeLayer = L.geoJSON(route.geometry, {
-      style: { color: '#1D4ED8', weight: 4, opacity: 0.75 },
-      renderer: canvasRenderer,
+      // Explicit SVG renderer overrides map preferCanvas:true — needed for CSS dash animation (piste 4.4)
+      renderer: L.svg(),
+      style: { color: '#1D4ED8', weight: 4, opacity: 0.75, className: 'route-polyline' },
     }).addTo(map);
     routeLayer.bringToBack();
 

@@ -609,3 +609,16 @@ html, body {
 .leaflet-control-locate.geoloc-retry {
   color: #f59e0b;
 }
+
+/* ── Route polyline draw animation (piste 4.4) ─────────────── */
+
+@keyframes drawRoute {
+  from { stroke-dashoffset: 5000; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.route-polyline {
+  stroke-dasharray: 5000;
+  stroke-dashoffset: 5000;
+  animation: drawRoute 0.8s ease-out forwards;
+}
