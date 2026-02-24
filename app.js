@@ -1015,6 +1015,12 @@ function staggeredFadeIn() {
     .sort((a, b) => (a._progressOnRoute ?? 0) - (b._progressOnRoute ?? 0));
   if (visible.length === 0) return;
 
+  // Invalidate delta-update state: any concurrent updateVisibility() call during the
+  // animation must do a full pass (re-show all visible markers), not a no-op delta.
+  // Without this, if updateVisibility() fires while markers are at opacity:0 from the
+  // reset below, it sees _prevVisMain == nextVisMain → delta=0 → markers stay invisible.
+  _prevVisMain = null;
+
   // Reset all to invisible — we'll reanimate them
   visible.forEach(m => m.setStyle({ opacity: 0, fillOpacity: 0 }));
 
