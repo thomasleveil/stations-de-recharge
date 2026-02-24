@@ -802,10 +802,16 @@ async function fetchAvailability(circle) {
     if (ccs2.length === 0) {
       html = '—';
     } else {
-      const available = ccs2.reduce((s, c) => s + (c.availability?.current?.available ?? 0), 0);
+      const available = ccs2.reduce((s, c) => s + (c.availability?.current?.available    ?? 0), 0);
+      const unknown   = ccs2.reduce((s, c) => s + (c.availability?.current?.unknown      ?? 0), 0);
       const total     = ccs2.reduce((s, c) => s + (c.total ?? 0), 0);
-      const cls = available > 0 ? 'popup-avail-ok' : 'popup-avail-none';
-      html = `<span class="${cls}">${available} / ${total} disponible${available > 1 ? 's' : ''}</span>`;
+      if (available === 0 && unknown === total) {
+        // All connectors report "unknown" status — cannot determine actual availability.
+        html = `<span class="popup-avail">? / ${total}</span>`;
+      } else {
+        const cls = available > 0 ? 'popup-avail-ok' : 'popup-avail-none';
+        html = `<span class="${cls}">${available} / ${total} disponible${available > 1 ? 's' : ''}</span>`;
+      }
     }
 
     circle._availCache = { ts: now, html };
