@@ -731,12 +731,22 @@ function buildPopup(p, op) {
 const AVAIL_TTL     = 3 * 60 * 1000; // 3 minutes — matches TomTom refresh cadence
 const AVAIL_SPINNER = '<span class="popup-avail-spinner">⟳</span>';
 
-// Retry once after 1 s on 403 (rate-limit transient response from TomTom).
+// Retry once after 3 s on 403 (rate-limit transient response from TomTom).
+// Logs the full TomTom error body so the cause is visible in the browser console.
 async function fetchWithRetry(url) {
   const res = await fetch(url);
   if (res.status !== 403) return res;
+  res.clone().json()
+    .then(b => console.warn('[TomTom 403 — retry in 3s]', JSON.stringify(b)))
+    .catch(() => console.warn('[TomTom 403 — retry in 3s]'));
   await new Promise(r => setTimeout(r, 3000));
-  return fetch(url);
+  const res2 = await fetch(url);
+  if (res2.status === 403) {
+    res2.clone().json()
+      .then(b => console.warn('[TomTom 403 — retry also failed]', JSON.stringify(b)))
+      .catch(() => console.warn('[TomTom 403 — retry also failed]'));
+  }
+  return res2;
 }
 
 async function fetchAvailability(circle) {
@@ -795,6 +805,10 @@ async function fetchAvailability(circle) {
     return html;
   } catch (e) {
     console.warn('TomTom availability:', e.message);
+    // Don't cache 403 errors — let the user retry via the ↺ button immediately.
+    if (e.message.includes('403')) {
+      return '<span class="popup-avail-err" title="Ouvre la console pour le détail">⚠ 403</span>';
+    }
     const html = '—';
     circle._availCache = { ts: now, html };
     return html;
