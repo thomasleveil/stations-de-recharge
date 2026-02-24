@@ -507,6 +507,14 @@ function buildCheapMarkers(rows) {
     circle._op  = op;
     circle._lon = p.lon;
     circle._lat = p.lat;
+
+    circle.on('popupopen', () => {
+      fetchAvailability(circle).then(html => {
+        const el = circle.getPopup()?.getElement()?.querySelector('.popup-avail');
+        if (el) el.innerHTML = html;
+      });
+    });
+
     circle.addTo(map);
     cheapMarkers.push(circle);
   }
@@ -533,6 +541,9 @@ function buildCheapPopup(p, op) {
 
         <span class="popup-label">Adresse</span>
         <span>${shortAddr}</span>
+
+        <span class="popup-label">Disponibilité CCS2</span>
+        <span class="popup-avail">⟳</span>
       </div>
     </div>`;
 }
@@ -698,7 +709,6 @@ function buildPopup(p, op) {
 // ── Real-time availability (TomTom) ───────────────────────────────────────
 
 const AVAIL_TTL = 3 * 60 * 1000; // 3 minutes — matches TomTom refresh cadence
-const BISON_FUTE_URL = 'https://www.bison-fute.gouv.fr/recharge-electrique.html';
 
 async function fetchAvailability(circle) {
   // Return cached result if still fresh.
@@ -707,11 +717,9 @@ async function fetchAvailability(circle) {
     return circle._availCache.html;
   }
 
-  // No key configured — show external link immediately.
+  // No key configured — don't cache so a freshly-entered key takes effect immediately.
   if (!TOMTOM_API_KEY) {
-    const html = `<a href="${BISON_FUTE_URL}" target="_blank" rel="noopener">Voir sur Bison Futé ↗</a>`;
-    circle._availCache = { ts: now, html };
-    return html;
+    return '—';
   }
 
   try {
@@ -725,9 +733,8 @@ async function fetchAvailability(circle) {
       const data = await res.json();
       const result = data.results?.[0];
       if (!result) {
-        const html = `<a href="${BISON_FUTE_URL}" target="_blank" rel="noopener">Voir sur Bison Futé ↗</a>`;
-        circle._availCache = { ts: now, html };
-        return html;
+        circle._availCache = { ts: now, html: '—' };
+        return '—';
       }
       circle._tomtomId = result.id;
     }
@@ -747,7 +754,7 @@ async function fetchAvailability(circle) {
 
     let html;
     if (ccs2.length === 0) {
-      html = `<a href="${BISON_FUTE_URL}" target="_blank" rel="noopener">Voir sur Bison Futé ↗</a>`;
+      html = '—';
     } else {
       const available = ccs2.reduce((s, c) => s + (c.availability?.current?.available ?? 0), 0);
       const total     = ccs2.reduce((s, c) => s + (c.total ?? 0), 0);
@@ -759,7 +766,7 @@ async function fetchAvailability(circle) {
     return html;
   } catch (e) {
     console.warn('TomTom availability:', e.message);
-    const html = `<a href="${BISON_FUTE_URL}" target="_blank" rel="noopener">Voir sur Bison Futé ↗</a>`;
+    const html = '—';
     circle._availCache = { ts: now, html };
     return html;
   }
