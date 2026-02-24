@@ -257,8 +257,11 @@ function updateVisibility() {
   Perf.end('updateVisibility');
 }
 
+// Piste 3.2 — legend hash cache: avoid DOM rebuild when nothing changed.
+let _lastLegendKey = '';
+
 function updateLegend() {
-  legendEl.innerHTML = '';
+  Perf.start('updateLegend');
 
   // Count visible stations per operator (main CCS markers)
   const opCounts = new Map();
@@ -275,34 +278,53 @@ function updateLegend() {
     }
   });
 
-  [...opCounts.values()]
-    .sort((a, b) => b.count - a.count)
-    .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count, false));
-
-  if (autreCount > 0) appendLegendItem('Autre', '#6B7280', autreCount, false);
-
-  // Budget networks section (only when route is active)
+  // Build cheap counts (always, even when not route active — needed for fingerprint)
+  const cheapOpCounts = new Map();
   if (routeActive) {
-    const cheapOpCounts = new Map();
     cheapMarkers.forEach(m => {
       if (!isCheapVisible(m)) return;
       const key = m._op.name;
       if (!cheapOpCounts.has(key)) cheapOpCounts.set(key, { op: m._op, count: 0 });
       cheapOpCounts.get(key).count++;
     });
-    if (cheapOpCounts.size > 0) {
-      const hr = document.createElement('hr');
-      hr.style.cssText = 'border:none;border-top:1px solid #e2e8f0;margin:6px 0';
-      legendEl.appendChild(hr);
-      const label = document.createElement('div');
-      label.style.cssText = 'font-size:10px;color:#9ca3af;margin-bottom:4px;font-style:italic';
-      label.textContent = `€ Abordables (±${CHEAP_CORRIDOR_KM} km)`;
-      legendEl.appendChild(label);
-      [...cheapOpCounts.values()]
-        .sort((a, b) => b.count - a.count)
-        .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count, true));
-    }
   }
+
+  // Fingerprint: routeActive flag + sorted operator:count pairs (main + cheap)
+  const mainPart  = [...opCounts.entries()].sort((a,b) => a[0] < b[0] ? -1 : 1)
+    .map(([k,v]) => `${k}:${v.count}`).join(',');
+  const cheapPart = [...cheapOpCounts.entries()].sort((a,b) => a[0] < b[0] ? -1 : 1)
+    .map(([k,v]) => `${k}:${v.count}`).join(',');
+  const key = `${routeActive ? 1 : 0}|${autreCount}|${mainPart}|${cheapPart}`;
+
+  if (key === _lastLegendKey) {
+    Perf.end('updateLegend'); // skip — DOM already up to date
+    return;
+  }
+  _lastLegendKey = key;
+
+  // DOM rebuild (only when fingerprint changed)
+  legendEl.innerHTML = '';
+
+  [...opCounts.values()]
+    .sort((a, b) => b.count - a.count)
+    .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count, false));
+
+  if (autreCount > 0) appendLegendItem('Autre', '#6B7280', autreCount, false);
+
+  if (routeActive && cheapOpCounts.size > 0) {
+    const hr = document.createElement('hr');
+    hr.style.cssText = 'border:none;border-top:1px solid #e2e8f0;margin:6px 0';
+    legendEl.appendChild(hr);
+    const label = document.createElement('div');
+    label.style.cssText = 'font-size:10px;color:#9ca3af;margin-bottom:4px;font-style:italic';
+    label.textContent = `€ Abordables (±${CHEAP_CORRIDOR_KM} km)`;
+    legendEl.appendChild(label);
+    [...cheapOpCounts.values()]
+      .sort((a, b) => b.count - a.count)
+      .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count, true));
+  }
+
+  Perf.end('updateLegend');
 }
 
 function appendLegendItem(name, color, count, cheap) {
