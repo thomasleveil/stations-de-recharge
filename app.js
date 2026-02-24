@@ -6,8 +6,8 @@ const CACHE_TTL   = 24 * 60 * 60 * 1000; // 24 hours in ms
 const CHEAP_CORRIDOR_KM = 5;             // Fixed 5-km corridor for budget networks
 
 // TomTom API key for real-time charging availability (free tier: 2500 req/day).
-// Get yours at https://developer.tomtom.com — restrict it to your domain in the console.
-const TOMTOM_API_KEY = '';
+// Set via the ⚙ settings menu — persisted in localStorage.
+let TOMTOM_API_KEY = localStorage.getItem('irve-tomtom-key') || '';
 
 // ── Operator definitions ──────────────────────────────────────────────────
 
@@ -1114,6 +1114,14 @@ setupAutocomplete('route-end');
   });
 
   menu.addEventListener('click', e => e.stopPropagation());
+
+  // TomTom API key input
+  const keyInput = document.getElementById('tomtom-key-input');
+  keyInput.value = TOMTOM_API_KEY;
+  keyInput.addEventListener('input', () => {
+    TOMTOM_API_KEY = keyInput.value.trim();
+    localStorage.setItem('irve-tomtom-key', TOMTOM_API_KEY);
+  });
 
   bustBtn.addEventListener('click', () => {
     const req = indexedDB.deleteDatabase('irve-v1');
