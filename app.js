@@ -731,22 +731,30 @@ function buildPopup(p, op) {
 const AVAIL_TTL     = 3 * 60 * 1000; // 3 minutes — matches TomTom refresh cadence
 const AVAIL_SPINNER = '<span class="popup-avail-spinner">⟳</span>';
 
-// Retry once after 3 s on 403 (rate-limit transient response from TomTom).
-// Logs the full TomTom error body so the cause is visible in the browser console.
+// Fetch with 403 classification:
+//   - Auth errors (Forbidden, Not authorized, Account inactive) → throw immediately, no retry.
+//   - Rate-limit errors (over QPS, over rate limit) → wait 3 s and retry once.
+// The TomTom detailedError body determines the category.
 async function fetchWithRetry(url) {
   const res = await fetch(url);
   if (res.status !== 403) return res;
-  res.clone().json()
-    .then(b => console.warn('[TomTom 403 — retry in 3s]', JSON.stringify(b)))
-    .catch(() => console.warn('[TomTom 403 — retry in 3s]'));
-  await new Promise(r => setTimeout(r, 3000));
-  const res2 = await fetch(url);
-  if (res2.status === 403) {
-    res2.clone().json()
-      .then(b => console.warn('[TomTom 403 — retry also failed]', JSON.stringify(b)))
-      .catch(() => console.warn('[TomTom 403 — retry also failed]'));
+
+  let body = null;
+  try { body = await res.json(); } catch (_) {}
+  const detail = body?.detailedError ?? {};
+  const combined = `${detail.message ?? ''} ${detail.code ?? ''}`;
+  const isRateLimit = /rate|limit|quota|capacity|queries per second/i.test(combined);
+
+  console.warn(`[TomTom 403 — ${isRateLimit ? 'rate-limit, retry in 3s' : 'auth error, no retry'}]`, JSON.stringify(body));
+
+  if (!isRateLimit) {
+    const err = new Error(`403auth: ${detail.message ?? 'Forbidden'}`);
+    err.tomtomErrorType = 'auth';
+    throw err;
   }
-  return res2;
+
+  await new Promise(r => setTimeout(r, 3000));
+  return fetch(url);
 }
 
 async function fetchAvailability(circle) {
@@ -805,9 +813,13 @@ async function fetchAvailability(circle) {
     return html;
   } catch (e) {
     console.warn('TomTom availability:', e.message);
-    // Don't cache 403 errors — let the user retry via the ↺ button immediately.
+    // Auth errors: key doesn't have the EV API product enabled. Don't cache — user may fix key.
+    if (e.tomtomErrorType === 'auth') {
+      return '<span class="popup-avail-err" title="Activer \'EV Charging Stations Availability\' dans la console TomTom developer">⚠ Clé non autorisée</span>';
+    }
+    // Rate-limit 403 that survived the retry, or other HTTP errors.
     if (e.message.includes('403')) {
-      return '<span class="popup-avail-err" title="Ouvre la console pour le détail">⚠ 403</span>';
+      return '<span class="popup-avail-err" title="Quota TomTom dépassé — réessaye dans quelques secondes">⚠ Quota dépassé</span>';
     }
     const html = '—';
     circle._availCache = { ts: now, html };
