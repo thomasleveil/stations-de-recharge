@@ -287,11 +287,12 @@ async function cachePut(key, value) {
 }
 
 // ── DuckDB WASM filter SQL ────────────────────────────────────────────────
-// Replicates filter_stations.py logic entirely.
-// Reads irve_raw.parquet (registered in DuckDB virtual FS) and returns
-// one row per station with the same columns as the old stations.parquet.
+// Unified query — returns all relevant stations in a single pass.
+// cheap = FALSE → CCS2 fast station (≥ 150 kW, 24/7, no Tesla)
+// cheap = TRUE  → budget-network station (B&B Hotel, IECharge, IZIVIA/McDonald's, Tesla)
+// When a station qualifies for BOTH, cheap = FALSE wins (fast takes priority, no duplicate).
 
-const FILTER_SQL = `
+const UNIFIED_SQL = `
 WITH lat_lon AS (
     SELECT *,
         TRY_CAST(consolidated_latitude  AS DOUBLE) AS lat,
@@ -302,95 +303,57 @@ WITH lat_lon AS (
         ) AS power_kw
     FROM read_parquet('irve_raw.parquet')
     WHERE condition_acces = 'Accès libre'
+),
+-- CCS2 fast qualifiers (>= 150 kW, 24/7, CCS, not Tesla)
+ccs_qualifying AS (
+    SELECT * FROM lat_lon
+    WHERE power_kw >= 150
       AND prise_type_combo_ccs = TRUE
       AND TRIM(COALESCE(horaires, '')) = '24/7'
+      AND id_station_itinerance NOT LIKE 'FRTSL%'
 ),
-qualifying AS (
-    SELECT * FROM lat_lon WHERE power_kw >= 150
+fast_sids AS (
+    SELECT DISTINCT id_station_itinerance FROM ccs_qualifying
 ),
-station_first AS (
-    SELECT * FROM qualifying
-    QUALIFY ROW_NUMBER() OVER (PARTITION BY id_station_itinerance ORDER BY id_pdc_itinerance) = 1
-),
-station_power AS (
-    SELECT id_station_itinerance, MAX(power_kw) AS max_power_kw
-    FROM qualifying
-    GROUP BY id_station_itinerance
-),
-station_ccs_fast AS (
-    SELECT id_station_itinerance,
-           COUNT(DISTINCT id_pdc_itinerance) AS nbre_ccs_fast
-    FROM qualifying
-    GROUP BY id_station_itinerance
-),
-truck_sids AS (
-    SELECT DISTINCT id_station_itinerance FROM qualifying
-    WHERE lower(COALESCE(restriction_gabarit, '')) LIKE '%poids lourd%'
-       OR lower(COALESCE(nom_station, ''))         LIKE '%truck%'
-       OR lower(COALESCE(nom_station, ''))         LIKE '%camion%'
-       OR lower(COALESCE(nom_station, ''))         LIKE '%poids lourd%'
-)
-SELECT
-    sf.lon, sf.lat,
-    sf.id_station_itinerance                                   AS id,
-    COALESCE(sf.nom_station,    '')                            AS nom_station,
-    COALESCE(sf.adresse_station,'')                            AS adresse,
-    COALESCE(sf.nom_operateur,  '')                            AS operateur,
-    COALESCE(NULLIF(sf.nom_enseigne,''), sf.nom_operateur, '') AS enseigne,
-    COALESCE(CAST(sf.nbre_pdc AS VARCHAR), '')                 AS nbre_pdc,
-    sp.max_power_kw,
-    cf.nbre_ccs_fast,
-    COALESCE(sf.horaires, '')                                  AS horaires,
-    CASE WHEN sf.implantation_station = 'Station dédiée à la recharge rapide'
-         THEN 'dedicee' ELSE 'parking'
-    END AS station_type
-FROM station_first sf
-JOIN station_power    sp ON sf.id_station_itinerance = sp.id_station_itinerance
-JOIN station_ccs_fast cf ON sf.id_station_itinerance = cf.id_station_itinerance
-LEFT JOIN truck_sids  ts ON sf.id_station_itinerance = ts.id_station_itinerance
-WHERE sf.lat IS NOT NULL AND sf.lat != 0
-  AND sf.lon IS NOT NULL AND sf.lon != 0
-  AND ts.id_station_itinerance IS NULL
-  AND sf.id_station_itinerance NOT LIKE 'FRTSL%'
-ORDER BY sf.id_station_itinerance
-`;
-
-// ── Budget networks SQL (ENGIE Vianeo + IECharge, no power/CCS constraint) ───
-
-const CHEAP_FILTER_SQL = `
-WITH lat_lon AS (
-    SELECT *,
-        TRY_CAST(consolidated_latitude  AS DOUBLE) AS lat,
-        TRY_CAST(consolidated_longitude AS DOUBLE) AS lon,
-        TRY_CAST(
-            REPLACE(COALESCE(CAST(puissance_nominale AS VARCHAR), '0'), ',', '.')
-            AS DOUBLE
-        ) AS power_kw
-    FROM read_parquet('irve_raw.parquet')
-),
-station_first AS (
-    SELECT * FROM lat_lon
-    QUALIFY ROW_NUMBER() OVER (PARTITION BY id_station_itinerance ORDER BY id_pdc_itinerance) = 1
-),
-station_power AS (
-    SELECT id_station_itinerance, MAX(power_kw) AS max_power_kw
-    FROM lat_lon
-    GROUP BY id_station_itinerance
-),
-cheap_sids AS (
-    -- Use id_station_itinerance AFIREV prefix — more reliable than text fields.
-    -- nom_enseigne is optional in practice (IECharge puts commune names there),
-    -- nom_operateur is optional per schema. The AFIREV code is immutable.
-    --   FRVIA* + nom_station ILIKE '%B&B HOTEL%' → ENGIE Vianeo chez B&B Hotels uniquement
-    --   FRIEN* → IECharge       (operator code IEN)
-    --   FRIZF* → IZIVIA Fast    (operator code IZF — McDonald's only)
-    --   FRTSL* → Tesla          (Superchargers open to all EVs)
+-- Budget-network operators (AFIREV prefix — more reliable than text fields)
+--   FRVIA* + nom_station ILIKE '%B&B HOTEL%' → ENGIE Vianeo at B&B Hotels only
+--   FRIEN* → IECharge       (operator code IEN)
+--   FRIZF* → IZIVIA Fast    (operator code IZF — McDonald's only)
+--   FRTSL* → Tesla          (Superchargers open to all EVs)
+cheap_network_sids AS (
     SELECT DISTINCT id_station_itinerance FROM lat_lon
     WHERE (id_station_itinerance LIKE 'FRVIA%' AND nom_station ILIKE '%B&B HOTEL%')
        OR id_station_itinerance LIKE 'FRIEN%'
        OR id_station_itinerance LIKE 'FRIZF%'
        OR id_station_itinerance LIKE 'FRTSL%'
 ),
+-- Merge: BOOL_AND returns FALSE if any entry is FALSE → fast wins over cheap
+all_relevant AS (
+    SELECT id_station_itinerance, BOOL_AND(cheap) AS cheap
+    FROM (
+        SELECT id_station_itinerance, FALSE AS cheap FROM fast_sids
+        UNION ALL
+        SELECT id_station_itinerance, TRUE  AS cheap FROM cheap_network_sids
+    )
+    GROUP BY id_station_itinerance
+),
+station_first AS (
+    SELECT ll.* FROM lat_lon ll
+    JOIN all_relevant ar ON ll.id_station_itinerance = ar.id_station_itinerance
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY ll.id_station_itinerance ORDER BY ll.id_pdc_itinerance) = 1
+),
+station_power AS (
+    SELECT id_station_itinerance, MAX(power_kw) AS max_power_kw
+    FROM lat_lon
+    WHERE id_station_itinerance IN (SELECT id_station_itinerance FROM all_relevant)
+    GROUP BY id_station_itinerance
+),
+station_ccs_fast AS (
+    SELECT id_station_itinerance,
+           COUNT(DISTINCT id_pdc_itinerance) AS nbre_ccs_fast
+    FROM ccs_qualifying
+    GROUP BY id_station_itinerance
+),
 truck_sids AS (
     SELECT DISTINCT id_station_itinerance FROM lat_lon
     WHERE lower(COALESCE(restriction_gabarit, '')) LIKE '%poids lourd%'
@@ -407,15 +370,20 @@ SELECT
     COALESCE(NULLIF(sf.nom_enseigne,''), sf.nom_operateur, '') AS enseigne,
     COALESCE(CAST(sf.nbre_pdc AS VARCHAR), '')                 AS nbre_pdc,
     sp.max_power_kw,
-    COALESCE(sf.horaires, '')                                  AS horaires
+    COALESCE(cf.nbre_ccs_fast, 0)                              AS nbre_ccs_fast,
+    COALESCE(sf.horaires, '')                                  AS horaires,
+    ar.cheap,
+    CASE WHEN sf.implantation_station = 'Station dédiée à la recharge rapide'
+         THEN 'dedicee' ELSE 'parking'
+    END AS station_type
 FROM station_first sf
-JOIN station_power  sp ON sf.id_station_itinerance = sp.id_station_itinerance
-JOIN cheap_sids     cs ON sf.id_station_itinerance = cs.id_station_itinerance
-LEFT JOIN truck_sids ts ON sf.id_station_itinerance = ts.id_station_itinerance
+JOIN all_relevant      ar ON sf.id_station_itinerance = ar.id_station_itinerance
+JOIN station_power     sp ON sf.id_station_itinerance = sp.id_station_itinerance
+LEFT JOIN station_ccs_fast cf ON sf.id_station_itinerance = cf.id_station_itinerance
+LEFT JOIN truck_sids       ts ON sf.id_station_itinerance = ts.id_station_itinerance
 WHERE sf.lat IS NOT NULL AND sf.lat != 0
   AND sf.lon IS NOT NULL AND sf.lon != 0
   AND ts.id_station_itinerance IS NULL
-  AND sf.condition_acces = 'Accès libre'
 ORDER BY sf.id_station_itinerance
 `;
 
@@ -572,16 +540,11 @@ function buildCheapPopup(p, op) {
 async function initApp() {
   subEl.textContent = 'Chargement…';
 
-  // 1. Try IndexedDB cache for both datasets (both must be valid to skip fetch)
-  const [cached, cachedCheap] = await Promise.all([
-    cacheGet('stations').catch(() => null),
-    cacheGet('stations-cheap').catch(() => null),
-  ]);
-  if (cached && cachedCheap &&
-      Date.now() - cached.ts < CACHE_TTL &&
-      Date.now() - cachedCheap.ts < CACHE_TTL) {
-    buildMarkers(cached.rows);
-    buildCheapMarkers(cachedCheap.rows);
+  // 1. Try IndexedDB cache (single unified dataset since stations-v2)
+  const cached = await cacheGet('stations-v2').catch(() => null);
+  if (cached && Date.now() - cached.ts < CACHE_TTL) {
+    buildMarkers(cached.rows.filter(r => !r.cheap));
+    buildCheapMarkers(cached.rows.filter(r => r.cheap));
     updateVisibility();
     return;
   }
@@ -630,9 +593,8 @@ async function initApp() {
   subEl.textContent = 'Filtrage des stations…';
   await db.registerFileBuffer('irve_raw.parquet', buf);
 
-  const conn       = await db.connect();
-  const table      = await conn.query(FILTER_SQL);
-  const cheapTable = await conn.query(CHEAP_FILTER_SQL);
+  const conn  = await db.connect();
+  const table = await conn.query(UNIFIED_SQL);
   await conn.close();
 
   // 5. Convert Arrow rows to plain JS objects (required for JSON serialisation)
@@ -650,34 +612,17 @@ async function initApp() {
       max_power_kw:  Number(row.max_power_kw  ?? 0),
       nbre_ccs_fast: Number(row.nbre_ccs_fast ?? 0),
       horaires:      String(row.horaires      ?? ''),
-      station_type:  String(row.station_type  ?? 'dedicee'),
+      station_type:  String(row.station_type  ?? 'parking'),
+      cheap:         Boolean(row.cheap),
     });
   }
 
-  // Convert cheap Arrow rows to plain JS objects
-  const cheapRows = [];
-  for (const row of cheapTable) {
-    cheapRows.push({
-      lon:          Number(row.lon),
-      lat:          Number(row.lat),
-      id:           String(row.id           ?? ''),
-      nom_station:  String(row.nom_station  ?? ''),
-      adresse:      String(row.adresse      ?? ''),
-      operateur:    String(row.operateur    ?? ''),
-      enseigne:     String(row.enseigne     ?? ''),
-      nbre_pdc:     String(row.nbre_pdc     ?? ''),
-      max_power_kw: Number(row.max_power_kw ?? 0),
-      horaires:     String(row.horaires     ?? ''),
-    });
-  }
-
-  // 6. Persist both datasets to IndexedDB (best-effort — never blocks rendering)
-  cachePut('stations',       { ts: Date.now(), rows }).catch(() => {});
-  cachePut('stations-cheap', { ts: Date.now(), rows: cheapRows }).catch(() => {});
+  // 6. Persist unified dataset to IndexedDB (best-effort — never blocks rendering)
+  cachePut('stations-v2', { ts: Date.now(), rows }).catch(() => {});
 
   // 7. Build markers and refresh map
-  buildMarkers(rows);
-  buildCheapMarkers(cheapRows);
+  buildMarkers(rows.filter(r => !r.cheap));
+  buildCheapMarkers(rows.filter(r => r.cheap));
   updateVisibility();
 }
 
