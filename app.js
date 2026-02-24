@@ -222,6 +222,7 @@ function updateVisibility() {
     for (const m of markers) {
       const v = nextVisMain.has(m);
       m.setStyle({ opacity: v ? 1 : 0, fillOpacity: v ? 0.9 : 0 });
+      m.options.interactive = v; // disable canvas hit-test for invisible markers
       const el = m.getElement();
       if (el) el.style.pointerEvents = v ? '' : 'none';
       setStyleCount++;
@@ -229,16 +230,17 @@ function updateVisibility() {
     for (const m of cheapMarkers) {
       const v = nextVisCheap.has(m);
       m.setStyle({ opacity: v ? 1 : 0, fillOpacity: v ? 0.75 : 0 });
+      m.options.interactive = v; // disable canvas hit-test for invisible markers
       const el = m.getElement();
       if (el) el.style.pointerEvents = v ? '' : 'none';
       setStyleCount++;
     }
   } else {
     // Subsequent calls: only touch markers that changed status.
-    for (const m of nextVisMain)  { if (!_prevVisMain.has(m))  { m.setStyle({ opacity: 1, fillOpacity: 0.9 }); const el = m.getElement(); if (el) el.style.pointerEvents = ''; setStyleCount++; } }
-    for (const m of _prevVisMain) { if (!nextVisMain.has(m))   { m.setStyle({ opacity: 0, fillOpacity: 0 });   const el = m.getElement(); if (el) el.style.pointerEvents = 'none'; setStyleCount++; } }
-    for (const m of nextVisCheap) { if (!_prevVisCheap.has(m)) { m.setStyle({ opacity: 1, fillOpacity: 0.75 }); if (m._el) m._el.style.pointerEvents = ''; setStyleCount++; } }
-    for (const m of _prevVisCheap){ if (!nextVisCheap.has(m))  { m.setStyle({ opacity: 0, fillOpacity: 0 });   if (m._el) m._el.style.pointerEvents = 'none'; setStyleCount++; } }
+    for (const m of nextVisMain)  { if (!_prevVisMain.has(m))  { m.setStyle({ opacity: 1, fillOpacity: 0.9 });  m.options.interactive = true;  const el = m.getElement(); if (el) el.style.pointerEvents = '';     setStyleCount++; } }
+    for (const m of _prevVisMain) { if (!nextVisMain.has(m))   { m.setStyle({ opacity: 0, fillOpacity: 0 });    m.options.interactive = false; const el = m.getElement(); if (el) el.style.pointerEvents = 'none'; setStyleCount++; } }
+    for (const m of nextVisCheap) { if (!_prevVisCheap.has(m)) { m.setStyle({ opacity: 1, fillOpacity: 0.75 }); m.options.interactive = true;  if (m._el) m._el.style.pointerEvents = '';     setStyleCount++; } }
+    for (const m of _prevVisCheap){ if (!nextVisCheap.has(m))  { m.setStyle({ opacity: 0, fillOpacity: 0 });    m.options.interactive = false; if (m._el) m._el.style.pointerEvents = 'none'; setStyleCount++; } }
   }
 
   _prevVisMain  = nextVisMain;
@@ -984,11 +986,14 @@ async function applyRouteFilter(routeLine, onProgress) {
           nearbyMarkers[i]._progressOnRoute = progressFlat[i]; // 0–1 along route
         }
 
-        // Apply cheap distances — also mapped to filtered subset
+        // Apply cheap distances + progress — also mapped to filtered subset
         if (data.cheapResults) {
-          const cheapResults = new Float32Array(data.cheapResults);
+          const cheapResults      = new Float32Array(data.cheapResults);
+          const cheapProgressFlat = data.cheapProgressFlat
+            ? new Float32Array(data.cheapProgressFlat) : null;
           for (let i = 0; i < nearbyCheap.length; i++) {
-            nearbyCheap[i]._distFromRoute = cheapResults[i];
+            nearbyCheap[i]._distFromRoute   = cheapResults[i];
+            if (cheapProgressFlat) nearbyCheap[i]._progressOnRoute = cheapProgressFlat[i];
           }
         }
 
@@ -1010,19 +1015,24 @@ async function applyRouteFilter(routeLine, onProgress) {
 // Relies on _progressOnRoute (0–1) set by the worker in applyRouteFilter().
 function staggeredFadeIn() {
   if (!routeActive) return;
-  const visible = markers
-    .filter(m => isVisible(m))
-    .sort((a, b) => (a._progressOnRoute ?? 0) - (b._progressOnRoute ?? 0));
+
+  // Build a unified list of all visible corridor markers (main + cheap) sorted
+  // by their progress along the route so they appear from start to end.
+  // {m, cheapFill} tuples let us restore the correct fillOpacity per type.
+  const visible = [
+    ...markers.filter(m => isVisible(m)).map(m => ({ m, fill: 0.9 })),
+    ...cheapMarkers.filter(m => isCheapVisible(m)).map(m => ({ m, fill: 0.75 })),
+  ].sort((a, b) => (a.m._progressOnRoute ?? 0) - (b.m._progressOnRoute ?? 0));
+
   if (visible.length === 0) return;
 
-  // Invalidate delta-update state: any concurrent updateVisibility() call during the
-  // animation must do a full pass (re-show all visible markers), not a no-op delta.
-  // Without this, if updateVisibility() fires while markers are at opacity:0 from the
-  // reset below, it sees _prevVisMain == nextVisMain → delta=0 → markers stay invisible.
-  _prevVisMain = null;
+  // Invalidate delta-update state for both marker sets: any concurrent
+  // updateVisibility() call must do a full pass, not a no-op delta.
+  _prevVisMain  = null;
+  _prevVisCheap = null;
 
   // Reset all to invisible — we'll reanimate them
-  visible.forEach(m => m.setStyle({ opacity: 0, fillOpacity: 0 }));
+  visible.forEach(({ m }) => m.setStyle({ opacity: 0, fillOpacity: 0 }));
 
   const STEP_MS = 22;  // ms between each station appearing (~22 stations/500ms)
   const startTime = performance.now();
@@ -1035,7 +1045,8 @@ function staggeredFadeIn() {
     );
     // Show all newly eligible in this frame — batched into one canvas repaint
     for (let i = lastShownIdx + 1; i <= showUpTo; i++) {
-      visible[i].setStyle({ opacity: 1, fillOpacity: 0.9 });
+      const { m, fill } = visible[i];
+      m.setStyle({ opacity: 1, fillOpacity: fill });
     }
     lastShownIdx = showUpTo;
     if (showUpTo < visible.length - 1) requestAnimationFrame(frame);

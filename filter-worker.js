@@ -114,7 +114,8 @@ self.onmessage = function ({ data }) {
   // bufferKm for cheap is the full 10-km corridor — pass it via the same
   // bufferKm field; the cheap pre-filter uses a generous 1.2 km margin too.
   const CHEAP_CORRIDOR_KM = 10;
-  const cheapResults = new Float32Array(cheapCount);
+  const cheapResults      = new Float32Array(cheapCount);
+  const cheapProgressFlat = new Float32Array(cheapCount); // 0–1 progress along route
   if (cheapCount > 0) {
     const cheapPrefilter = CHEAP_CORRIDOR_KM + DEC_ERROR_KM;
     const cheapCandidates = [];
@@ -128,11 +129,13 @@ self.onmessage = function ({ data }) {
       }
     }
     for (let k = 0; k < cheapCandidates.length; k++) {
-      const i   = cheapCandidates[k];
-      cheapResults[i] = nearestDist(
+      const i = cheapCandidates[k];
+      const { dist, progress } = nearestDistAndProgress(
         cheapStationsFlat[i * 2], cheapStationsFlat[i * 2 + 1],
         routeFlat, routeFlat.length
       );
+      cheapResults[i]      = dist;
+      cheapProgressFlat[i] = progress;
     }
   }
 
@@ -140,10 +143,11 @@ self.onmessage = function ({ data }) {
 
   // Transfer all result buffers (zero-copy)
   const transfers = [results.buffer, progressFlat.buffer];
-  if (cheapCount > 0) transfers.push(cheapResults.buffer);
+  if (cheapCount > 0) transfers.push(cheapResults.buffer, cheapProgressFlat.buffer);
   self.postMessage(
     { type: 'done', results: results.buffer, progressFlat: progressFlat.buffer,
-      cheapResults: cheapCount > 0 ? cheapResults.buffer : null },
+      cheapResults:      cheapCount > 0 ? cheapResults.buffer      : null,
+      cheapProgressFlat: cheapCount > 0 ? cheapProgressFlat.buffer : null },
     transfers
   );
 };
