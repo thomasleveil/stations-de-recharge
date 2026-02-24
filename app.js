@@ -786,16 +786,15 @@ async function fetchAvailability(circle) {
       circle._tomtomId = result.id;
     }
 
-    // Step 2: query real-time availability.
+    // Step 2: query real-time availability — filtered server-side to CCS2 ≥ 150 kW.
     const url2 = `https://api.tomtom.com/search/2/chargingAvailability.json` +
-      `?key=${TOMTOM_API_KEY}&chargingAvailability=${encodeURIComponent(circle._tomtomId)}`;
+      `?key=${TOMTOM_API_KEY}&chargingAvailability=${encodeURIComponent(circle._tomtomId)}` +
+      `&connectorSet=IEC_62196_T2_COMBO&minPowerKW=150`;
     const res2 = await fetchWithRetry(url2);
     if (!res2.ok) throw new Error(`chargingAvailability ${res2.status}`);
     const data2 = await res2.json();
 
-    // TomTom response: connectors[].type = "IEC62196Type2CCS"
-    // availability is under .availability.current.{available,occupied,...}
-    // total connectors under .total (not inside availability)
+    // TomTom already filtered to CCS2 ≥ 150 kW; keep the client-side type check as a safeguard.
     const ccs2 = (data2.connectors ?? [])
       .filter(c => c.type === 'IEC62196Type2CCS');
 
