@@ -10,7 +10,7 @@ Idées, améliorations et bugs connus, classés par thème.
 |---|------|:---:|:---:|---|
 | P-1 | **Service Worker / offline cache** — mettre en cache le Parquet IndexedDB + assets pour un accès hors-ligne | ★★★ | M | TTL 24 h déjà en place, logique SW naturelle |
 | P-2 | **Web Worker DuckDB** — déplacer l'init DuckDB + parsing Parquet dans un Worker dédié pour ne pas bloquer le main thread au 1er chargement | ★★★ | L | WASM cross-worker nécessite SharedArrayBuffer ou postMessage sérialisé |
-| P-3 | **Clustering Leaflet** (`markerClusterGroup`) aux zoom faibles — éviter 5 500 markers rendus simultanément | ★★ | M | Attention : incompatible avec canvas renderer actuel |
+| P-3 | **Clustering des markers en mode sans itinéraire** — quand aucun itinéraire n'est calculé, regrouper les 5 500+ markers en clusters (ex : `markerClusterGroup` ou clustering SVG custom) pour alléger la page ; revenir aux markers individuels dès qu'une route est active. Peut aussi s'appliquer aux zooms faibles en mode route. | ★★★ | M | `markerClusterGroup` incompatible avec canvas renderer → nécessite de basculer sur SVG ou de réécrire le clustering manuellement. Alternative légère : désactiver l'affichage des markers individuels (opacity 0) et afficher uniquement des compteurs par département en mode global. |
 | P-4 | **Décimation progressive du corridor** — augmenter `DEC_TARGET` dynamiquement selon la longueur de la route (< 500 km → 500 pts, > 500 km → 1 000 pts) | ★ | S | Gain marginal, à valider avec benchmark |
 
 ---
@@ -27,6 +27,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | F-6 | **Historique des trajets récents** — mémoriser les 5 derniers trajets calculés (localStorage) | UX pratique pour les trajets récurrents |
 | F-7 | **Mode sombre** — thème sombre pour la carte et le panel | Leaflet : tiles CartoDB Dark + CSS variables |
 | F-8 | **Détection auto départ = position GPS** — pré-remplir le champ Départ avec la position géolocalisée sans clic | Déjà possible avec `geoState`, juste à connecter au champ |
+| F-9 | **Filtre par réseau opérateur** — permettre à l'utilisateur d'inclure ou exclure des réseaux (Ionity, Electra, Fastned, Atlante, Tesla, TotalEnergies…) via whitelist, blacklist, ou les deux. Cas particulier à gérer : les alliances commerciales où plusieurs réseaux sont interopérables (ex : Electra + Atlante + Fastned + Ionity se combinent en pass unique). Champ IRVE à exploiter : `nom_enseigne` (ou `id_station_itinerance` pour le préfixe réseau). Décision : whitelist seule (cas d'usage : "je n'ai que le pass Ionity") ou blacklist seule (cas d'usage : "je veux tout sauf Tesla") ou combinaison des deux ? À trancher lors de la conception. | Données disponibles dans le Parquet ; nécessite UI de sélection des réseaux |
 
 ---
 
@@ -49,6 +50,8 @@ Idées, améliorations et bugs connus, classés par thème.
 | U-4 | **Meta Open Graph** — image de prévisualisation pour le partage sur les réseaux sociaux | |
 | U-5 | ~~**Bug autocomplete : Entrée ferme la liste**~~ | ✅ commit `923579f` |
 | U-8 | **Focus initial sur le champ "Arrivée"** — au chargement de la page, le focus clavier doit être positionné dans le champ Arrivée pour permettre une saisie immédiate | Trivial : `document.getElementById('route-end').focus()` au chargement |
+| U-9 | **Double affichage de la taille de corridor** — après calcul d'itinéraire, l'indication du corridor apparaît deux fois dans le bloc formulaire ; supprimer l'occurrence non-cliquable, ne garder que le contrôle interactif permettant de modifier la valeur | Vérifier lequel des deux éléments est le label statique vs. le contrôle actif |
+| U-10 | **Taille du corridor CHEAP paramétrable** — exposer dans un menu "Paramètres" la valeur du corridor CHEAP (actuellement codée en dur) pour que l'utilisateur puisse l'ajuster sans recalculer tout l'itinéraire | Lier à la même logique de corridor que le slider existant |
 | U-6 | **Autocomplétion enrichie (noms d'entreprises, POI)** — remplacer ou compléter le geocoder actuel par un service capable de résoudre les noms d'entreprises (ex : "IKEA Lyon", "McDonald's A7"). Contrainte : sans API payante ni clé à configurer. Candidats : Nominatim (OpenStreetMap) avec `addressdetails=1` + `extratags=1` ; Photon (Komoot, self-hosted ou instance publique) ; OpenCage free tier (1 500 req/j, clé requise). Photon semble le meilleur compromis : gratuit, sans clé, POI riches, instance publique disponible. | Remplace ou complète le geocoder actuel |
 | U-7 | **Mode conduite** — vue optimisée pour un conducteur en déplacement sur l'autoroute : <br>• Panel compact affichant les **N prochaines stations dans les 20 km devant** (triées par progression sur l'itinéraire) <br>• Pour chaque station : distance restante, détour estimé (via OSRM `nearest` ou calcul angulaire), indication "même voie" vs "sortie autoroute nécessaire", réseau + prix estimé <br>• Mise à jour automatique à chaque mise à jour de la position GPS <br>• Affichage minimaliste adapté à la lecture rapide en roulant (grandes polices, contraste élevé) | Fonctionnalité phare ; nécessite F-8 (géoloc auto) + données sens de circulation |
 
