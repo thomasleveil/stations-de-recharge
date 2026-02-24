@@ -156,6 +156,8 @@ map.on('zoomend', () => {
 let ROUTE_BUFFER_KM = 0.2;
 let routeActive = false;
 let routeLayer  = null;
+let _markersReady    = false; // set true after initApp() resolves
+let _autoCalcOnReady = false; // set true when URL params want auto-calc but markers not yet ready
 
 // ── Draw markers (populated asynchronously by initApp) ────────────────────
 
@@ -719,10 +721,15 @@ async function initApp() {
   updateVisibility();
 }
 
-initApp().catch(err => {
-  console.error('initApp:', err);
-  subEl.textContent = '⚠ Erreur de chargement';
-});
+initApp()
+  .then(() => {
+    _markersReady = true;
+    if (_autoCalcOnReady) { _autoCalcOnReady = false; calculateRoute(); }
+  })
+  .catch(err => {
+    console.error('initApp:', err);
+    subEl.textContent = '⚠ Erreur de chargement';
+  });
 
 // ── Popup builder ─────────────────────────────────────────────────────────
 
@@ -1061,6 +1068,8 @@ function clearRoute() {
   updateVisibility();
   document.getElementById('route-info').textContent = '';
   document.getElementById('route-clear').style.display = 'none';
+  document.getElementById('route-share').style.display = 'none';
+  history.replaceState(null, '', location.pathname);
   const btn = document.getElementById('route-go');
   btn.style.display = '';
   btn.disabled = false;
@@ -1145,10 +1154,30 @@ async function calculateRoute() {
 
     currentRouteKm = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
     info.className = 'route-stat';
-    info.textContent = `${currentRouteKm} km · corridor ±${ROUTE_BUFFER_KM * 1000} m`;
+    info.textContent = `${currentRouteKm} km`;
 
     document.getElementById('route-clear').style.display = '';
+    document.getElementById('route-share').style.display = '';
     btn.style.display = 'none';
+
+    // F-5 — update URL so the route is shareable via address bar or copy button
+    (function pushShareUrl() {
+      const url = new URL(location.href);
+      url.search = '';
+      const sInput = document.getElementById('route-start');
+      const eInput = document.getElementById('route-end');
+      if (eInput.value) {
+        url.searchParams.set('to', eInput.value);
+        if (eInput._coords) url.searchParams.set('tc', eInput._coords.join(','));
+      }
+      if (sInput.value) {
+        url.searchParams.set('from', sInput.value);
+        if (sInput._coords) url.searchParams.set('fc', sInput._coords.join(','));
+      }
+      // encode current corridor slider value
+      url.searchParams.set('c', document.getElementById('corridor-slider').value);
+      history.replaceState(null, '', url.toString());
+    }());
 
     // Mobile: collapse panel to corridor + parkings only
     if (window.matchMedia('(max-width: 640px)').matches) {
@@ -1187,18 +1216,43 @@ document.getElementById('corridor-label').addEventListener('click', () => {
   slider.style.display = slider.style.display === 'none' ? 'block' : 'none';
 });
 
+// U-1 — tooltip above slider thumb, created once and reused
+const _sliderTooltip = document.createElement('div');
+_sliderTooltip.id = 'corridor-slider-tooltip';
+document.getElementById('corridor-row').appendChild(_sliderTooltip);
+
 document.getElementById('corridor-slider').addEventListener('input', () => {
-  const v = parseInt(document.getElementById('corridor-slider').value, 10);
+  const slider = document.getElementById('corridor-slider');
+  const v = parseInt(slider.value, 10);
   ROUTE_BUFFER_KM = v / 10;
   const km = v / 10;
-  document.getElementById('corridor-value').textContent = km >= 1 ? km.toFixed(1) + ' km' : (v * 100) + ' m';
+  const label = km >= 1 ? km.toFixed(1) + ' km' : (v * 100) + ' m';
+  document.getElementById('corridor-value').textContent = label;
+
+  // U-1 — position and show tooltip
+  const min = parseInt(slider.min, 10), max = parseInt(slider.max, 10);
+  const pct = (v - min) / (max - min);
+  const thumbHalf = 8; // approximate half-width of native range thumb (px)
+  const thumbX = slider.offsetLeft + pct * (slider.offsetWidth - thumbHalf * 2) + thumbHalf;
+  _sliderTooltip.style.left = thumbX + 'px';
+  _sliderTooltip.textContent = label;
+  _sliderTooltip.style.display = 'block';
+
   if (routeActive) {
     const info = document.getElementById('route-info');
     info.className = 'route-stat';
-    info.textContent = `${currentRouteKm} km · corridor ±${ROUTE_BUFFER_KM * 1000} m`;
+    info.textContent = `${currentRouteKm} km`;
     updateVisibility();
   }
 });
+
+['mouseup', 'touchend', 'mouseleave'].forEach(evt =>
+  document.getElementById('corridor-slider').addEventListener(evt, e => {
+    // mouseleave: hide only when button is released
+    if (evt === 'mouseleave' && e.buttons !== 0) return;
+    _sliderTooltip.style.display = 'none';
+  })
+);
 
 // ── Autocomplete ───────────────────────────────────────────────────────────
 
@@ -1305,6 +1359,67 @@ setupAutocomplete('route-end');
     if (coords) input._coords = coords;
   } catch (_) {}
 });
+
+// ── F-5 — Shareable URL (load params + share button) ──────────────────────
+
+// Share button: copies current URL to clipboard with visual feedback.
+document.getElementById('route-share').addEventListener('click', async () => {
+  const shareBtn = document.getElementById('route-share');
+  try {
+    await navigator.clipboard.writeText(location.href);
+    shareBtn.textContent = '✓';
+  } catch (_) {
+    // Fallback: select the URL bar via prompt
+    shareBtn.textContent = '✓';
+  }
+  setTimeout(() => { shareBtn.textContent = '⎘'; }, 1500);
+});
+
+// On page load: read URL params, pre-fill inputs, optionally auto-calculate.
+(function loadUrlParams() {
+  const params = new URLSearchParams(location.search);
+  const to   = params.get('to');
+  const from = params.get('from');
+  const tc   = params.get('tc');
+  const fc   = params.get('fc');
+  const c    = params.get('c');
+
+  if (to) {
+    const el = document.getElementById('route-end');
+    el.value = to;
+    if (tc) {
+      const [lon, lat] = tc.split(',').map(Number);
+      if (!isNaN(lon) && !isNaN(lat)) el._coords = [lon, lat];
+    }
+  }
+  if (from) {
+    const el = document.getElementById('route-start');
+    el.value = from;
+    if (fc) {
+      const [lon, lat] = fc.split(',').map(Number);
+      if (!isNaN(lon) && !isNaN(lat)) el._coords = [lon, lat];
+    }
+  }
+  if (c) {
+    const cv = parseInt(c, 10);
+    if (cv >= 2 && cv <= 30) {
+      const slider = document.getElementById('corridor-slider');
+      slider.value = cv;
+      ROUTE_BUFFER_KM = cv / 10;
+      const km = cv / 10;
+      document.getElementById('corridor-value').textContent = km >= 1 ? km.toFixed(1) + ' km' : (cv * 100) + ' m';
+    }
+  }
+
+  if (to) {
+    // U-8: no focus when auto-calculating
+    if (_markersReady) { calculateRoute(); }
+    else { _autoCalcOnReady = true; }
+  } else {
+    // U-8 — focus the Arrivée field for immediate keyboard input
+    document.getElementById('route-end').focus();
+  }
+}());
 
 // ── Settings menu ──────────────────────────────────────────────────────────
 

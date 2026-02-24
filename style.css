@@ -101,6 +101,16 @@ html, body {
 }
 .route-btn-clear:hover:not(:disabled) { background: #e2e8f0; opacity: 1; }
 
+/* F-5 — share button */
+.route-btn-share {
+  flex: none;
+  background: #f1f5f9;
+  color: #64748b;
+  min-width: 28px;
+  font-size: 13px;
+}
+.route-btn-share:hover:not(:disabled) { background: #e2e8f0; opacity: 1; }
+
 .route-stat     { font-size: 11px; color: #1D4ED8; font-weight: 600; }
 .route-error    { font-size: 11px; color: #dc2626; }
 .route-progress { font-size: 11px; color: #64748b; }
@@ -453,6 +463,24 @@ html, body {
 
 #corridor-row {
   margin-bottom: 4px;
+  position: relative;
+}
+
+/* U-1 — tooltip above slider thumb during drag */
+#corridor-slider-tooltip {
+  position: absolute;
+  bottom: calc(100% + 3px);
+  transform: translateX(-50%);
+  background: #1D4ED8;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 5px;
+  pointer-events: none;
+  white-space: nowrap;
+  display: none;
+  z-index: 10;
 }
 
 #corridor-label {
