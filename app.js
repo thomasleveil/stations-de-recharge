@@ -1238,9 +1238,10 @@ function setupAutocomplete(inputId) {
       e.preventDefault();
       setActive(activeIdx <= 0 ? -1 : activeIdx - 1);
     } else if (e.key === 'Enter') {
-      if (selectActive()) {
-        e.stopImmediatePropagation();
-      } else {
+      const selected = selectActive();
+      dropdown.innerHTML = '';
+      activeIdx = -1;
+      if (!selected) {
         calculateRoute();
       }
     } else if (e.key === 'Escape') {
