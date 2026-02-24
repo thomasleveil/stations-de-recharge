@@ -1108,7 +1108,12 @@ async function calculateRoute() {
     console.log(`osrm: ${Math.round(performance.now() - t2)} ms`);
 
     if (routeLayer) map.removeLayer(routeLayer);
-    routeLayer = L.geoJSON(route.geometry, {
+    // Simplify display geometry only — corridor filtering uses full-precision route.geometry.coordinates
+    const _displayLine = turf.simplify(
+      turf.lineString(route.geometry.coordinates),
+      { tolerance: 0.00005, highQuality: false }
+    );
+    routeLayer = L.geoJSON(_displayLine, {
       // Explicit SVG renderer overrides map preferCanvas:true — needed for CSS dash animation (piste 4.4)
       renderer: L.svg(),
       style: { color: '#1D4ED8', weight: 4, opacity: 0.75, className: 'route-polyline' },
