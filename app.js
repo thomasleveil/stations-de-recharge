@@ -469,7 +469,7 @@ function buildMarkers(rows) {
 // IECharge + B&B Hotels: not in major icon libraries — custom icons using confirmed brand colors.
 const BRAND_MARKER_HTML = {
   "IZIVIA Fast - McDonald's":
-    "<div style='width:18px;height:18px;background:#DA291C;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center'><svg width='13' height='13' viewBox='0 0 24 24' fill='#FFC72C'><path d='M17.243 3.006c2.066 0 3.742 8.714 3.742 19.478H24c0-11.588-3.042-20.968-6.766-20.968-2.127 0-4.007 2.81-5.248 7.227-1.241-4.416-3.121-7.227-5.231-7.227C3.031 1.516 0 10.888 0 22.476h3.014c0-10.763 1.658-19.47 3.724-19.47 2.066 0 3.741 8.05 3.741 17.98h2.997c0-9.93 1.684-17.98 3.75-17.98Z'/></svg></div>",
+    "<div style='width:11px;height:11px;background:#DA291C;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0.75'><svg width='8' height='8' viewBox='0 0 24 24' fill='#FFC72C'><path d='M17.243 3.006c2.066 0 3.742 8.714 3.742 19.478H24c0-11.588-3.042-20.968-6.766-20.968-2.127 0-4.007 2.81-5.248 7.227-1.241-4.416-3.121-7.227-5.231-7.227C3.031 1.516 0 10.888 0 22.476h3.014c0-10.763 1.658-19.47 3.724-19.47 2.066 0 3.741 8.05 3.741 17.98h2.997c0-9.93 1.684-17.98 3.75-17.98Z'/></svg></div>",
   'Tesla':
     "<div style='width:18px;height:18px;background:#CC0000;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center'><svg width='13' height='13' viewBox='0 0 24 24' fill='#fff'><path d='M12 5.362l2.475-3.026s4.245.09 8.471 2.054c-1.082 1.636-3.231 2.438-3.231 2.438-.146-1.439-1.154-1.79-4.354-1.79L12 24 8.619 5.034c-3.18 0-4.188.354-4.335 1.792 0 0-2.146-.795-3.229-2.43C5.28 2.431 9.525 2.34 9.525 2.34L12 5.362l-.004.002H12v-.002zm0-3.899c3.415-.03 7.326.528 11.328 2.28.535-.968.672-1.395.672-1.395C19.625.612 15.528.015 12 0 8.472.015 4.375.61 0 2.349c0 0 .195.525.672 1.396C4.674 1.989 8.585 1.435 12 1.46v.003z'/></svg></div>",
   'IECharge':
@@ -481,7 +481,9 @@ const BRAND_MARKER_HTML = {
 function makeBrandDivIcon(opName) {
   const html = BRAND_MARKER_HTML[opName];
   if (!html) return null;
-  return L.divIcon({ html, iconSize: [18, 18], iconAnchor: [9, 9], popupAnchor: [0, -11], className: 'cheap-brand-marker' });
+  const small = opName === "IZIVIA Fast - McDonald's";
+  const sz = small ? 11 : 18;
+  return L.divIcon({ html, iconSize: [sz, sz], iconAnchor: [sz / 2, sz / 2], popupAnchor: [0, -11], className: 'cheap-brand-marker' });
 }
 
 function buildCheapMarkers(rows) {
