@@ -730,6 +730,14 @@ function buildPopup(p, op) {
 
 const AVAIL_TTL = 3 * 60 * 1000; // 3 minutes — matches TomTom refresh cadence
 
+// Retry once after 1 s on 403 (rate-limit transient response from TomTom).
+async function fetchWithRetry(url) {
+  const res = await fetch(url);
+  if (res.status !== 403) return res;
+  await new Promise(r => setTimeout(r, 1000));
+  return fetch(url);
+}
+
 async function fetchAvailability(circle) {
   // Return cached result if still fresh.
   const now = Date.now();
@@ -748,7 +756,7 @@ async function fetchAvailability(circle) {
       const url = `https://api.tomtom.com/search/2/nearbySearch/.json` +
         `?key=${TOMTOM_API_KEY}&lat=${circle._lat}&lon=${circle._lon}` +
         `&radius=100&categorySet=7309&limit=5`;
-      const res = await fetch(url);
+      const res = await fetchWithRetry(url);
       if (!res.ok) throw new Error(`nearbySearch ${res.status}`);
       const data = await res.json();
       const result = data.results?.[0];
@@ -762,7 +770,7 @@ async function fetchAvailability(circle) {
     // Step 2: query real-time availability.
     const url2 = `https://api.tomtom.com/search/2/chargingAvailability.json` +
       `?key=${TOMTOM_API_KEY}&chargingAvailability=${encodeURIComponent(circle._tomtomId)}`;
-    const res2 = await fetch(url2);
+    const res2 = await fetchWithRetry(url2);
     if (!res2.ok) throw new Error(`chargingAvailability ${res2.status}`);
     const data2 = await res2.json();
 
