@@ -1,4 +1,4 @@
-# Stations de recharge — Autoroutes
+# Stations de recharge
 
 **https://thomasleveil.github.io/stations-de-recharge/**
 
