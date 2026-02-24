@@ -39,7 +39,6 @@ Static frontend — no backend, no build step. Three files:
 
 ### Filter Logic (`FILTER_SQL` in `app.js`)
 
-Replicates the former `filter_stations.py` exactly:
 1. **Power computation** — parses `puissance_nominale` (handles French decimal comma)
 2. **Station deduplication** — one representative connector per `id_station_itinerance`
 3. **Max power per station** — across all connectors
@@ -64,7 +63,3 @@ python3 -m http.server 8765
 The app requires a HTTP server (not `file://`) because DuckDB WASM uses Web Workers
 which are blocked on the `file://` protocol.
 
-## Legacy
-
-`filter_stations.py` is kept for reference — it documents the business logic that
-is now ported to `FILTER_SQL` in `app.js`. It is no longer needed to run the app.
