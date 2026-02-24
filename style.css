@@ -566,6 +566,7 @@ html, body {
 .cheap-brand-marker {
   background: none !important;
   border: none !important;
+  transition: opacity 200ms ease-out; /* piste 4.1 — smooth fade on corridor change */
 }
 
 /* ── Geolocation arrow marker ──────────────────────────────── */

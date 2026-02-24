@@ -237,8 +237,8 @@ function updateVisibility() {
     // Subsequent calls: only touch markers that changed status.
     for (const m of nextVisMain)  { if (!_prevVisMain.has(m))  { m.setStyle({ opacity: 1, fillOpacity: 0.9 }); const el = m.getElement(); if (el) el.style.pointerEvents = ''; setStyleCount++; } }
     for (const m of _prevVisMain) { if (!nextVisMain.has(m))   { m.setStyle({ opacity: 0, fillOpacity: 0 });   const el = m.getElement(); if (el) el.style.pointerEvents = 'none'; setStyleCount++; } }
-    for (const m of nextVisCheap) { if (!_prevVisCheap.has(m)) { m.setStyle({ opacity: 1, fillOpacity: 0.75 }); const el = m.getElement(); if (el) el.style.pointerEvents = ''; setStyleCount++; } }
-    for (const m of _prevVisCheap){ if (!nextVisCheap.has(m))  { m.setStyle({ opacity: 0, fillOpacity: 0 });   const el = m.getElement(); if (el) el.style.pointerEvents = 'none'; setStyleCount++; } }
+    for (const m of nextVisCheap) { if (!_prevVisCheap.has(m)) { m.setStyle({ opacity: 1, fillOpacity: 0.75 }); if (m._el) m._el.style.pointerEvents = ''; setStyleCount++; } }
+    for (const m of _prevVisCheap){ if (!nextVisCheap.has(m))  { m.setStyle({ opacity: 0, fillOpacity: 0 });   if (m._el) m._el.style.pointerEvents = 'none'; setStyleCount++; } }
   }
 
   _prevVisMain  = nextVisMain;
@@ -589,6 +589,7 @@ function buildCheapMarkers(rows) {
     });
 
     circle.addTo(map);
+    circle._el = circle.getElement(); // piste 2.4 — cache _el, avoid DOM lookup in updateVisibility
     cheapMarkers.push(circle);
   }
   Perf.end('buildCheapMarkers');
