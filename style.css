@@ -232,11 +232,28 @@ html, body {
   color: #1e293b;
 }
 
+.popup-avail-cell {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .popup-avail { color: #94a3b8; }
-.popup-avail a { color: #3b82f6; text-decoration: none; }
-.popup-avail a:hover { text-decoration: underline; }
 .popup-avail-ok   { font-weight: 700; color: #16a34a; }
 .popup-avail-none { font-weight: 700; color: #dc2626; }
+
+.popup-avail-refresh {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: #cbd5e1;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.popup-avail-refresh:hover { color: #3b82f6; }
 
 .popup-cheap-badge {
   display: inline-block;

@@ -444,10 +444,17 @@ function buildMarkers(rows) {
     circle._lat  = p.lat;
 
     circle.on('popupopen', () => {
-      fetchAvailability(circle).then(html => {
-        const el = circle.getPopup()?.getElement()?.querySelector('.popup-avail');
-        if (el) el.innerHTML = html;
-      });
+      const popupEl = circle.getPopup()?.getElement();
+      const avail      = popupEl?.querySelector('.popup-avail');
+      const refreshBtn = popupEl?.querySelector('.popup-avail-refresh');
+      fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
+      if (refreshBtn) {
+        refreshBtn.onclick = () => {
+          delete circle._availCache;
+          if (avail) avail.innerHTML = '⟳';
+          fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
+        };
+      }
     });
 
     circle.addTo(map);
@@ -509,10 +516,17 @@ function buildCheapMarkers(rows) {
     circle._lat = p.lat;
 
     circle.on('popupopen', () => {
-      fetchAvailability(circle).then(html => {
-        const el = circle.getPopup()?.getElement()?.querySelector('.popup-avail');
-        if (el) el.innerHTML = html;
-      });
+      const popupEl = circle.getPopup()?.getElement();
+      const avail      = popupEl?.querySelector('.popup-avail');
+      const refreshBtn = popupEl?.querySelector('.popup-avail-refresh');
+      fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
+      if (refreshBtn) {
+        refreshBtn.onclick = () => {
+          delete circle._availCache;
+          if (avail) avail.innerHTML = '⟳';
+          fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
+        };
+      }
     });
 
     circle.addTo(map);
@@ -543,7 +557,10 @@ function buildCheapPopup(p, op) {
         <span>${shortAddr}</span>
 
         <span class="popup-label">Disponibilité CCS2</span>
-        <span class="popup-avail">⟳</span>
+        <span class="popup-avail-cell">
+          <span class="popup-avail">⟳</span>
+          <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
+        </span>
       </div>
     </div>`;
 }
@@ -701,7 +718,10 @@ function buildPopup(p, op) {
         <span>${shortAddr}</span>
 
         <span class="popup-label">Disponibilité CCS2</span>
-        <span class="popup-avail">⟳</span>
+        <span class="popup-avail-cell">
+          <span class="popup-avail">⟳</span>
+          <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
+        </span>
       </div>
     </div>`;
 }
