@@ -53,6 +53,22 @@ Static frontend — no backend, no build step. Three files:
 - **Entry**: `{ ts: Date.now(), rows: [...] }` — plain JS objects
 - **TTL**: 24 hours
 
+## Backlog
+
+`BACKLOG.md` recense toutes les idées, améliorations et bugs connus, classés par thème (Performance, Fonctionnalités, Qualité des données, UX/Interface, Technique).
+
+**À maintenir à jour systématiquement.** Chaque item porte un statut :
+
+| Symbole | Signification |
+|---------|--------------|
+| 💡 | **Idée** — concept brut, pas encore évalué |
+| 🔍 | **À mûrir** — réflexion fonctionnelle nécessaire avant d'implémenter |
+| 📋 | **À faire** — spécifié, prêt à implémenter |
+| ✅ | **Fait** — implémenté (conserver pour l'historique avec référence commit) |
+
+Quand une feature est implémentée, marquer l'item ✅ avec la référence du commit.
+Quand une nouvelle idée émerge pendant un chantier, l'ajouter immédiatement au backlog.
+
 ## Development
 
 ```bash
