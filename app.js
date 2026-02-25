@@ -1060,10 +1060,102 @@ function staggeredFadeIn() {
   })(performance.now());
 }
 
+// ── F-9a — Network recommendation algorithm ───────────────────────────────
+
+// Alliance = four networks often covered by a single subscription
+const ALLIANCE_NAMES = new Set(['Allego / Electra', 'IONITY', 'Fastned', 'Atlante']);
+
+/**
+ * Returns top-2 network recommendations for the current route.
+ * Returns [] if fewer than 2 segments can be analysed (short route).
+ *
+ * Algorithm (per backlog spec):
+ *  1. zone utile starts at min(150 km, routeKm×40%) — skip the initial
+ *     battery range where no fast-charge is needed.
+ *  2. divide zone utile into 80-km segments.
+ *  3. for each single network and the virtual "Alliance" group, count
+ *     how many segments contain ≥1 visible corridor station.
+ *  4. score = covered_segments / total_segments.
+ *  5. return top-2 by score (ties broken by station count).
+ */
+function computeNetworkRecommendation(routeKm) {
+  const zoneStart = Math.min(150, routeKm * 0.4);
+  const zoneLen   = routeKm - zoneStart;
+  const nSegs     = Math.ceil(zoneLen / 80);
+  if (nSegs < 1) return [];
+
+  // Group visible corridor markers by operator; compute km along route
+  const segSets = new Map(); // networkName → Set of segment indices
+
+  for (const m of markers) {
+    if (!isVisible(m)) continue;
+    const km = (m._progressOnRoute ?? 0) * routeKm;
+    if (km < zoneStart) continue;
+    const seg = Math.min(Math.floor((km - zoneStart) / 80), nSegs - 1);
+    const name = m._op.name;
+
+    // Individual network
+    if (!segSets.has(name)) segSets.set(name, new Set());
+    segSets.get(name).add(seg);
+
+    // Alliance virtual network
+    if (ALLIANCE_NAMES.has(name)) {
+      if (!segSets.has('Alliance')) segSets.set('Alliance', new Set());
+      segSets.get('Alliance').add(seg);
+    }
+  }
+
+  // Build scored entries
+  const entries = [];
+  for (const [name, segs] of segSets) {
+    const score = segs.size / nSegs;
+    if (score === 0) continue;
+    const op = (name === 'Alliance')
+      ? { name: 'Alliance (Electra · IONITY · Fastned · Atlante)', color: '#7C3AED' }
+      : (OPERATORS.find(o => o.name === name) || { name, color: '#6B7280' });
+    entries.push({ name, op, score, segs: segs.size, nSegs });
+  }
+  entries.sort((a, b) => b.score - a.score || b.segs - a.segs);
+
+  // Return top-2, but never Alliance AND one of its members in the same top-2
+  const top = [];
+  for (const e of entries) {
+    if (top.length >= 2) break;
+    const isAllianceMember = ALLIANCE_NAMES.has(e.name);
+    const allianceInTop = top.some(t => t.name === 'Alliance');
+    // If Alliance is already in top, skip individual Alliance members
+    if (isAllianceMember && allianceInTop) continue;
+    // If an Alliance member is in top, skip Alliance (prefer concrete networks)
+    if (e.name === 'Alliance' && top.some(t => ALLIANCE_NAMES.has(t.name))) continue;
+    top.push(e);
+  }
+  return top;
+}
+
+/** Render the network recommendation into #network-recommendation. */
+function showNetworkRecommendation(routeKm) {
+  const el = document.getElementById('network-recommendation');
+  const recs = computeNetworkRecommendation(routeKm);
+  if (!recs.length) { el.style.display = 'none'; return; }
+
+  const pct = r => Math.round(r.score * 100);
+  let html = `<div class="net-rec-title">Réseau${recs.length > 1 ? 'x' : ''} recommandé${recs.length > 1 ? 's' : ''} :</div>`;
+  for (const r of recs) {
+    html += `<div class="net-rec-item">
+      <span class="net-rec-dot" style="background:${r.op.color}"></span>
+      <span>${r.op.name}</span>
+      <span class="net-rec-score">${r.segs}/${r.nSegs} tronçon${r.nSegs > 1 ? 's' : ''} (${pct(r)}%)</span>
+    </div>`;
+  }
+  el.innerHTML = html;
+  el.style.display = '';
+}
+
 function clearRoute() {
   routeActive = false;
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   markers.forEach(m => { delete m._distFromRoute; delete m._distAlongRoute; });
+  document.getElementById('network-recommendation').style.display = 'none';
   cheapMarkers.forEach(m => { delete m._distFromRoute; });
   updateVisibility();
   document.getElementById('route-info').textContent = '';
@@ -1188,6 +1280,9 @@ async function calculateRoute() {
     currentRouteKm = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
     info.className = 'route-stat';
     info.textContent = `${currentRouteKm} km`;
+
+    // F-9a — show network recommendation after filter is applied
+    showNetworkRecommendation(currentRouteKm);
 
     document.getElementById('route-clear').style.display = '';
     document.getElementById('route-share').style.display = '';
