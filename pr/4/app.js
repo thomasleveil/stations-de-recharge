@@ -1,8 +1,9 @@
 // ── Constants ─────────────────────────────────────────────────────────────
 
-const PARQUET_URL = 'https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet';
-const CACHE_DB    = 'irve-v1';
-const CACHE_TTL   = 24 * 60 * 60 * 1000; // 24 hours in ms
+const PARQUET_URL      = 'https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet';
+const CACHE_DB         = 'irve-v1';
+const CACHE_TTL        = 24 * 60 * 60 * 1000; // 24 hours in ms
+const PARQUET_ETAG_KEY = 'irve-parquet-etag';  // T-3 — localStorage key for ETag/Last-Modified
 
 // U-10 — CHEAP corridor (km on each side of route). Persisted in localStorage.
 let CHEAP_CORRIDOR_KM = Math.max(1, Math.min(50,
@@ -510,7 +511,9 @@ function buildMarkers(rows) {
     circle._op          = op;
     circle._lon         = p.lon;
     circle._lat         = p.lat;
+    circle._name        = p.nom_station;
     circle._maxPowerKw  = p.max_power_kw; // F-3 — used by isVisible() for power filtering
+    circle._nbrePdc     = parseInt(p.nbre_pdc) || 0;
 
     circle.on('popupopen', () => {
       const popupEl = circle.getPopup()?.getElement();
@@ -1800,6 +1803,30 @@ function applyPreferredStyling() {
     updateVisibility();
     // Refresh legend label showing ±X km
     updateLegend();
+  });
+
+  // F-9b — build preferred networks checkbox list
+  const prefList = document.getElementById('preferred-networks-list');
+  OPERATORS.forEach(op => {
+    const label = document.createElement('label');
+    label.className = 'settings-checkbox-item';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = op.name;
+    cb.checked = preferredNetworks.has(op.name);
+    cb.addEventListener('change', () => {
+      if (cb.checked) preferredNetworks.add(op.name);
+      else            preferredNetworks.delete(op.name);
+      localStorage.setItem(PREFERRED_NETWORKS_KEY, JSON.stringify([...preferredNetworks]));
+      applyPreferredStyling();
+    });
+    const dot = document.createElement('span');
+    dot.className = 'settings-net-dot';
+    dot.style.background = op.color;
+    const span = document.createElement('span');
+    span.textContent = op.name;
+    label.append(cb, dot, span);
+    prefList.appendChild(label);
   });
 }());
 
