@@ -29,7 +29,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | # | Statut | Idée | Notes |
 |---|:------:|------|-------|
 | F-1 | 💡 | **Étapes intermédiaires** — permettre d'ajouter 1–2 waypoints (ex : Paris → Clermont → Marseille) | Nécessite OSRM `waypoints` + re-découpage du corridor par segment |
-| F-2 | 📋 | **Export GPX / liens de navigation** — bouton pour exporter les stations du trajet ou ouvrir dans Google Maps / Waze | Simple à implémenter pour le GPX |
+| F-2 | ✅ | **Export GPX / liens de navigation** — bouton pour exporter les stations du trajet ou ouvrir dans Google Maps / Waze | ✅ GPX export implémenté (bouton ⬇ GPX dans la barre d'actions, apparaît après calcul) |
 | F-3 | 📋 | **Filtre par puissance minimale** — slider pour ne montrer que les ≥ 150 kW / ≥ 250 kW / ≥ 350 kW | Données déjà présentes (`max_power`) — sera dans le menu Paramètres (⚙) |
 | F-4 | 💡 | **Affichage disponibilité temps réel** — indicateur de disponibilité des connecteurs (OCPI / opérateurs qui exposent l'API) | Complexité API variable selon opérateur |
 | F-5 | 📋 | **Partage de trajet** — URL shareable avec départ + arrivée + corridor encodés en query params | Simple, hachage côté client |

@@ -111,6 +111,15 @@ html, body {
 }
 .route-btn-share:hover:not(:disabled) { background: #e2e8f0; opacity: 1; }
 
+/* F-2 — GPX export button */
+.route-btn-gpx {
+  flex: none;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 12px;
+}
+.route-btn-gpx:hover:not(:disabled) { background: #e2e8f0; opacity: 1; }
+
 .route-stat     { font-size: 11px; color: #1D4ED8; font-weight: 600; }
 .route-error    { font-size: 11px; color: #dc2626; }
 .route-progress { font-size: 11px; color: #64748b; }

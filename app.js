@@ -497,9 +497,12 @@ function buildMarkers(rows) {
     circle.bindPopup(() => buildPopup(p, op), { maxWidth: 300 });
     circle.bindTooltip(p.nom_station, { direction: 'top', offset: [0, -8] });
 
-    circle._op  = op;
-    circle._lon = p.lon;
-    circle._lat  = p.lat;
+    circle._op         = op;
+    circle._lon        = p.lon;
+    circle._lat        = p.lat;
+    circle._name       = p.nom_station;  // F-2 — for GPX export
+    circle._maxPowerKw = p.max_power_kw; // F-2/F-3 — power filter and GPX desc
+    circle._nbrePdc    = p.nbre_pdc;     // F-2 — for GPX description
 
     circle.on('popupopen', () => {
       const popupEl = circle.getPopup()?.getElement();
@@ -1069,6 +1072,7 @@ function clearRoute() {
   document.getElementById('route-info').textContent = '';
   document.getElementById('route-clear').style.display = 'none';
   document.getElementById('route-share').style.display = 'none';
+  document.getElementById('route-export-gpx').style.display = 'none';
   history.replaceState(null, '', location.pathname);
   const btn = document.getElementById('route-go');
   btn.style.display = '';
@@ -1191,6 +1195,7 @@ async function calculateRoute() {
 
     document.getElementById('route-clear').style.display = '';
     document.getElementById('route-share').style.display = '';
+    document.getElementById('route-export-gpx').style.display = '';
     btn.style.display = 'none';
 
     // F-5 — update URL so the route is shareable via address bar or copy button
@@ -1402,6 +1407,60 @@ function _syncGoBtn() {
 }
 document.getElementById('route-end').addEventListener('input', _syncGoBtn);
 _syncGoBtn(); // initial state
+
+// ── F-2 — GPX Export ──────────────────────────────────────────────────────
+
+/** Build a GPX string from the currently visible corridor markers. */
+function buildGpx(fromText, toText) {
+  const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const title = esc([fromText, toText].filter(Boolean).join(' → ') || 'Bornes de recharge');
+
+  // Collect visible main markers (CCS fast), sorted by route progress
+  const visibleMarkers = markers
+    .filter(m => isVisible(m))
+    .sort((a, b) => (a._distAlongRoute ?? 0) - (b._distAlongRoute ?? 0));
+
+  const wpts = visibleMarkers.map(m => {
+    const name = esc(m._name || m._op.name);
+    const power = m._maxPowerKw ? `${m._maxPowerKw} kW` : '';
+    const pdc = m._nbrePdc ? ` — ${m._nbrePdc} PDC` : '';
+    const desc = esc(`${m._op.name}${power ? ' — ' + power : ''}${pdc}`);
+    return `  <wpt lat="${m._lat.toFixed(7)}" lon="${m._lon.toFixed(7)}">
+    <name>${name}</name>
+    <desc>${desc}</desc>
+    <sym>Parking</sym>
+  </wpt>`;
+  }).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Bornes de recharge autoroutes"
+     xmlns="http://www.topografix.com/GPX/1/1"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>${title}</name>
+    <time>${new Date().toISOString()}</time>
+  </metadata>
+${wpts}
+</gpx>`;
+}
+
+document.getElementById('route-export-gpx').addEventListener('click', () => {
+  const startText = document.getElementById('route-start').value.trim();
+  const endText   = document.getElementById('route-end').value.trim();
+  const gpx = buildGpx(startText, endText);
+  const blob = new Blob([gpx], { type: 'application/gpx+xml' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const slug = [startText, endText].filter(Boolean).join('-').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').slice(0, 40);
+  a.href     = url;
+  a.download = `bornes-${slug || 'trajet'}.gpx`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
 
 // ── F-5 — Shareable URL (load params + share button) ──────────────────────
 
