@@ -327,6 +327,30 @@ html, body {
 .autocomplete-item:hover,
 .autocomplete-item-active { background: #eff6ff; }
 
+/* F-6 — Recent routes items in the Arrivée dropdown */
+.autocomplete-recent-header {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #f8fafc;
+  cursor: default;
+  padding: 5px 8px 3px;
+}
+.autocomplete-recent-header:hover { background: #f8fafc; }
+
+.autocomplete-recent-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.autocomplete-recent-from {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
 /* ── Zoom control (below settings button) ─────────────────── */
 
 .leaflet-top.leaflet-right {
