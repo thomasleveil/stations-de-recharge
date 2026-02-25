@@ -266,6 +266,8 @@ function updateVisibility() {
   }
 
   updateLegend();
+  // F-9b — apply gold-stroke styling to preferred networks when route is active
+  if (typeof applyPreferredStyling === 'function') applyPreferredStyling();
   Perf.end('updateVisibility');
 }
 
@@ -641,12 +643,42 @@ function buildCheapPopup(p, op) {
 
 // ── Main init — cache-first, then live fetch + DuckDB filter ─────────────
 
+// D-2 — Format a cache timestamp as a human-readable freshness string.
+function formatDataFreshness(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  const now = new Date();
+  const diffH = Math.round((now - d) / 3600000);
+  if (diffH < 1)  return 'Données fraîches (< 1 h)';
+  if (diffH < 24) return `Données de ce matin (${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })})`;
+  return `Données du ${d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}`;
+}
+
+// D-2 — Update the data-freshness indicator element in the panel.
+function showDataFreshness(ts) {
+  const el = document.getElementById('data-freshness');
+  if (el) el.textContent = formatDataFreshness(ts);
+}
+
 async function initApp() {
   subEl.textContent = 'Chargement…';
 
+  // T-3 — HEAD request to detect if the Parquet has been updated server-side.
+  // Compares ETag or Last-Modified with the value stored at last fetch.
+  // Network errors are silently ignored — TTL-based invalidation remains the fallback.
+  let serverEtag = null;
+  try {
+    const headResp = await fetch(PARQUET_URL, { method: 'HEAD' });
+    serverEtag = headResp.headers.get('ETag') || headResp.headers.get('Last-Modified');
+  } catch (_) { /* offline or CORS — skip ETag check */ }
+
+  const storedEtag = localStorage.getItem(PARQUET_ETAG_KEY);
+  const etagChanged = serverEtag && storedEtag && serverEtag !== storedEtag;
+
   // 1. Try IndexedDB cache (single unified dataset since stations-v2)
   const cached = await cacheGet('stations-v2').catch(() => null);
-  if (cached && Date.now() - cached.ts < CACHE_TTL) {
+  if (cached && Date.now() - cached.ts < CACHE_TTL && !etagChanged) {
+    showDataFreshness(cached.ts);
     buildMarkers(cached.rows.filter(r => !r.cheap));
     buildCheapMarkers(cached.rows.filter(r => r.cheap));
     updateVisibility();
@@ -721,8 +753,11 @@ async function initApp() {
     });
   }
 
-  // 6. Persist unified dataset to IndexedDB (best-effort — never blocks rendering)
-  cachePut('stations-v2', { ts: Date.now(), rows }).catch(() => {});
+  // 6. Persist unified dataset to IndexedDB and save ETag for future T-3 checks
+  const nowTs = Date.now();
+  cachePut('stations-v2', { ts: nowTs, rows }).catch(() => {});
+  if (serverEtag) localStorage.setItem(PARQUET_ETAG_KEY, serverEtag);
+  showDataFreshness(nowTs);
 
   // 7. Build markers and refresh map
   buildMarkers(rows.filter(r => !r.cheap));
@@ -890,17 +925,31 @@ async function fetchAvailability(circle) {
 
 // ── Route planning ─────────────────────────────────────────────────────────
 
+// U-6 — Photon (Komoot) geocoder — free, no key, richer POI coverage than Nominatim
+const PHOTON_URL = 'https://photon.komoot.io/api/';
+
+/** Format a Photon feature's properties into a short display label. */
+function photonLabel(props) {
+  const parts = [];
+  if (props.name)      parts.push(props.name);
+  if (props.street && !parts.includes(props.street))  parts.push(props.street);
+  const city = props.city || props.town || props.village || props.county;
+  if (city   && city !== props.name) parts.push(city);
+  const region = props.state;
+  if (region && region !== city) parts.push(region);
+  return parts.slice(0, 3).join(', ');
+}
+
 async function geocode(query) {
-  const url  = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
-  const opts = { headers: { 'Accept-Language': 'fr' } };
-  // Nominatim occasionally fails on first cold-connection attempt (rate-limit
-  // or missing CORS header on error response).  Retry once after a short pause.
+  // Photon: bias toward France/neighbors using a rough bbox
+  const url = `${PHOTON_URL}?q=${encodeURIComponent(query)}&limit=1&lang=fr`;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const r    = await fetch(url, opts);
+      const r    = await fetch(url);
       const data = await r.json();
-      if (!data.length) throw new Error(`"${query}" introuvable`);
-      return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+      if (!data.features?.length) throw new Error(`"${query}" introuvable`);
+      const [lon, lat] = data.features[0].geometry.coordinates;
+      return [lon, lat];
     } catch (e) {
       if (attempt === 1 || e.message.includes('introuvable')) throw e;
       await new Promise(r => setTimeout(r, 800));
@@ -1301,8 +1350,13 @@ async function calculateRoute() {
     document.getElementById('route-share').style.display = '';
     btn.style.display = 'none';
 
-    showRouteResults();
-    _syncDriveModeBtn();
+    // F-6 — save to recent routes history
+    saveRecentRoute(
+      startInput.value.trim(),
+      endInput.value.trim(),
+      startInput._coords || null,
+      endInput._coords || null,
+    );
 
     // F-5 — update URL so the route is shareable via address bar or copy button
     (function pushShareUrl() {
@@ -1342,14 +1396,14 @@ document.getElementById('route-clear').addEventListener('click', clearRoute);
 
 // Keyboard Enter on route inputs is handled inside setupAutocomplete below.
 
-// Warm up the connection to Nominatim on first input focus so the TCP+TLS
-// handshake is already done by the time the user clicks "Calculer".
-let nominatimWarmedUp = false;
+// U-6 — Warm up the connection to Photon on first input focus so the TCP+TLS
+// handshake is already done by the time the user types.
+let photonWarmedUp = false;
 ['route-start', 'route-end'].forEach(id =>
   document.getElementById(id).addEventListener('focus', () => {
-    if (nominatimWarmedUp) return;
-    nominatimWarmedUp = true;
-    fetch('https://nominatim.openstreetmap.org/status.php', { method: 'HEAD' }).catch(() => {});
+    if (photonWarmedUp) return;
+    photonWarmedUp = true;
+    fetch(`${PHOTON_URL}?q=a&limit=1`, { method: 'HEAD' }).catch(() => {});
   }, { once: false })
 );
 
@@ -1450,6 +1504,13 @@ function setupAutocomplete(inputId) {
 
   input.addEventListener('input', () => {
     input._coords = null;
+    // F-8 — if user edits the start field, reset the GPS auto-fill block so
+    // the next manual clear + GPS fix CAN auto-fill once more. But if user
+    // types (non-empty), just keep the block to avoid re-filling mid-type.
+    if (inputId === 'route-start' && !input.value) {
+      // User cleared the field: re-allow GPS auto-fill on next fix
+      input._geoAutoFillBlocked = false;
+    }
     activeIdx = -1;
     const q = input.value.trim();
     clearTimeout(debounceTimer);
@@ -1459,6 +1520,13 @@ function setupAutocomplete(inputId) {
     debounceTimer = setTimeout(() => fetchAutocompleteSuggestions(q, dropdown, input), 300);
   });
 
+  input.addEventListener('focus', () => {
+    // F-6 — show recent routes when Arrivée is focused and empty
+    if (inputId === 'route-end' && !input.value.trim()) {
+      showRecentRoutesDropdown(dropdown);
+    }
+  });
+
   input.addEventListener('blur', () => {
     setTimeout(() => { dropdown.innerHTML = ''; activeIdx = -1; }, 200);
   });
@@ -1466,23 +1534,25 @@ function setupAutocomplete(inputId) {
 
 async function fetchAutocompleteSuggestions(q, dropdown, input) {
   try {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=fr,be,ch,lu`;
-    const data = await fetch(url, { headers: { 'Accept-Language': 'fr' } }).then(r => r.json());
+    // U-6 — Photon API: GeoJSON FeatureCollection, no key required
+    const url = `${PHOTON_URL}?q=${encodeURIComponent(q)}&limit=5&lang=fr`;
+    const data = await fetch(url).then(r => r.json());
     dropdown.innerHTML = '';
-    data.forEach(item => {
+    (data.features || []).forEach(feat => {
+      const props  = feat.properties || {};
+      const coords = [feat.geometry.coordinates[0], feat.geometry.coordinates[1]];
+      const label  = photonLabel(props);
+      if (!label) return;
       const div = document.createElement('div');
       div.className = 'autocomplete-item';
-      // Show a short label: first two comma-separated parts of display_name
-      const parts  = item.display_name.split(',');
-      div.textContent = parts.slice(0, 2).join(',').trim();
-      div.title = item.display_name;
+      div.textContent = label;
+      div.title = [props.name, props.street, props.city || props.town, props.country]
+        .filter(Boolean).join(', ');
       div.addEventListener('mousedown', () => {
-        const text = parts.slice(0, 2).join(',').trim();
-        const coords = [parseFloat(item.lon), parseFloat(item.lat)];
-        input.value   = text;
+        input.value   = label;
         input._coords = coords;
         dropdown.innerHTML = '';
-        localStorage.setItem('irve-' + input.id, JSON.stringify({ text, coords }));
+        localStorage.setItem('irve-' + input.id, JSON.stringify({ text: label, coords }));
       });
       dropdown.appendChild(div);
     });
@@ -1513,6 +1583,71 @@ function _syncGoBtn() {
 }
 document.getElementById('route-end').addEventListener('input', _syncGoBtn);
 _syncGoBtn(); // initial state
+
+// ── F-6 — Recent routes history ────────────────────────────────────────────
+
+const RECENT_ROUTES_KEY = 'irve-recent-routes';
+const RECENT_ROUTES_MAX = 5;
+
+/** Persist a successful route to the recent routes history. */
+function saveRecentRoute(startText, endText, startCoords, endCoords) {
+  if (!endText) return;
+  try {
+    const saved = JSON.parse(localStorage.getItem(RECENT_ROUTES_KEY) || '[]');
+    // Deduplicate: remove any entry with same end destination
+    const filtered = saved.filter(r => r.endText !== endText || r.startText !== startText);
+    // Prepend new entry and cap at max
+    filtered.unshift({ startText, endText, startCoords, endCoords, ts: Date.now() });
+    localStorage.setItem(RECENT_ROUTES_KEY, JSON.stringify(filtered.slice(0, RECENT_ROUTES_MAX)));
+  } catch (_) {}
+}
+
+/** Return recent routes array (newest first). */
+function getRecentRoutes() {
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_ROUTES_KEY) || '[]');
+  } catch (_) { return []; }
+}
+
+/** Show recent routes in a dropdown below the Arrivée input. */
+function showRecentRoutesDropdown(dropdown) {
+  const routes = getRecentRoutes();
+  if (!routes.length) return;
+  dropdown.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.className = 'autocomplete-item autocomplete-recent-header';
+  header.textContent = 'Trajets récents';
+  dropdown.appendChild(header);
+
+  routes.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'autocomplete-item autocomplete-recent-item';
+    const dest = document.createElement('span');
+    dest.textContent = r.endText;
+    const from = document.createElement('span');
+    from.className = 'autocomplete-recent-from';
+    from.textContent = r.startText ? `depuis ${r.startText}` : 'depuis Ma position';
+    div.appendChild(dest);
+    div.appendChild(from);
+    div.addEventListener('mousedown', () => {
+      const endInput   = document.getElementById('route-end');
+      const startInput = document.getElementById('route-start');
+      endInput.value   = r.endText;
+      endInput._coords = r.endCoords || null;
+      if (r.startText) {
+        startInput.value   = r.startText;
+        startInput._coords = r.startCoords || null;
+      } else {
+        startInput.value   = '';
+        startInput._coords = null;
+      }
+      dropdown.innerHTML = '';
+      calculateRoute();
+    });
+    dropdown.appendChild(div);
+  });
+}
 
 // ── F-5 — Shareable URL (load params + share button) ──────────────────────
 
@@ -1576,6 +1711,31 @@ document.getElementById('route-share').addEventListener('click', async () => {
 }());
 
 // ── Settings menu ──────────────────────────────────────────────────────────
+
+// ── F-9b — Preferred networks (user-configured price advantage) ───────────
+
+const PREFERRED_NETWORKS_KEY = 'irve-preferred-networks';
+
+/** Set of operator names the user has a price advantage on. */
+let preferredNetworks = new Set(
+  JSON.parse(localStorage.getItem(PREFERRED_NETWORKS_KEY) || '[]')
+);
+
+/**
+ * Apply gold-stroke highlighting to markers of preferred networks
+ * (only when route is active). Called after updateVisibility() and
+ * after preferred settings change.
+ */
+function applyPreferredStyling() {
+  if (!preferredNetworks.size) return; // nothing to do
+  for (const m of markers) {
+    const vis = isVisible(m);
+    const pref = routeActive && vis && preferredNetworks.has(m._op.name);
+    m.setStyle(pref
+      ? { color: '#F59E0B', weight: 3 }
+      : { color: '#ffffff', weight: 2 });
+  }
+}
 
 (function setupSettings() {
   const btn  = document.getElementById('settings-btn');
@@ -1745,8 +1905,23 @@ function _onGeoSuccess(pos) {
     _geoLocateBtn.classList.remove('geoloc-retry');
   }
 
+  // F-8 — auto-fill the Départ field on first GPS fix
   const startInput = document.getElementById('route-start');
-  if (startInput && !startInput.value) startInput.placeholder = 'Ma position (GPS)';
+  if (startInput) {
+    if (!startInput.value && !startInput._geoAutoFillBlocked) {
+      // First available GPS fix and field is still empty: fill it
+      startInput.value   = 'Ma position';
+      startInput._coords = [lng, lat];
+      startInput.placeholder = 'Départ';
+      startInput._geoAutoFillBlocked = true; // prevent re-fill after user clears
+    } else if (startInput.value === 'Ma position') {
+      // Field still shows auto-filled text: keep coords fresh as GPS updates
+      startInput._coords = [lng, lat];
+      startInput.placeholder = 'Départ';
+    } else {
+      startInput.placeholder = 'Ma position (GPS)';
+    }
+  }
   _syncGoBtn();
   _syncDriveModeBtn();
   refreshDrivePanel();
