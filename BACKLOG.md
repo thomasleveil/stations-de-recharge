@@ -55,12 +55,12 @@ Idées, améliorations et bugs connus, classés par thème.
 | # | Statut | Idée | Notes |
 |---|:------:|------|-------|
 | U-1 | ✅ | ~~**Tooltip corridor sur le slider**~~ | ✅ commit `e7b7fce` |
-| U-2 | 🔍 | **Panneau résultats dépliable** — liste scrollable des stations sur le trajet avec tri par distance de sortie | Utile sur mobile ; à concevoir conjointement avec F-9a (résumé réseau) et U-7 (mode conduite) |
+| U-2 | ✅ | ~~**Panneau résultats dépliable**~~ | ✅ commit `1f5846c` — `showRouteResults()` : liste scrollable triée par progression, titre "N stations", toggle dépliable |
 | U-3 | ✅ | ~~**Icône favicon**~~ | ✅ commit `e7b7fce` |
 | U-4 | ✅ | ~~**Meta Open Graph**~~ | ✅ |
 | U-5 | ✅ | ~~**Bug autocomplete : Entrée ferme la liste**~~ | ✅ commit `923579f` |
 | U-6 | ✅ | **Autocomplétion enrichie (noms d'entreprises, POI)** — remplacer ou compléter le geocoder actuel par un service capable de résoudre les noms d'entreprises (ex : "IKEA Lyon", "McDonald's A7"). Contrainte : sans API payante ni clé à configurer. Candidats : Nominatim, Photon (Komoot), OpenCage free tier. Photon semble le meilleur compromis : gratuit, sans clé, POI riches. | Remplace ou complète le geocoder actuel |
-| U-7 | 🔍 | **Mode conduite** — vue optimisée pour un conducteur en déplacement sur l'autoroute : panel compact affichant les **3-4 prochaines stations dans un rayon cohérent avec l'autonomie restante** (pas toutes les stations du trajet). Pour chaque station : distance restante, indication "même voie" vs "sortie nécessaire", réseau + indicateur tarifaire si F-9b configuré. Affichage minimaliste adapté à la lecture rapide en roulant (grandes polices, contraste élevé). Mise à jour automatique à chaque position GPS. | Fonctionnalité phare ; nécessite F-8 (géoloc auto) + F-9b (réseau préféré) ; le nombre d'options affiché doit être limité à 3-4 max — noyer le conducteur d'informations est un anti-objectif absolu |
+| U-7 | ✅ | ~~**Mode conduite**~~ | ✅ — panel `#drive-panel` plein-écran bas ; bouton ⬆ affiché après calcul d'itinéraire si GPS actif ; `enterDriveMode()` / `exitDriveMode()` / `refreshDrivePanel()` ; 4 prochaines stations avec distance, réseau, puissance, bordure or si réseau préféré (F-9b) |
 | U-8 | ✅ | ~~**Focus initial sur le champ "Arrivée"** — au chargement de la page, le focus clavier doit être positionné dans le champ Arrivée pour permettre une saisie immédiate~~ | ✅ commit `e7b7fce` |
 | U-9 | ✅ | ~~**Double affichage de la taille de corridor** — après calcul d'itinéraire, l'indication du corridor apparaît deux fois dans le bloc formulaire~~ | ✅ commit `e7b7fce` — `route-info` n'affiche plus que la distance (ex. `460 km`), le corridor reste uniquement dans `#corridor-label` |
 | U-10 | ✅ | ~~**Taille du corridor CHEAP paramétrable**~~ | ✅ |
