@@ -259,6 +259,8 @@ function updateVisibility() {
   }
 
   updateLegend();
+  // F-9b — apply gold-stroke styling to preferred networks when route is active
+  if (typeof applyPreferredStyling === 'function') applyPreferredStyling();
   Perf.end('updateVisibility');
 }
 
@@ -1705,6 +1707,31 @@ document.getElementById('route-share').addEventListener('click', async () => {
 
 // ── Settings menu ──────────────────────────────────────────────────────────
 
+// ── F-9b — Preferred networks (user-configured price advantage) ───────────
+
+const PREFERRED_NETWORKS_KEY = 'irve-preferred-networks';
+
+/** Set of operator names the user has a price advantage on. */
+let preferredNetworks = new Set(
+  JSON.parse(localStorage.getItem(PREFERRED_NETWORKS_KEY) || '[]')
+);
+
+/**
+ * Apply gold-stroke highlighting to markers of preferred networks
+ * (only when route is active). Called after updateVisibility() and
+ * after preferred settings change.
+ */
+function applyPreferredStyling() {
+  if (!preferredNetworks.size) return; // nothing to do
+  for (const m of markers) {
+    const vis = isVisible(m);
+    const pref = routeActive && vis && preferredNetworks.has(m._op.name);
+    m.setStyle(pref
+      ? { color: '#F59E0B', weight: 3 }
+      : { color: '#ffffff', weight: 2 });
+  }
+}
+
 (function setupSettings() {
   const btn  = document.getElementById('settings-btn');
   const menu = document.getElementById('settings-menu');
@@ -1743,6 +1770,30 @@ document.getElementById('route-share').addEventListener('click', async () => {
     req.onsuccess = () => window.location.reload();
     req.onerror   = () => window.location.reload();
     req.onblocked = () => window.location.reload();
+  });
+
+  // F-9b — build preferred networks checkbox list
+  const prefList = document.getElementById('preferred-networks-list');
+  OPERATORS.forEach(op => {
+    const label = document.createElement('label');
+    label.className = 'settings-checkbox-item';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = op.name;
+    cb.checked = preferredNetworks.has(op.name);
+    cb.addEventListener('change', () => {
+      if (cb.checked) preferredNetworks.add(op.name);
+      else            preferredNetworks.delete(op.name);
+      localStorage.setItem(PREFERRED_NETWORKS_KEY, JSON.stringify([...preferredNetworks]));
+      applyPreferredStyling();
+    });
+    const dot = document.createElement('span');
+    dot.className = 'settings-net-dot';
+    dot.style.background = op.color;
+    const span = document.createElement('span');
+    span.textContent = op.name;
+    label.append(cb, dot, span);
+    prefList.appendChild(label);
   });
 }());
 
