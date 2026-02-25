@@ -1113,7 +1113,9 @@ function staggeredFadeIn() {
     );
     // Show all newly eligible in this frame — batched into one canvas repaint
     for (let i = lastShownIdx + 1; i <= showUpTo; i++) {
-      const { m, fill } = visible[i];
+      const item = visible[i];
+      if (!item) break; // defensive: concurrent call may have invalidated visible
+      const { m, fill } = item;
       m.setStyle({ opacity: 1, fillOpacity: fill });
     }
     lastShownIdx = showUpTo;
@@ -1444,6 +1446,7 @@ async function calculateRoute() {
 
     // F-9a — show network recommendation after filter is applied
     showNetworkRecommendation(currentRouteKm);
+    showRouteResults();
 
     document.getElementById('route-clear').style.display = '';
     document.getElementById('route-share').style.display = '';
