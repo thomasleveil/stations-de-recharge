@@ -26,9 +26,10 @@
         <input id="route-end" class="route-input" type="text" placeholder="Arrivée" autocomplete="off" />
       </div>
       <div class="route-actions">
-        <button id="route-go"    class="route-btn">Calculer →</button>
-        <button id="route-clear" class="route-btn route-btn-clear" style="display:none">✕ Effacer</button>
-        <button id="route-share" class="route-btn route-btn-share" style="display:none" title="Copier le lien de partage">⎘</button>
+        <button id="route-go"       class="route-btn">Calculer →</button>
+        <button id="route-clear"    class="route-btn route-btn-clear" style="display:none">✕ Effacer</button>
+        <button id="route-share"    class="route-btn route-btn-share" style="display:none" title="Copier le lien de partage">⎘</button>
+        <button id="drive-mode-btn" class="route-btn route-btn-drive" style="display:none" title="Mode conduite">⬆</button>
       </div>
       <div id="corridor-row">
         <span id="corridor-label">Corridor : <strong id="corridor-value">200 m</strong></span>
@@ -37,6 +38,15 @@
       <div id="route-info"></div>
       <div id="network-recommendation" style="display:none"></div>
     </div>
+  </div>
+
+  <!-- Drive mode bottom panel (U-7) -->
+  <div id="drive-panel" style="display:none">
+    <div class="dm-header">
+      <span class="dm-title">Mode conduite</span>
+      <button class="dm-exit" id="dm-exit">✕</button>
+    </div>
+    <div id="dm-cards"></div>
   </div>
 
   <!-- Top-right settings -->

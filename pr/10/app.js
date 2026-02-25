@@ -497,9 +497,12 @@ function buildMarkers(rows) {
     circle.bindPopup(() => buildPopup(p, op), { maxWidth: 300 });
     circle.bindTooltip(p.nom_station, { direction: 'top', offset: [0, -8] });
 
-    circle._op  = op;
-    circle._lon = p.lon;
-    circle._lat  = p.lat;
+    circle._op         = op;
+    circle._lon        = p.lon;
+    circle._lat        = p.lat;
+    circle._name       = p.nom_station;
+    circle._maxPowerKw = p.max_power_kw;
+    circle._nbrePdc    = parseInt(p.nbre_pdc) || 0;
 
     circle.on('popupopen', () => {
       const popupEl = circle.getPopup()?.getElement();
@@ -1152,6 +1155,7 @@ function showNetworkRecommendation(routeKm) {
 }
 
 function clearRoute() {
+  if (driveModeActive) exitDriveMode();
   routeActive = false;
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   markers.forEach(m => { delete m._distFromRoute; delete m._distAlongRoute; });
@@ -1161,6 +1165,8 @@ function clearRoute() {
   document.getElementById('route-info').textContent = '';
   document.getElementById('route-clear').style.display = 'none';
   document.getElementById('route-share').style.display = 'none';
+  document.getElementById('route-results').style.display = 'none';
+  _syncDriveModeBtn();
   history.replaceState(null, '', location.pathname);
   const btn = document.getElementById('route-go');
   btn.style.display = '';
@@ -1287,6 +1293,9 @@ async function calculateRoute() {
     document.getElementById('route-clear').style.display = '';
     document.getElementById('route-share').style.display = '';
     btn.style.display = 'none';
+
+    showRouteResults();
+    _syncDriveModeBtn();
 
     // F-5 — update URL so the route is shareable via address bar or copy button
     (function pushShareUrl() {
@@ -1707,6 +1716,8 @@ function _onGeoSuccess(pos) {
   const startInput = document.getElementById('route-start');
   if (startInput && !startInput.value) startInput.placeholder = 'Ma position (GPS)';
   _syncGoBtn();
+  _syncDriveModeBtn();
+  refreshDrivePanel();
 }
 
 function _onGeoError(err) {
