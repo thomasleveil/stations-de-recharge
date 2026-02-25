@@ -1,0 +1,661 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#map {
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ── Panel (top-left) ──────────────────────────────────────── */
+
+#panel {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 14px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
+}
+
+.panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.panel-sub {
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 10px;
+}
+
+/* ── Route planning ─────────────────────────────────────────── */
+
+#panel {
+  min-width: 210px;
+}
+
+.panel-divider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 10px 0;
+}
+
+.route-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.route-input {
+  display: block;
+  width: 100%;
+  padding: 5px 8px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+  font-family: inherit;
+  color: #1e293b;
+}
+.route-input:focus { border-color: #3b82f6; }
+
+.route-actions {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 4px;
+}
+
+.route-btn {
+  flex: 1;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  background: #1D4ED8;
+  color: white;
+  transition: opacity 0.15s;
+  font-family: inherit;
+}
+.route-btn:hover:not(:disabled) { opacity: 0.85; }
+.route-btn:disabled { opacity: 0.5; cursor: default; }
+
+.route-btn-clear {
+  flex: none;
+  background: #f1f5f9;
+  color: #64748b;
+}
+.route-btn-clear:hover:not(:disabled) { background: #e2e8f0; opacity: 1; }
+
+/* F-5 — share button */
+.route-btn-share {
+  flex: none;
+  background: #f1f5f9;
+  color: #64748b;
+  min-width: 28px;
+  font-size: 13px;
+}
+.route-btn-share:hover:not(:disabled) { background: #e2e8f0; opacity: 1; }
+
+/* F-2 — GPX export button */
+.route-btn-gpx {
+  flex: none;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 12px;
+}
+.route-btn-gpx:hover:not(:disabled) { background: #e2e8f0; opacity: 1; }
+
+.route-stat     { font-size: 11px; color: #1D4ED8; font-weight: 600; }
+.route-error    { font-size: 11px; color: #dc2626; }
+.route-progress { font-size: 11px; color: #64748b; }
+
+/* ── Legend (bottom-right) ─────────────────────────────────── */
+
+#legend {
+  position: absolute;
+  bottom: 28px;
+  right: 10px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
+}
+
+.legend-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.legend-chevron {
+  display: none;
+  font-size: 11px;
+  margin-left: 4px;
+  transition: transform 0.2s;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: #374151;
+  min-width: 170px;
+}
+
+.legend-name { flex: 1; }
+
+.legend-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  min-width: 20px;
+  text-align: right;
+}
+
+.legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.legend-hint {
+  font-size: 10px;
+  color: #9ca3af;
+  margin-top: 9px;
+  text-align: center;
+  font-style: italic;
+}
+
+.legend-dot-cheap {
+  background: transparent !important;
+  border: 2px dashed;
+}
+
+
+/* ── Filter checkbox (panel) ───────────────────────────────── */
+
+.filter-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  user-select: none;
+}
+
+.filter-check input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: #1D4ED8;
+  flex-shrink: 0;
+}
+
+/* ── Popup ─────────────────────────────────────────────────── */
+
+.popup-station {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+  margin-bottom: 5px;
+}
+
+.popup-operator-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-bottom: 9px;
+}
+
+.popup-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  font-size: 12px;
+  color: #374151;
+}
+
+.popup-label { color: #94a3b8; white-space: nowrap; }
+
+.popup-power {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.popup-avail-cell {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.popup-avail { color: #94a3b8; }
+.popup-avail-ok   { font-weight: 700; color: #16a34a; }
+.popup-avail-none { font-weight: 700; color: #dc2626; }
+.popup-avail-err  { font-size: 11px; color: #f59e0b; cursor: help; }
+
+@keyframes avail-spin {
+  to { transform: rotate(360deg); }
+}
+.popup-avail-spinner {
+  display: inline-block;
+  animation: avail-spin 0.9s linear infinite;
+}
+
+.popup-avail-refresh {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: #cbd5e1;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.popup-avail-refresh:hover { color: #3b82f6; }
+
+.popup-cheap-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #065f46;
+  background: #d1fae5;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-bottom: 9px;
+  margin-left: 4px;
+}
+
+/* ── Autocomplete ──────────────────────────────────────────── */
+
+.autocomplete-wrap {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.autocomplete-wrap .route-input {
+  margin-bottom: 0;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1.5px solid #3b82f6;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  z-index: 2000;
+  max-height: 180px;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.autocomplete-item {
+  padding: 6px 8px;
+  font-size: 12px;
+  color: #1e293b;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover,
+.autocomplete-item-active { background: #eff6ff; }
+
+/* ── Zoom control (below settings button) ─────────────────── */
+
+.leaflet-top.leaflet-right {
+  top: 52px; /* settings btn: 10px top + 32px height + 10px gap */
+}
+
+/* ── Settings button (top-right) ──────────────────────────── */
+
+#settings-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+  color: #64748b;
+  transition: background 0.15s, color 0.15s;
+}
+
+#settings-btn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+#settings-menu {
+  position: absolute;
+  top: 48px;
+  right: 10px;
+  z-index: 1001;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
+  min-width: 160px;
+}
+
+.settings-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px 2px;
+}
+
+.settings-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.settings-radio-item:hover { background: #f1f5f9; }
+
+.settings-radio-item input[type="radio"] {
+  accent-color: #1D4ED8;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.settings-divider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 5px 0;
+}
+
+.settings-item {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 12px;
+  font-family: inherit;
+  color: #374151;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+
+.settings-item:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.settings-api-help {
+  margin-left: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #3b82f6;
+  text-decoration: none;
+  border: 1px solid #93c5fd;
+  border-radius: 50%;
+  padding: 0 3px;
+}
+.settings-api-help:hover { background: #eff6ff; }
+
+.settings-api-row {
+  padding: 3px 8px 5px;
+}
+
+.settings-api-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: monospace;
+  color: #374151;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.settings-api-input:focus { border-color: #3b82f6; background: #fff; }
+.settings-api-input::placeholder { color: #cbd5e1; font-family: inherit; }
+
+/* ── Corridor row ──────────────────────────────────────────── */
+
+#corridor-row {
+  margin-bottom: 4px;
+  position: relative;
+}
+
+/* U-1 — tooltip above slider thumb during drag */
+#corridor-slider-tooltip {
+  position: absolute;
+  bottom: calc(100% + 3px);
+  transform: translateX(-50%);
+  background: #1D4ED8;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 5px;
+  pointer-events: none;
+  white-space: nowrap;
+  display: none;
+  z-index: 10;
+}
+
+#corridor-label {
+  font-size: 11px;
+  color: #64748b;
+  cursor: pointer;
+  user-select: none;
+}
+
+#corridor-label strong {
+  color: #1D4ED8;
+}
+
+#corridor-label:hover strong {
+  text-decoration: underline;
+}
+
+#corridor-slider {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  accent-color: #1D4ED8;
+}
+
+/* ── Mobile: legend collapsible ────────────────────────────── */
+
+@media (max-width: 640px) {
+  .legend-title {
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0;
+  }
+
+  .legend-chevron {
+    display: inline;
+  }
+
+  #legend-items,
+  .legend-hint {
+    display: none;
+  }
+
+  #legend.open #legend-items,
+  #legend.open .legend-hint {
+    display: block;
+  }
+
+  #legend.open .legend-hint {
+    display: block;
+  }
+
+  #legend.open {
+    bottom: 28px;
+  }
+
+  #legend.open .legend-title {
+    margin-bottom: 8px;
+  }
+
+  #legend.open .legend-chevron {
+    transform: rotate(180deg);
+  }
+}
+
+/* ── Mobile: panel collapse after route calculation ─────────── */
+
+.panel-chevron {
+  display: none;
+  font-size: 10px;
+  margin-left: 6px;
+  transition: transform 0.2s;
+  vertical-align: middle;
+}
+
+@media (max-width: 640px) {
+  #panel.route-calculated .panel-chevron {
+    display: inline;
+  }
+
+  #panel.route-calculated .panel-title {
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0;
+  }
+
+  /* Collapsed: hide inputs, label, actions, info */
+  #panel.route-calculated:not(.panel-expanded) .panel-sub,
+  #panel.route-calculated:not(.panel-expanded) .route-label,
+  #panel.route-calculated:not(.panel-expanded) .autocomplete-wrap,
+  #panel.route-calculated:not(.panel-expanded) .route-actions,
+  #panel.route-calculated:not(.panel-expanded) #route-info,
+  #panel.route-calculated:not(.panel-expanded) .panel-divider {
+    display: none;
+  }
+
+  #panel.route-calculated:not(.panel-expanded) #route-section {
+    margin-top: 8px;
+  }
+
+  /* Expanded: chevron rotated */
+  #panel.route-calculated.panel-expanded .panel-chevron {
+    transform: rotate(90deg);
+  }
+
+  #panel.route-calculated.panel-expanded .panel-title {
+    margin-bottom: 2px;
+  }
+}
+
+/* Brand icon markers — remove default Leaflet DivIcon white box */
+.cheap-brand-marker {
+  background: none !important;
+  border: none !important;
+  transition: opacity 200ms ease-out; /* piste 4.1 — smooth fade on corridor change */
+}
+
+/* ── Geolocation arrow marker ──────────────────────────────── */
+
+.geoloc-marker-outer {
+  background: none !important;
+  border: none !important;
+}
+
+.geoloc-marker {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
+}
+
+/* ── Locate control button ─────────────────────────────────── */
+
+.leaflet-control-locate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  cursor: pointer;
+  color: #333;
+  font-family: inherit;
+}
+
+.leaflet-control-locate:hover:not(:disabled) {
+  background: #f4f4f4;
+}
+
+.leaflet-control-locate:disabled {
+  color: #bbb;
+  cursor: default;
+}
+
+.leaflet-control-locate.geoloc-retry {
+  color: #f59e0b;
+}
+
+/* ── Route polyline draw animation (piste 4.4) ─────────────── */
+
+@keyframes drawRoute {
+  from { stroke-dashoffset: 5000; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.route-polyline {
+  stroke-dasharray: 5000;
+  stroke-dashoffset: 5000;
+  animation: drawRoute 0.8s ease-out forwards;
+}
