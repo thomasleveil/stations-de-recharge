@@ -497,9 +497,12 @@ function buildMarkers(rows) {
     circle.bindPopup(() => buildPopup(p, op), { maxWidth: 300 });
     circle.bindTooltip(p.nom_station, { direction: 'top', offset: [0, -8] });
 
-    circle._op  = op;
-    circle._lon = p.lon;
-    circle._lat  = p.lat;
+    circle._op         = op;
+    circle._lon        = p.lon;
+    circle._lat        = p.lat;
+    circle._name       = p.nom_station;
+    circle._maxPowerKw = p.max_power_kw;
+    circle._nbrePdc    = parseInt(p.nbre_pdc) || 0;
 
     circle.on('popupopen', () => {
       const popupEl = circle.getPopup()?.getElement();
@@ -1060,7 +1063,104 @@ function staggeredFadeIn() {
   })(performance.now());
 }
 
+// ── U-2 — Route results panel ─────────────────────────────────────────────
+
+function showRouteResults() {
+  const wrapper = document.getElementById('route-results');
+  const list    = document.getElementById('route-results-list');
+  const title   = document.getElementById('route-results-title');
+  const visible = markers
+    .filter(m => isVisible(m))
+    .sort((a, b) => (a._progressOnRoute ?? 0) - (b._progressOnRoute ?? 0));
+  if (!visible.length) { wrapper.style.display = 'none'; return; }
+  title.textContent = `${visible.length} station${visible.length > 1 ? 's' : ''}`;
+  let html = '';
+  for (const m of visible) {
+    const km    = currentRouteKm > 0 ? Math.round(currentRouteKm * (m._progressOnRoute ?? 0)) : null;
+    const power = m._maxPowerKw ? `${Math.round(m._maxPowerKw)} kW` : '';
+    const meta  = [km !== null ? `${km} km` : '', power].filter(Boolean).join(' · ');
+    html += `<div class="route-result-item">
+      <span class="route-result-dot" style="background:${m._op.color}"></span>
+      <span class="route-result-name">${m._name || m._op.name}</span>
+      ${meta ? `<span class="route-result-meta">${meta}</span>` : ''}
+    </div>`;
+  }
+  list.innerHTML = html;
+  wrapper.style.display = '';
+}
+
+document.getElementById('route-results-toggle').addEventListener('click', () => {
+  document.getElementById('route-results').classList.toggle('open');
+});
+
+// ── U-7 — Drive mode ──────────────────────────────────────────────────────
+
+let driveModeActive = false;
+
+function _syncDriveModeBtn() {
+  const btn = document.getElementById('drive-mode-btn');
+  if (!btn) return;
+  btn.style.display = (routeActive && geoState.available) ? '' : 'none';
+}
+
+function enterDriveMode() {
+  driveModeActive = true;
+  document.getElementById('drive-panel').style.display = 'flex';
+  document.getElementById('panel').style.display = 'none';
+  refreshDrivePanel();
+  map.invalidateSize();
+}
+
+function exitDriveMode() {
+  driveModeActive = false;
+  document.getElementById('drive-panel').style.display = 'none';
+  document.getElementById('panel').style.display = '';
+  map.invalidateSize();
+}
+
+function refreshDrivePanel() {
+  if (!driveModeActive) return;
+  const cards = document.getElementById('dm-cards');
+  if (!geoState.available) {
+    cards.innerHTML = '<div class="dm-card dm-card--error">Signal GPS perdu</div>';
+    return;
+  }
+  const ahead = markers
+    .filter(m => isVisible(m) && m._progressOnRoute !== undefined)
+    .map(m => ({ m, dist: _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000 }))
+    .filter(({ dist }) => dist > 0.5)
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, 4);
+  if (!ahead.length) {
+    cards.innerHTML = '<div class="dm-card dm-card--done">✓ Destination proche</div>';
+    return;
+  }
+  // Guard: preferredNetworks may not exist if F-9b is not yet merged
+  const preferredSet = (typeof preferredNetworks !== 'undefined') ? preferredNetworks : null;
+  let html = '';
+  for (let i = 0; i < ahead.length; i++) {
+    const { m, dist } = ahead[i];
+    const isPref  = preferredSet && preferredSet.has(m._op.name);
+    let cls = 'dm-card';
+    if (i === 0)   cls += ' dm-card--next';
+    else if (isPref) cls += ' dm-card--preferred';
+    const distStr = dist < 10 ? dist.toFixed(1) : String(Math.round(dist));
+    const power   = m._maxPowerKw ? `${Math.round(m._maxPowerKw)} kW` : '';
+    const star    = isPref ? '<span class="dm-preferred-star">★</span>' : '';
+    html += `<div class="${cls}">
+      <div class="dm-distance">${distStr}<span class="dm-unit"> km</span></div>
+      <div class="dm-operator"><span class="dm-op-dot" style="background:${m._op.color}"></span>${m._op.name}${star}</div>
+      ${power ? `<div class="dm-power">${power}</div>` : ''}
+    </div>`;
+  }
+  cards.innerHTML = html;
+}
+
+document.getElementById('drive-mode-btn').addEventListener('click', enterDriveMode);
+document.getElementById('dm-exit').addEventListener('click', exitDriveMode);
+
 function clearRoute() {
+  if (driveModeActive) exitDriveMode();
   routeActive = false;
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   markers.forEach(m => { delete m._distFromRoute; delete m._distAlongRoute; });
@@ -1069,6 +1169,8 @@ function clearRoute() {
   document.getElementById('route-info').textContent = '';
   document.getElementById('route-clear').style.display = 'none';
   document.getElementById('route-share').style.display = 'none';
+  document.getElementById('route-results').style.display = 'none';
+  _syncDriveModeBtn();
   history.replaceState(null, '', location.pathname);
   const btn = document.getElementById('route-go');
   btn.style.display = '';
@@ -1192,6 +1294,9 @@ async function calculateRoute() {
     document.getElementById('route-clear').style.display = '';
     document.getElementById('route-share').style.display = '';
     btn.style.display = 'none';
+
+    showRouteResults();
+    _syncDriveModeBtn();
 
     // F-5 — update URL so the route is shareable via address bar or copy button
     (function pushShareUrl() {
@@ -1612,6 +1717,8 @@ function _onGeoSuccess(pos) {
   const startInput = document.getElementById('route-start');
   if (startInput && !startInput.value) startInput.placeholder = 'Ma position (GPS)';
   _syncGoBtn();
+  _syncDriveModeBtn();
+  refreshDrivePanel();
 }
 
 function _onGeoError(err) {
