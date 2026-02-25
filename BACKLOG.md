@@ -55,7 +55,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | # | Statut | Idée | Notes |
 |---|:------:|------|-------|
 | U-1 | 📋 | **Tooltip corridor sur le slider** — afficher la distance en km sous le curseur pendant le glissement | CSS/JS trivial |
-| U-2 | 🔍 | **Panneau résultats dépliable** — liste scrollable des stations sur le trajet avec tri par distance de sortie | Utile sur mobile ; à concevoir conjointement avec F-9a (résumé réseau) et U-7 (mode conduite) |
+| U-2 | ✅ | ~~**Panneau résultats dépliable**~~ — liste scrollable des stations sur le trajet avec tri par progression sur le trajet, dépliable par clic sur le header | ✅ feat/U2-station-results-list |
 | U-3 | 📋 | **Icône favicon** — pas de favicon actuellement | |
 | U-4 | 📋 | **Meta Open Graph** — image de prévisualisation pour le partage sur les réseaux sociaux | |
 | U-5 | ✅ | ~~**Bug autocomplete : Entrée ferme la liste**~~ | ✅ commit `923579f` |
