@@ -1303,7 +1303,7 @@ function refreshDrivePanel() {
     .map(m => ({ m, dist: _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000 }))
     .filter(({ dist }) => dist > 0.5)
     .sort((a, b) => a.dist - b.dist)
-    .slice(0, 4);
+    .slice(0, 10);
   if (!ahead.length) {
     cards.innerHTML = '<div class="dm-card dm-card--done">✓ Destination proche</div>';
     _driveAhead = [];
