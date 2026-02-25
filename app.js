@@ -490,6 +490,16 @@ ORDER BY sf.id_station_itinerance
 
 function buildMarkers(rows) {
   _prevVisMain = null; // reset delta-update state on marker rebuild
+  // D-3 — Deduplicate: some operators (e.g. Allego) register each PDC as a
+  // separate id_station_itinerance. Collapse to one entry per (operator, ~coords),
+  // keeping the row with the highest max_power_kw.
+  const _locSeen = new Map();
+  for (const r of rows) {
+    const key = `${r.operateur}|${Math.round(r.lat * 1e4)}|${Math.round(r.lon * 1e4)}`;
+    const ex = _locSeen.get(key);
+    if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
+  }
+  rows = [..._locSeen.values()];
   Perf.start('buildMarkers');
   for (const p of rows) {
     const op = getOperator(p);
@@ -561,6 +571,14 @@ function makeBrandDivIcon(opName) {
 
 function buildCheapMarkers(rows) {
   _prevVisCheap = null; // reset delta-update state on marker rebuild
+  // D-3 — same dedup as buildMarkers
+  const _locSeen = new Map();
+  for (const r of rows) {
+    const key = `${r.operateur}|${Math.round(r.lat * 1e4)}|${Math.round(r.lon * 1e4)}`;
+    const ex = _locSeen.get(key);
+    if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
+  }
+  rows = [..._locSeen.values()];
   Perf.start('buildCheapMarkers');
   for (const p of rows) {
     let op = getOperator(p);
