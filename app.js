@@ -1,9 +1,10 @@
 // ── Constants ─────────────────────────────────────────────────────────────
 
-const PARQUET_URL = 'https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet';
-const CACHE_DB    = 'irve-v1';
-const CACHE_TTL   = 24 * 60 * 60 * 1000; // 24 hours in ms
-const CHEAP_CORRIDOR_KM = 10;            // Fixed 10-km corridor for budget networks
+const PARQUET_URL      = 'https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet';
+const CACHE_DB         = 'irve-v1';
+const CACHE_TTL        = 24 * 60 * 60 * 1000; // 24 hours in ms
+const CHEAP_CORRIDOR_KM = 10;                  // Fixed 10-km corridor for budget networks
+const PARQUET_ETAG_KEY = 'irve-parquet-etag';  // T-3 — localStorage key for ETag/Last-Modified
 
 // ── Performance recorder (debug) ──────────────────────────────────────────
 // Expose as window.Perf for console access: Perf.report(), Perf.reset()
@@ -635,12 +636,42 @@ function buildCheapPopup(p, op) {
 
 // ── Main init — cache-first, then live fetch + DuckDB filter ─────────────
 
+// D-2 — Format a cache timestamp as a human-readable freshness string.
+function formatDataFreshness(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  const now = new Date();
+  const diffH = Math.round((now - d) / 3600000);
+  if (diffH < 1)  return 'Données fraîches (< 1 h)';
+  if (diffH < 24) return `Données de ce matin (${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })})`;
+  return `Données du ${d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}`;
+}
+
+// D-2 — Update the data-freshness indicator element in the panel.
+function showDataFreshness(ts) {
+  const el = document.getElementById('data-freshness');
+  if (el) el.textContent = formatDataFreshness(ts);
+}
+
 async function initApp() {
   subEl.textContent = 'Chargement…';
 
+  // T-3 — HEAD request to detect if the Parquet has been updated server-side.
+  // Compares ETag or Last-Modified with the value stored at last fetch.
+  // Network errors are silently ignored — TTL-based invalidation remains the fallback.
+  let serverEtag = null;
+  try {
+    const headResp = await fetch(PARQUET_URL, { method: 'HEAD' });
+    serverEtag = headResp.headers.get('ETag') || headResp.headers.get('Last-Modified');
+  } catch (_) { /* offline or CORS — skip ETag check */ }
+
+  const storedEtag = localStorage.getItem(PARQUET_ETAG_KEY);
+  const etagChanged = serverEtag && storedEtag && serverEtag !== storedEtag;
+
   // 1. Try IndexedDB cache (single unified dataset since stations-v2)
   const cached = await cacheGet('stations-v2').catch(() => null);
-  if (cached && Date.now() - cached.ts < CACHE_TTL) {
+  if (cached && Date.now() - cached.ts < CACHE_TTL && !etagChanged) {
+    showDataFreshness(cached.ts);
     buildMarkers(cached.rows.filter(r => !r.cheap));
     buildCheapMarkers(cached.rows.filter(r => r.cheap));
     updateVisibility();
@@ -715,8 +746,11 @@ async function initApp() {
     });
   }
 
-  // 6. Persist unified dataset to IndexedDB (best-effort — never blocks rendering)
-  cachePut('stations-v2', { ts: Date.now(), rows }).catch(() => {});
+  // 6. Persist unified dataset to IndexedDB and save ETag for future T-3 checks
+  const nowTs = Date.now();
+  cachePut('stations-v2', { ts: nowTs, rows }).catch(() => {});
+  if (serverEtag) localStorage.setItem(PARQUET_ETAG_KEY, serverEtag);
+  showDataFreshness(nowTs);
 
   // 7. Build markers and refresh map
   buildMarkers(rows.filter(r => !r.cheap));
