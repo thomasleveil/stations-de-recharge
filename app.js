@@ -1444,6 +1444,13 @@ function setupAutocomplete(inputId) {
 
   input.addEventListener('input', () => {
     input._coords = null;
+    // F-8 — if user edits the start field, reset the GPS auto-fill block so
+    // the next manual clear + GPS fix CAN auto-fill once more. But if user
+    // types (non-empty), just keep the block to avoid re-filling mid-type.
+    if (inputId === 'route-start' && !input.value) {
+      // User cleared the field: re-allow GPS auto-fill on next fix
+      input._geoAutoFillBlocked = false;
+    }
     activeIdx = -1;
     const q = input.value.trim();
     clearTimeout(debounceTimer);
@@ -1714,8 +1721,23 @@ function _onGeoSuccess(pos) {
     _geoLocateBtn.classList.remove('geoloc-retry');
   }
 
+  // F-8 — auto-fill the Départ field on first GPS fix
   const startInput = document.getElementById('route-start');
-  if (startInput && !startInput.value) startInput.placeholder = 'Ma position (GPS)';
+  if (startInput) {
+    if (!startInput.value && !startInput._geoAutoFillBlocked) {
+      // First available GPS fix and field is still empty: fill it
+      startInput.value   = 'Ma position';
+      startInput._coords = [lng, lat];
+      startInput.placeholder = 'Départ';
+      startInput._geoAutoFillBlocked = true; // prevent re-fill after user clears
+    } else if (startInput.value === 'Ma position') {
+      // Field still shows auto-filled text: keep coords fresh as GPS updates
+      startInput._coords = [lng, lat];
+      startInput.placeholder = 'Départ';
+    } else {
+      startInput.placeholder = 'Ma position (GPS)';
+    }
+  }
   _syncGoBtn();
   _syncDriveModeBtn();
   refreshDrivePanel();
