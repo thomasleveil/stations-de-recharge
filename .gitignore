@@ -7,3 +7,4 @@ node_modules/
 .env*.local
 Plans/recette-screenshots/
 test-results
+scripts/logs/
