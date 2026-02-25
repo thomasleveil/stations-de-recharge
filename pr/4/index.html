@@ -26,16 +26,33 @@
         <input id="route-end" class="route-input" type="text" placeholder="Arrivée" autocomplete="off" />
       </div>
       <div class="route-actions">
-        <button id="route-go"    class="route-btn">Calculer →</button>
-        <button id="route-clear" class="route-btn route-btn-clear" style="display:none">✕ Effacer</button>
-        <button id="route-share" class="route-btn route-btn-share" style="display:none" title="Copier le lien de partage">⎘</button>
+        <button id="route-go"       class="route-btn">Calculer →</button>
+        <button id="route-clear"    class="route-btn route-btn-clear" style="display:none">✕ Effacer</button>
+        <button id="route-share"    class="route-btn route-btn-share" style="display:none" title="Copier le lien de partage">⎘</button>
+        <button id="drive-mode-btn" class="route-btn route-btn-drive" style="display:none" title="Mode conduite">⬆</button>
       </div>
       <div id="corridor-row">
         <span id="corridor-label">Corridor : <strong id="corridor-value">200 m</strong></span>
         <input type="range" id="corridor-slider" min="2" max="30" step="1" value="2" style="display:none" />
       </div>
       <div id="route-info"></div>
+      <div id="route-results" style="display:none">
+        <div class="route-results-header" id="route-results-toggle">
+          <span id="route-results-title">Stations</span>
+          <span class="route-results-chevron">▸</span>
+        </div>
+        <div id="route-results-list"></div>
+      </div>
     </div>
+  </div>
+
+  <!-- Drive mode bottom panel (U-7) -->
+  <div id="drive-panel" style="display:none">
+    <div class="dm-header">
+      <span class="dm-title">Mode conduite</span>
+      <button class="dm-exit" id="dm-exit">✕</button>
+    </div>
+    <div id="dm-cards"></div>
   </div>
 
   <!-- Top-right settings -->
