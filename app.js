@@ -1086,10 +1086,43 @@ async function calculateRoute() {
   const endInput   = document.getElementById('route-end');
   const startVal   = startInput.value.trim();
   const endVal     = endInput.value.trim();
-  if (!endVal || (!startVal && !geoState.available)) return;
-
   const btn  = document.getElementById('route-go');
   const info = document.getElementById('route-info');
+
+  // B-1 — validate preconditions with explicit feedback instead of silent return
+  if (!endVal) {
+    info.className = 'route-error';
+    info.textContent = '⚠ Saisissez une destination';
+    return;
+  }
+  if (!startVal && !geoState.available) {
+    if (geoState.pending) {
+      // GPS is being acquired — show progress and poll up to 8 s
+      info.className = 'route-progress';
+      info.textContent = '📍 Attente de la position GPS…';
+      btn.disabled = true;
+      const t0 = Date.now();
+      (function pollGeo() {
+        if (geoState.available) {
+          btn.disabled = false;
+          calculateRoute();
+          return;
+        }
+        if (!geoState.pending || Date.now() - t0 > 8000) {
+          btn.disabled = false;
+          info.className = 'route-error';
+          info.textContent = '⚠ Position GPS non disponible — saisissez un départ';
+          return;
+        }
+        setTimeout(pollGeo, 300);
+      }());
+      return;
+    }
+    info.className = 'route-error';
+    info.textContent = '⚠ Position GPS non disponible — saisissez un départ';
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = '…';
   info.className = 'route-progress';
@@ -1360,6 +1393,16 @@ setupAutocomplete('route-end');
   } catch (_) {}
 });
 
+// ── B-1 — Reactive Calculer button state ──────────────────────────────────
+// Disable when Arrivée is empty; never touches state during mid-calculation ('…').
+function _syncGoBtn() {
+  const btn = document.getElementById('route-go');
+  if (btn.style.display === 'none' || btn.textContent === '…') return;
+  btn.disabled = !document.getElementById('route-end').value.trim();
+}
+document.getElementById('route-end').addEventListener('input', _syncGoBtn);
+_syncGoBtn(); // initial state
+
 // ── F-5 — Shareable URL (load params + share button) ──────────────────────
 
 // Share button: copies current URL to clipboard with visual feedback.
@@ -1487,7 +1530,7 @@ document.getElementById('route-share').addEventListener('click', async () => {
 
 // ── Geolocation ────────────────────────────────────────────────────────────
 
-const geoState = { available: false, lat: null, lng: null, heading: 0 };
+const geoState = { available: false, pending: false, lat: null, lng: null, heading: 0 };
 const _geoHistory = [];   // rolling buffer of last positions for bearing
 let _geoMarker    = null;
 let _geoLocateBtn = null;
@@ -1547,6 +1590,7 @@ function _onGeoSuccess(pos) {
   if (heading === null) heading = geoState.heading;
 
   geoState.available = true;
+  geoState.pending   = false;
   geoState.lat = lat;
   geoState.lng = lng;
   geoState.heading = heading;
@@ -1567,11 +1611,15 @@ function _onGeoSuccess(pos) {
 
   const startInput = document.getElementById('route-start');
   if (startInput && !startInput.value) startInput.placeholder = 'Ma position (GPS)';
+  _syncGoBtn();
 }
 
 function _onGeoError(err) {
   geoState.available = false;
+  geoState.pending   = false;
   if (err.code !== 1) console.warn('Géolocalisation :', err.message);
+  const startInput = document.getElementById('route-start');
+  if (startInput && !startInput.value) startInput.placeholder = 'Départ';
   // Permission refusée : activer le bouton pour permettre une nouvelle tentative
   if (err.code === 1 && _geoLocateBtn) {
     _geoLocateBtn.disabled = false;
@@ -1618,6 +1666,9 @@ function _onGeoError(err) {
 
 function _startWatch() {
   if (_geoWatchId !== null) navigator.geolocation.clearWatch(_geoWatchId);
+  geoState.pending = true;
+  const startInput = document.getElementById('route-start');
+  if (startInput && !startInput.value) startInput.placeholder = '📍 Localisation…';
   _geoWatchId = navigator.geolocation.watchPosition(_onGeoSuccess, _onGeoError, {
     enableHighAccuracy: true,
     maximumAge: 5000,
