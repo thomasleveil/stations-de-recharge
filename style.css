@@ -913,6 +913,11 @@ html, body {
 
 .dm-power { font-size: 11px; color: #64748b; }
 
+.dm-avail { font-size: 11px; min-height: 14px; }
+
+.dm-card[data-drive-idx] { cursor: pointer; }
+.dm-card[data-drive-idx]:active { opacity: 0.75; }
+
 .dm-preferred-star { color: #f59e0b; flex-shrink: 0; }
 
 /* ── Route polyline draw animation (piste 4.4) ─────────────── */

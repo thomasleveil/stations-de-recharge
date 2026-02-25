@@ -1287,11 +1287,15 @@ function exitDriveMode() {
   map.invalidateSize();
 }
 
+let _driveAhead  = [];  // current cards' markers — used by click handler
+let _driveFetched = false; // true once availability was fetched → next click force-refreshes
+
 function refreshDrivePanel() {
   if (!driveModeActive) return;
   const cards = document.getElementById('dm-cards');
   if (!geoState.available) {
     cards.innerHTML = '<div class="dm-card dm-card--error">Signal GPS perdu</div>';
+    _driveAhead = [];
     return;
   }
   const ahead = markers
@@ -1302,6 +1306,7 @@ function refreshDrivePanel() {
     .slice(0, 4);
   if (!ahead.length) {
     cards.innerHTML = '<div class="dm-card dm-card--done">✓ Destination proche</div>';
+    _driveAhead = [];
     return;
   }
   // Guard: preferredNetworks may not exist if F-9b is not yet merged
@@ -1316,17 +1321,41 @@ function refreshDrivePanel() {
     const distStr = dist < 10 ? dist.toFixed(1) : String(Math.round(dist));
     const power   = m._maxPowerKw ? `${Math.round(m._maxPowerKw)} kW` : '';
     const star    = isPref ? '<span class="dm-preferred-star">★</span>' : '';
-    html += `<div class="${cls}">
+    html += `<div class="${cls}" data-drive-idx="${i}">
       <div class="dm-distance">${distStr}<span class="dm-unit"> km</span></div>
       <div class="dm-operator"><span class="dm-op-dot" style="background:${m._op.color}"></span>${m._op.name}${star}</div>
       ${power ? `<div class="dm-power">${power}</div>` : ''}
+      <div class="dm-avail"></div>
     </div>`;
   }
+  _driveAhead  = ahead;
+  _driveFetched = false;
   cards.innerHTML = html;
 }
 
 document.getElementById('drive-mode-btn').addEventListener('click', enterDriveMode);
 document.getElementById('dm-exit').addEventListener('click', exitDriveMode);
+
+// U-7b — click on any drive card fetches TomTom availability for all cards.
+// Second click force-refreshes (bypasses the 3-min cache).
+document.getElementById('dm-cards').addEventListener('click', e => {
+  if (!e.target.closest('.dm-card[data-drive-idx]')) return;
+  if (!_driveAhead.length) return;
+  if (!TOMTOM_API_KEY) return;
+
+  // Force-refresh on second click
+  if (_driveFetched) _driveAhead.forEach(({ m }) => delete m._availCache);
+  _driveFetched = true;
+
+  // Spinner on all avail slots, then fetch in parallel
+  _driveAhead.forEach(({ m }, i) => {
+    const cardEl  = document.querySelector(`#dm-cards .dm-card[data-drive-idx="${i}"]`);
+    const availEl = cardEl?.querySelector('.dm-avail');
+    if (!availEl) return;
+    availEl.innerHTML = AVAIL_SPINNER;
+    fetchAvailability(m).then(html => { availEl.innerHTML = html; });
+  });
+});
 
 
 function clearRoute() {
