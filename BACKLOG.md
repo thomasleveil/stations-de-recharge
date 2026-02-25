@@ -32,7 +32,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | F-2 | 📋 | **Export GPX / liens de navigation** — bouton pour exporter les stations du trajet ou ouvrir dans Google Maps / Waze | Simple à implémenter pour le GPX |
 | F-3 | 📋 | **Filtre par puissance minimale** — slider pour ne montrer que les ≥ 150 kW / ≥ 250 kW / ≥ 350 kW | Données déjà présentes (`max_power`) — sera dans le menu Paramètres (⚙) |
 | F-4 | 💡 | **Affichage disponibilité temps réel** — indicateur de disponibilité des connecteurs (OCPI / opérateurs qui exposent l'API) | Complexité API variable selon opérateur |
-| F-5 | 📋 | **Partage de trajet** — URL shareable avec départ + arrivée + corridor encodés en query params | Simple, hachage côté client |
+| F-5 | ✅ | ~~**Partage de trajet**~~ | ✅ commit `e7b7fce` |
 | F-6 | ✅ | ~~**Historique des trajets récents**~~ | ✅ |
 | F-7 | 💡 | **Mode sombre** — thème sombre pour la carte et le panel | Leaflet : tiles CartoDB Dark + CSS variables |
 | F-8 | ✅ | ~~**Détection auto départ = position GPS**~~ | ✅ |
@@ -54,7 +54,7 @@ Idées, améliorations et bugs connus, classés par thème.
 
 | # | Statut | Idée | Notes |
 |---|:------:|------|-------|
-| U-1 | 📋 | **Tooltip corridor sur le slider** — afficher la distance en km sous le curseur pendant le glissement | CSS/JS trivial |
+| U-1 | ✅ | ~~**Tooltip corridor sur le slider**~~ | ✅ commit `e7b7fce` |
 | U-2 | 🔍 | **Panneau résultats dépliable** — liste scrollable des stations sur le trajet avec tri par distance de sortie | Utile sur mobile ; à concevoir conjointement avec F-9a (résumé réseau) et U-7 (mode conduite) |
 | U-3 | ✅ | ~~**Icône favicon**~~ | ✅ commit `e7b7fce` |
 | U-4 | ✅ | ~~**Meta Open Graph**~~ | ✅ |
@@ -71,7 +71,7 @@ Idées, améliorations et bugs connus, classés par thème.
 
 | # | Statut | Bug | Root cause | Fix |
 |---|:------:|-----|-----------|-----|
-| B-1 | ✅ | **Bouton Calculer silencieux au premier chargement** — si le champ Départ est vide et que le fallback GPS n'a pas encore de fix, `calculateRoute()` retourne silencieusement sans feedback | `watchPosition` est asynchrone : le premier fix GPS peut mettre plusieurs secondes ; si l'utilisateur clique avant, `geoState.available = false` et la fonction retourne sans message | (1) Distinguer l'état `pending` (GPS en cours) de `unavailable` ; (2) afficher un message d'attente et poller jusqu'à 8 s ; (3) placeholder Départ reflète l'état GPS ; (4) désactiver le bouton Calculer si champ Arrivée vide |
+| B-1 | ✅ | ~~**Bouton Calculer silencieux au premier chargement**~~ | ✅ commit `056a83c` |
 
 ---
 
