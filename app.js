@@ -263,7 +263,7 @@ function updateVisibility() {
   if (routeActive) {
     subEl.textContent = `${count} station${count !== 1 ? 's' : ''} sur le trajet`;
   } else {
-    subEl.textContent = `${count} station${count !== 1 ? 's' : ''} · CCS ≥ 150 kW`;
+    subEl.textContent = `${count} station${count !== 1 ? 's' : ''} · CCS ≥ ${MIN_POWER_KW} kW`;
   }
 
   updateLegend();
@@ -1336,7 +1336,11 @@ function clearRoute() {
 
 let currentRouteKm = 0;
 
+let _calcInProgress = false;
 async function calculateRoute() {
+  if (_calcInProgress) return;
+  _calcInProgress = true;
+  try {
   const startInput = document.getElementById('route-start');
   const endInput   = document.getElementById('route-end');
   const startVal   = startInput.value.trim();
@@ -1490,6 +1494,9 @@ async function calculateRoute() {
     btn.disabled = false;
     btn.textContent = 'Calculer →';
   }
+  } finally {
+    _calcInProgress = false;
+  }
 }
 
 document.getElementById('route-go').addEventListener('click', calculateRoute);
@@ -1543,6 +1550,8 @@ document.getElementById('corridor-slider').addEventListener('input', () => {
     info.className = 'route-stat';
     info.textContent = `${currentRouteKm} km`;
     updateVisibility();
+    showNetworkRecommendation(currentRouteKm);
+    showRouteResults();
   }
 });
 
@@ -1888,6 +1897,7 @@ function applyPreferredStyling() {
       MIN_POWER_KW = parseInt(r.value, 10);
       localStorage.setItem('irve-min-power-kw', r.value);
       updateVisibility();
+      if (routeActive) { showNetworkRecommendation(currentRouteKm); showRouteResults(); }
     });
   });
 
@@ -1900,8 +1910,8 @@ function applyPreferredStyling() {
     CHEAP_CORRIDOR_KM = v;
     localStorage.setItem('irve-cheap-corridor-km', v);
     updateVisibility();
-    // Refresh legend label showing ±X km
     updateLegend();
+    if (routeActive) { showNetworkRecommendation(currentRouteKm); showRouteResults(); }
   });
 
   // F-9b — build preferred networks checkbox list
