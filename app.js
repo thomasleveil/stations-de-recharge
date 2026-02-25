@@ -1193,6 +1193,14 @@ async function calculateRoute() {
     document.getElementById('route-share').style.display = '';
     btn.style.display = 'none';
 
+    // F-6 — save to recent routes history
+    saveRecentRoute(
+      startInput.value.trim(),
+      endInput.value.trim(),
+      startInput._coords || null,
+      endInput._coords || null,
+    );
+
     // F-5 — update URL so the route is shareable via address bar or copy button
     (function pushShareUrl() {
       const url = new URL(location.href);
@@ -1348,6 +1356,13 @@ function setupAutocomplete(inputId) {
     debounceTimer = setTimeout(() => fetchAutocompleteSuggestions(q, dropdown, input), 300);
   });
 
+  input.addEventListener('focus', () => {
+    // F-6 — show recent routes when Arrivée is focused and empty
+    if (inputId === 'route-end' && !input.value.trim()) {
+      showRecentRoutesDropdown(dropdown);
+    }
+  });
+
   input.addEventListener('blur', () => {
     setTimeout(() => { dropdown.innerHTML = ''; activeIdx = -1; }, 200);
   });
@@ -1402,6 +1417,71 @@ function _syncGoBtn() {
 }
 document.getElementById('route-end').addEventListener('input', _syncGoBtn);
 _syncGoBtn(); // initial state
+
+// ── F-6 — Recent routes history ────────────────────────────────────────────
+
+const RECENT_ROUTES_KEY = 'irve-recent-routes';
+const RECENT_ROUTES_MAX = 5;
+
+/** Persist a successful route to the recent routes history. */
+function saveRecentRoute(startText, endText, startCoords, endCoords) {
+  if (!endText) return;
+  try {
+    const saved = JSON.parse(localStorage.getItem(RECENT_ROUTES_KEY) || '[]');
+    // Deduplicate: remove any entry with same end destination
+    const filtered = saved.filter(r => r.endText !== endText || r.startText !== startText);
+    // Prepend new entry and cap at max
+    filtered.unshift({ startText, endText, startCoords, endCoords, ts: Date.now() });
+    localStorage.setItem(RECENT_ROUTES_KEY, JSON.stringify(filtered.slice(0, RECENT_ROUTES_MAX)));
+  } catch (_) {}
+}
+
+/** Return recent routes array (newest first). */
+function getRecentRoutes() {
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_ROUTES_KEY) || '[]');
+  } catch (_) { return []; }
+}
+
+/** Show recent routes in a dropdown below the Arrivée input. */
+function showRecentRoutesDropdown(dropdown) {
+  const routes = getRecentRoutes();
+  if (!routes.length) return;
+  dropdown.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.className = 'autocomplete-item autocomplete-recent-header';
+  header.textContent = 'Trajets récents';
+  dropdown.appendChild(header);
+
+  routes.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'autocomplete-item autocomplete-recent-item';
+    const dest = document.createElement('span');
+    dest.textContent = r.endText;
+    const from = document.createElement('span');
+    from.className = 'autocomplete-recent-from';
+    from.textContent = r.startText ? `depuis ${r.startText}` : 'depuis Ma position';
+    div.appendChild(dest);
+    div.appendChild(from);
+    div.addEventListener('mousedown', () => {
+      const endInput   = document.getElementById('route-end');
+      const startInput = document.getElementById('route-start');
+      endInput.value   = r.endText;
+      endInput._coords = r.endCoords || null;
+      if (r.startText) {
+        startInput.value   = r.startText;
+        startInput._coords = r.startCoords || null;
+      } else {
+        startInput.value   = '';
+        startInput._coords = null;
+      }
+      dropdown.innerHTML = '';
+      calculateRoute();
+    });
+    dropdown.appendChild(div);
+  });
+}
 
 // ── F-5 — Shareable URL (load params + share button) ──────────────────────
 
