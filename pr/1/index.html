@@ -3,7 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bornes de recharge</title>
+  <title>Bornes de recharge rapides — Autoroutes France</title>
+  <meta name="description" content="Carte interactive des bornes de recharge rapides (≥ 150 kW, CCS) sur les autoroutes françaises. Planifiez votre trajet électrique." />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bornes de recharge rapides — Autoroutes France" />
+  <meta property="og:description" content="Carte interactive des bornes de recharge rapides (≥ 150 kW, CCS) sur les autoroutes françaises. Planifiez votre trajet électrique." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thomasleveil.github.io/stations-de-recharge/" />
+  <meta property="og:image" content="https://thomasleveil.github.io/stations-de-recharge/og-preview.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="fr_FR" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Bornes de recharge rapides — Autoroutes France" />
+  <meta name="twitter:description" content="Carte interactive des bornes de recharge rapides (≥ 150 kW, CCS) sur les autoroutes françaises." />
+  <meta name="twitter:image" content="https://thomasleveil.github.io/stations-de-recharge/og-preview.png" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
@@ -15,6 +30,7 @@
   <div id="panel">
     <div class="panel-title" id="panel-title">Bornes rapides ≥ 150 kW<span class="panel-chevron">▸</span></div>
     <div class="panel-sub"></div>
+    <div id="data-freshness"></div>
 
     <!-- Route planning -->
     <div id="route-section">
@@ -76,6 +92,12 @@
       <input type="password" id="tomtom-key-input" class="settings-api-input"
              placeholder="Clé API TomTom" autocomplete="off" spellcheck="false" />
     </div>
+    <hr class="settings-divider" />
+    <div class="settings-section-label">
+      Mes réseaux préférés
+      <span class="settings-api-help" title="Les stations de ces réseaux seront mises en avant (bordure or) quand un itinéraire est actif">?</span>
+    </div>
+    <div id="preferred-networks-list"></div>
     <hr class="settings-divider" />
     <button id="cache-bust-btn" class="settings-item">🗑 Vider le cache</button>
   </div>
