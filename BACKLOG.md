@@ -46,7 +46,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | # | Statut | Idée | Notes |
 |---|:------:|------|-------|
 | D-1 | 💡 | **Signaler une erreur** — lien dans la popup pour signaler une station fermée / mal géolocalisée sur data.gouv.fr | Lien direct vers la fiche IRVE |
-| D-2 | 📋 | **Indicateur fraîcheur des données** — afficher la date de la dernière mise à jour du Parquet | L'URL Parquet change quand les données sont mises à jour — à surveiller |
+| D-2 | ✅ | ~~**Indicateur fraîcheur des données**~~ | ✅ |
 
 ---
 
@@ -81,4 +81,4 @@ Idées, améliorations et bugs connus, classés par thème.
 |---|:------:|------|-------|
 | T-1 | 💡 | **Séparation `app.js` en modules ES** — le fichier fait ~1 200 lignes ; découper en `map.js`, `route.js`, `markers.js`, `worker-bridge.js` | Nécessite un bundler ou `<script type="module">` + import maps |
 | T-2 | 💡 | **Tests automatisés** — Playwright end-to-end : chargement, route Paris→Lyon, non-régression 47 CCS + 66 budget | `/tmp/perf-measure.ts` est une bonne base |
-| T-3 | 📋 | **Mise à jour automatique Parquet** — détecter si l'URL du Parquet a changé sur data.gouv.fr et invalider le cache IndexedDB sans attendre 24 h | Vérification ETag ou `Last-Modified` en HEAD request |
+| T-3 | ✅ | ~~**Mise à jour automatique Parquet**~~ | ✅ |
