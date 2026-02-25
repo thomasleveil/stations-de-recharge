@@ -29,7 +29,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | # | Statut | Idée | Notes |
 |---|:------:|------|-------|
 | F-1 | 💡 | **Étapes intermédiaires** — permettre d'ajouter 1–2 waypoints (ex : Paris → Clermont → Marseille) | Nécessite OSRM `waypoints` + re-découpage du corridor par segment |
-| F-2 | 📋 | **Export GPX / liens de navigation** — bouton pour exporter les stations du trajet ou ouvrir dans Google Maps / Waze | Simple à implémenter pour le GPX |
+| F-2 | ~~📋~~ | ~~**Export GPX / liens de navigation**~~ | ❌ Annulé — valeur insuffisante |
 | F-3 | ✅ | ~~**Filtre par puissance minimale**~~ | ✅ |
 | F-4 | 💡 | **Affichage disponibilité temps réel** — indicateur de disponibilité des connecteurs (OCPI / opérateurs qui exposent l'API) | Complexité API variable selon opérateur |
 | F-5 | ✅ | ~~**Partage de trajet**~~ | ✅ commit `e7b7fce` |
