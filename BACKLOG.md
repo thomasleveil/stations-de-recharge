@@ -32,7 +32,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | F-2 | 📋 | **Export GPX / liens de navigation** — bouton pour exporter les stations du trajet ou ouvrir dans Google Maps / Waze | Simple à implémenter pour le GPX |
 | F-3 | 📋 | **Filtre par puissance minimale** — slider pour ne montrer que les ≥ 150 kW / ≥ 250 kW / ≥ 350 kW | Données déjà présentes (`max_power`) — sera dans le menu Paramètres (⚙) |
 | F-4 | 💡 | **Affichage disponibilité temps réel** — indicateur de disponibilité des connecteurs (OCPI / opérateurs qui exposent l'API) | Complexité API variable selon opérateur |
-| F-5 | 📋 | **Partage de trajet** — URL shareable avec départ + arrivée + corridor encodés en query params | Simple, hachage côté client |
+| F-5 | ✅ | ~~**Partage de trajet**~~ | ✅ commit `e7b7fce` |
 | F-6 | 📋 | **Historique des trajets récents** — mémoriser les 5 derniers trajets calculés (localStorage) | UX pratique pour les trajets récurrents |
 | F-7 | 💡 | **Mode sombre** — thème sombre pour la carte et le panel | Leaflet : tiles CartoDB Dark + CSS variables |
 | F-8 | 📋 | **Détection auto départ = position GPS** — pré-remplir le champ Départ avec la position géolocalisée sans clic | Déjà possible avec `geoState`, juste à connecter au champ |
@@ -54,14 +54,14 @@ Idées, améliorations et bugs connus, classés par thème.
 
 | # | Statut | Idée | Notes |
 |---|:------:|------|-------|
-| U-1 | 📋 | **Tooltip corridor sur le slider** — afficher la distance en km sous le curseur pendant le glissement | CSS/JS trivial |
+| U-1 | ✅ | ~~**Tooltip corridor sur le slider**~~ | ✅ commit `e7b7fce` |
 | U-2 | 🔍 | **Panneau résultats dépliable** — liste scrollable des stations sur le trajet avec tri par distance de sortie | Utile sur mobile ; à concevoir conjointement avec F-9a (résumé réseau) et U-7 (mode conduite) |
-| U-3 | 📋 | **Icône favicon** — pas de favicon actuellement | |
+| U-3 | ✅ | ~~**Icône favicon**~~ | ✅ commit `e7b7fce` |
 | U-4 | 📋 | **Meta Open Graph** — image de prévisualisation pour le partage sur les réseaux sociaux | |
 | U-5 | ✅ | ~~**Bug autocomplete : Entrée ferme la liste**~~ | ✅ commit `923579f` |
 | U-6 | 🔍 | **Autocomplétion enrichie (noms d'entreprises, POI)** — remplacer ou compléter le geocoder actuel par un service capable de résoudre les noms d'entreprises (ex : "IKEA Lyon", "McDonald's A7"). Contrainte : sans API payante ni clé à configurer. Candidats : Nominatim, Photon (Komoot), OpenCage free tier. Photon semble le meilleur compromis : gratuit, sans clé, POI riches. | Remplace ou complète le geocoder actuel |
 | U-7 | 🔍 | **Mode conduite** — vue optimisée pour un conducteur en déplacement sur l'autoroute : panel compact affichant les **3-4 prochaines stations dans un rayon cohérent avec l'autonomie restante** (pas toutes les stations du trajet). Pour chaque station : distance restante, indication "même voie" vs "sortie nécessaire", réseau + indicateur tarifaire si F-9b configuré. Affichage minimaliste adapté à la lecture rapide en roulant (grandes polices, contraste élevé). Mise à jour automatique à chaque position GPS. | Fonctionnalité phare ; nécessite F-8 (géoloc auto) + F-9b (réseau préféré) ; le nombre d'options affiché doit être limité à 3-4 max — noyer le conducteur d'informations est un anti-objectif absolu |
-| U-8 | 📋 | **Focus initial sur le champ "Arrivée"** — au chargement de la page, le focus clavier doit être positionné dans le champ Arrivée pour permettre une saisie immédiate | Trivial : `document.getElementById('route-end').focus()` au chargement |
+| U-8 | ✅ | ~~**Focus initial sur le champ "Arrivée"**~~ | ✅ commit `e7b7fce` |
 | U-9 | 📋 | **Double affichage de la taille de corridor** — après calcul d'itinéraire, l'indication du corridor apparaît deux fois dans le bloc formulaire ; supprimer l'occurrence non-cliquable, ne garder que le contrôle interactif | Vérifier lequel des deux éléments est le label statique vs. le contrôle actif |
 | U-10 | 📋 | **Taille du corridor CHEAP paramétrable** — exposer dans le menu Paramètres (⚙) la valeur du corridor CHEAP (actuellement codée en dur) | Lier à la même logique de corridor que le slider existant |
 
@@ -71,7 +71,7 @@ Idées, améliorations et bugs connus, classés par thème.
 
 | # | Statut | Bug | Root cause | Fix |
 |---|:------:|-----|-----------|-----|
-| B-1 | ✅ | **Bouton Calculer silencieux au premier chargement** — si le champ Départ est vide et que le fallback GPS n'a pas encore de fix, `calculateRoute()` retourne silencieusement sans feedback | `watchPosition` est asynchrone : le premier fix GPS peut mettre plusieurs secondes ; si l'utilisateur clique avant, `geoState.available = false` et la fonction retourne sans message | (1) Distinguer l'état `pending` (GPS en cours) de `unavailable` ; (2) afficher un message d'attente et poller jusqu'à 8 s ; (3) placeholder Départ reflète l'état GPS ; (4) désactiver le bouton Calculer si champ Arrivée vide |
+| B-1 | ✅ | ~~**Bouton Calculer silencieux au premier chargement**~~ | ✅ commit `056a83c` |
 
 ---
 
