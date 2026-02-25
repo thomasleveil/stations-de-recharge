@@ -407,6 +407,32 @@ html, body {
   margin: 5px 0;
 }
 
+/* F-9b — preferred network checkboxes */
+.settings-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.settings-checkbox-item:hover { background: #f1f5f9; }
+.settings-checkbox-item input[type="checkbox"] {
+  accent-color: #1D4ED8;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.settings-net-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
 .settings-item {
   display: block;
   width: 100%;
