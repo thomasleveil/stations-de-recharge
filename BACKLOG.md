@@ -47,6 +47,7 @@ Idées, améliorations et bugs connus, classés par thème.
 |---|:------:|------|-------|
 | D-1 | 💡 | **Signaler une erreur** — lien dans la popup pour signaler une station fermée / mal géolocalisée sur data.gouv.fr | Lien direct vers la fiche IRVE |
 | D-2 | ✅ | ~~**Indicateur fraîcheur des données**~~ | ✅ |
+| D-3 | ✅ | ~~**Doublons Allego (et autres) dans la liste de stations**~~ — certains opérateurs (ex : Allego) déclarent chaque PDC comme une `id_station_itinerance` distincte ; le filtre SQL ne les regroupe pas | Déduplication JS dans `buildMarkers` / `buildCheapMarkers` par `(operateur, lat×1e4, lon×1e4)`, en gardant la puissance max |
 
 ---
 
