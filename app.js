@@ -3,8 +3,14 @@
 const PARQUET_URL      = 'https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/eb76d20a-8501-400e-b336-d85724de5435.parquet';
 const CACHE_DB         = 'irve-v1';
 const CACHE_TTL        = 24 * 60 * 60 * 1000; // 24 hours in ms
-const CHEAP_CORRIDOR_KM = 10;                  // Fixed 10-km corridor for budget networks
 const PARQUET_ETAG_KEY = 'irve-parquet-etag';  // T-3 — localStorage key for ETag/Last-Modified
+
+// U-10 — CHEAP corridor (km on each side of route). Persisted in localStorage.
+let CHEAP_CORRIDOR_KM = Math.max(1, Math.min(50,
+  parseFloat(localStorage.getItem('irve-cheap-corridor-km')) || 10));
+
+// F-3 — Minimum power filter (kW). Persisted in localStorage.
+let MIN_POWER_KW = parseInt(localStorage.getItem('irve-min-power-kw'), 10) || 150;
 
 // ── Performance recorder (debug) ──────────────────────────────────────────
 // Expose as window.Perf for console access: Perf.report(), Perf.reset()
@@ -176,6 +182,8 @@ let _prevVisMain  = null;
 let _prevVisCheap = null;
 
 function isVisible(m) {
+  // F-3 — minimum power filter
+  if (m._maxPowerKw !== undefined && m._maxPowerKw < MIN_POWER_KW) return false;
   return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
 }
 
@@ -500,12 +508,12 @@ function buildMarkers(rows) {
     circle.bindPopup(() => buildPopup(p, op), { maxWidth: 300 });
     circle.bindTooltip(p.nom_station, { direction: 'top', offset: [0, -8] });
 
-    circle._op         = op;
-    circle._lon        = p.lon;
-    circle._lat        = p.lat;
-    circle._name       = p.nom_station;
-    circle._maxPowerKw = p.max_power_kw;
-    circle._nbrePdc    = parseInt(p.nbre_pdc) || 0;
+    circle._op          = op;
+    circle._lon         = p.lon;
+    circle._lat         = p.lat;
+    circle._name        = p.nom_station;
+    circle._maxPowerKw  = p.max_power_kw; // F-3 — used by isVisible() for power filtering
+    circle._nbrePdc     = parseInt(p.nbre_pdc) || 0;
 
     circle.on('popupopen', () => {
       const popupEl = circle.getPopup()?.getElement();
@@ -1770,6 +1778,31 @@ function applyPreferredStyling() {
     req.onsuccess = () => window.location.reload();
     req.onerror   = () => window.location.reload();
     req.onblocked = () => window.location.reload();
+  });
+
+  // F-3 — minimum power filter (radio buttons)
+  const savedPower = localStorage.getItem('irve-min-power-kw') || '150';
+  const powerRadio = menu.querySelector(`input[name="min-power"][value="${savedPower}"]`);
+  if (powerRadio) powerRadio.checked = true;
+  menu.querySelectorAll('input[name="min-power"]').forEach(r => {
+    r.addEventListener('change', () => {
+      MIN_POWER_KW = parseInt(r.value, 10);
+      localStorage.setItem('irve-min-power-kw', r.value);
+      updateVisibility();
+    });
+  });
+
+  // U-10 — CHEAP corridor width
+  const cheapInput = document.getElementById('cheap-corridor-input');
+  cheapInput.value = CHEAP_CORRIDOR_KM;
+  cheapInput.addEventListener('change', () => {
+    const v = Math.max(1, Math.min(50, parseFloat(cheapInput.value) || 10));
+    cheapInput.value = v;
+    CHEAP_CORRIDOR_KM = v;
+    localStorage.setItem('irve-cheap-corridor-km', v);
+    updateVisibility();
+    // Refresh legend label showing ±X km
+    updateLegend();
   });
 
   // F-9b — build preferred networks checkbox list
