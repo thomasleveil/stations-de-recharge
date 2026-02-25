@@ -33,7 +33,15 @@ html, body {
 .panel-sub {
   font-size: 11px;
   color: #64748b;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
+}
+
+/* D-2 — data freshness indicator */
+#data-freshness {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  min-height: 13px;
 }
 
 /* ── Route planning ─────────────────────────────────────────── */
@@ -359,6 +367,30 @@ html, body {
 .autocomplete-item:hover,
 .autocomplete-item-active { background: #eff6ff; }
 
+/* F-6 — Recent routes items in the Arrivée dropdown */
+.autocomplete-recent-header {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #f8fafc;
+  cursor: default;
+  padding: 5px 8px 3px;
+}
+.autocomplete-recent-header:hover { background: #f8fafc; }
+
+.autocomplete-recent-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.autocomplete-recent-from {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
 /* ── Zoom control (below settings button) ─────────────────── */
 
 .leaflet-top.leaflet-right {
@@ -437,6 +469,32 @@ html, body {
   border: none;
   border-top: 1px solid #e2e8f0;
   margin: 5px 0;
+}
+
+/* F-9b — preferred network checkboxes */
+.settings-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.settings-checkbox-item:hover { background: #f1f5f9; }
+.settings-checkbox-item input[type="checkbox"] {
+  accent-color: #1D4ED8;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.settings-net-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .settings-item {
@@ -669,6 +727,186 @@ html, body {
 .leaflet-control-locate.geoloc-retry {
   color: #f59e0b;
 }
+
+/* ── U-2 — Route results panel ─────────────────────────────── */
+
+#route-results {
+  margin-top: 8px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 4px;
+}
+
+.route-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  user-select: none;
+  padding: 3px 0;
+}
+.route-results-header:hover { color: #1e293b; }
+
+.route-results-chevron {
+  font-size: 10px;
+  transition: transform 0.2s;
+}
+#route-results.open .route-results-chevron { transform: rotate(90deg); }
+
+#route-results-list {
+  display: none;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+#route-results.open #route-results-list { display: block; }
+
+.route-result-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 11px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.route-result-item:last-child { border-bottom: none; }
+
+.route-result-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.route-result-name {
+  flex: 1;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.route-result-meta {
+  color: #94a3b8;
+  font-size: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── U-7 drive mode button ──────────────────────────────────── */
+
+.route-btn-drive {
+  flex: none;
+  background: #059669;
+  color: white;
+  font-size: 13px;
+  padding: 5px 8px;
+}
+.route-btn-drive:hover:not(:disabled) { background: #047857; opacity: 1; }
+
+/* ── U-7 — Drive mode panel ─────────────────────────────────── */
+
+#drive-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  background: #1e293b;
+  padding: 10px 12px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dm-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dm-exit {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  font-family: inherit;
+  border-radius: 4px;
+}
+.dm-exit:hover { color: #f8fafc; background: rgba(255,255,255,0.1); }
+
+#dm-cards {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.dm-card {
+  min-width: 120px;
+  flex-shrink: 0;
+  background: #293548;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 2px solid transparent;
+}
+.dm-card--next { border-color: #0ea5e9; }
+.dm-card--preferred { border-left: 3px solid #f59e0b; }
+.dm-card--error, .dm-card--done {
+  color: #94a3b8;
+  font-size: 13px;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+}
+
+.dm-distance {
+  font-size: 26px;
+  font-weight: 800;
+  color: #f8fafc;
+  line-height: 1;
+}
+.dm-unit { font-size: 14px; font-weight: 400; }
+
+.dm-operator {
+  font-size: 12px;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dm-op-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dm-power { font-size: 11px; color: #64748b; }
+
+.dm-preferred-star { color: #f59e0b; flex-shrink: 0; }
 
 /* ── Route polyline draw animation (piste 4.4) ─────────────── */
 
