@@ -52,6 +52,7 @@
         <input type="range" id="corridor-slider" min="2" max="30" step="1" value="2" style="display:none" />
       </div>
       <div id="route-info"></div>
+      <div id="network-recommendation" style="display:none"></div>
       <div id="route-results" style="display:none">
         <div class="route-results-header" id="route-results-toggle">
           <span id="route-results-title">Stations</span>
@@ -93,6 +94,33 @@
              placeholder="Clé API TomTom" autocomplete="off" spellcheck="false" />
     </div>
     <hr class="settings-divider" />
+    <!-- F-3 — Minimum power filter -->
+    <div class="settings-section-label">Puissance minimale des stations</div>
+    <div class="settings-radio-group">
+      <label class="settings-radio-item">
+        <input type="radio" name="min-power" value="150" checked />
+        <span>≥ 150 kW <span class="settings-hint">(tout afficher)</span></span>
+      </label>
+      <label class="settings-radio-item">
+        <input type="radio" name="min-power" value="250" />
+        <span>≥ 250 kW</span>
+      </label>
+      <label class="settings-radio-item">
+        <input type="radio" name="min-power" value="350" />
+        <span>≥ 350 kW</span>
+      </label>
+    </div>
+    <hr class="settings-divider" />
+    <!-- U-10 — CHEAP corridor width -->
+    <div class="settings-section-label">Corridor réseaux abordables</div>
+    <div class="settings-api-row">
+      <input type="number" id="cheap-corridor-input" class="settings-api-input"
+             min="1" max="50" step="1" value="10"
+             placeholder="km" style="width:60px" />
+      <span class="settings-hint" style="margin-left:6px">km de part et d'autre</span>
+    </div>
+    <hr class="settings-divider" />
+    <!-- F-9b — Preferred networks -->
     <div class="settings-section-label">
       Mes réseaux préférés
       <span class="settings-api-help" title="Les stations de ces réseaux seront mises en avant (bordure or) quand un itinéraire est actif">?</span>

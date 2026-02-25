@@ -123,6 +123,38 @@ html, body {
 .route-error    { font-size: 11px; color: #dc2626; }
 .route-progress { font-size: 11px; color: #64748b; }
 
+/* F-9a — network recommendation */
+#network-recommendation {
+  margin-top: 6px;
+  padding: 6px 8px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #0c4a6e;
+  line-height: 1.4;
+}
+#network-recommendation .net-rec-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+#network-recommendation .net-rec-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+#network-recommendation .net-rec-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+#network-recommendation .net-rec-score {
+  color: #64748b;
+  font-size: 10px;
+}
+
 /* ── Legend (bottom-right) ─────────────────────────────────── */
 
 #legend {
@@ -499,6 +531,13 @@ html, body {
 
 .settings-api-row {
   padding: 3px 8px 5px;
+  display: flex;
+  align-items: center;
+}
+
+.settings-hint {
+  font-size: 10px;
+  color: #94a3b8;
 }
 
 .settings-api-input {
