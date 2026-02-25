@@ -1498,6 +1498,7 @@ async function calculateRoute() {
     // F-9a — show network recommendation after filter is applied
     showNetworkRecommendation(currentRouteKm);
     showRouteResults();
+    _syncDriveModeBtn();
 
     document.getElementById('route-clear').style.display = '';
     document.getElementById('route-share').style.display = '';
