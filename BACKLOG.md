@@ -55,9 +55,9 @@ Idées, améliorations et bugs connus, classés par thème.
 | # | Statut | Idée | Notes |
 |---|:------:|------|-------|
 | U-1 | 📋 | **Tooltip corridor sur le slider** — afficher la distance en km sous le curseur pendant le glissement | CSS/JS trivial |
-| U-2 | ✅ | ~~**Panneau résultats dépliable**~~ — liste scrollable des stations sur le trajet avec tri par progression sur le trajet, dépliable par clic sur le header | ✅ feat/U2-station-results-list |
-| U-3 | 📋 | **Icône favicon** — pas de favicon actuellement | |
-| U-4 | 📋 | **Meta Open Graph** — image de prévisualisation pour le partage sur les réseaux sociaux | |
+| U-2 | 🔍 | **Panneau résultats dépliable** — liste scrollable des stations sur le trajet avec tri par distance de sortie | Utile sur mobile ; à concevoir conjointement avec F-9a (résumé réseau) et U-7 (mode conduite) |
+| U-3 | ✅ | ~~**Icône favicon**~~ | ✅ commit `e7b7fce` |
+| U-4 | ✅ | ~~**Meta Open Graph**~~ | ✅ |
 | U-5 | ✅ | ~~**Bug autocomplete : Entrée ferme la liste**~~ | ✅ commit `923579f` |
 | U-6 | ✅ | **Autocomplétion enrichie (noms d'entreprises, POI)** — remplacer ou compléter le geocoder actuel par un service capable de résoudre les noms d'entreprises (ex : "IKEA Lyon", "McDonald's A7"). Contrainte : sans API payante ni clé à configurer. | ✅ Photon (Komoot) implémenté : `photon.komoot.io/api/`, GeoJSON, POI riches, sans clé. Remplace Nominatim pour l'autocomplétion ET le géocodage de secours. |
 | U-7 | 🔍 | **Mode conduite** — vue optimisée pour un conducteur en déplacement sur l'autoroute : panel compact affichant les **3-4 prochaines stations dans un rayon cohérent avec l'autonomie restante** (pas toutes les stations du trajet). Pour chaque station : distance restante, indication "même voie" vs "sortie nécessaire", réseau + indicateur tarifaire si F-9b configuré. Affichage minimaliste adapté à la lecture rapide en roulant (grandes polices, contraste élevé). Mise à jour automatique à chaque position GPS. | Fonctionnalité phare ; nécessite F-8 (géoloc auto) + F-9b (réseau préféré) ; le nombre d'options affiché doit être limité à 3-4 max — noyer le conducteur d'informations est un anti-objectif absolu |
