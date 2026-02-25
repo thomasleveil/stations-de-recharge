@@ -30,7 +30,7 @@ Idées, améliorations et bugs connus, classés par thème.
 |---|:------:|------|-------|
 | F-1 | 💡 | **Étapes intermédiaires** — permettre d'ajouter 1–2 waypoints (ex : Paris → Clermont → Marseille) | Nécessite OSRM `waypoints` + re-découpage du corridor par segment |
 | F-2 | 📋 | **Export GPX / liens de navigation** — bouton pour exporter les stations du trajet ou ouvrir dans Google Maps / Waze | Simple à implémenter pour le GPX |
-| F-3 | 📋 | **Filtre par puissance minimale** — slider pour ne montrer que les ≥ 150 kW / ≥ 250 kW / ≥ 350 kW | Données déjà présentes (`max_power`) — sera dans le menu Paramètres (⚙) |
+| F-3 | ✅ | ~~**Filtre par puissance minimale**~~ | ✅ |
 | F-4 | 💡 | **Affichage disponibilité temps réel** — indicateur de disponibilité des connecteurs (OCPI / opérateurs qui exposent l'API) | Complexité API variable selon opérateur |
 | F-5 | 📋 | **Partage de trajet** — URL shareable avec départ + arrivée + corridor encodés en query params | Simple, hachage côté client |
 | F-6 | 📋 | **Historique des trajets récents** — mémoriser les 5 derniers trajets calculés (localStorage) | UX pratique pour les trajets récurrents |
@@ -63,7 +63,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | U-7 | 🔍 | **Mode conduite** — vue optimisée pour un conducteur en déplacement sur l'autoroute : panel compact affichant les **3-4 prochaines stations dans un rayon cohérent avec l'autonomie restante** (pas toutes les stations du trajet). Pour chaque station : distance restante, indication "même voie" vs "sortie nécessaire", réseau + indicateur tarifaire si F-9b configuré. Affichage minimaliste adapté à la lecture rapide en roulant (grandes polices, contraste élevé). Mise à jour automatique à chaque position GPS. | Fonctionnalité phare ; nécessite F-8 (géoloc auto) + F-9b (réseau préféré) ; le nombre d'options affiché doit être limité à 3-4 max — noyer le conducteur d'informations est un anti-objectif absolu |
 | U-8 | 📋 | **Focus initial sur le champ "Arrivée"** — au chargement de la page, le focus clavier doit être positionné dans le champ Arrivée pour permettre une saisie immédiate | Trivial : `document.getElementById('route-end').focus()` au chargement |
 | U-9 | 📋 | **Double affichage de la taille de corridor** — après calcul d'itinéraire, l'indication du corridor apparaît deux fois dans le bloc formulaire ; supprimer l'occurrence non-cliquable, ne garder que le contrôle interactif | Vérifier lequel des deux éléments est le label statique vs. le contrôle actif |
-| U-10 | 📋 | **Taille du corridor CHEAP paramétrable** — exposer dans le menu Paramètres (⚙) la valeur du corridor CHEAP (actuellement codée en dur) | Lier à la même logique de corridor que le slider existant |
+| U-10 | ✅ | ~~**Taille du corridor CHEAP paramétrable**~~ | ✅ |
 
 ---
 
