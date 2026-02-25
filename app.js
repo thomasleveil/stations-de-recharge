@@ -884,17 +884,31 @@ async function fetchAvailability(circle) {
 
 // ── Route planning ─────────────────────────────────────────────────────────
 
+// U-6 — Photon (Komoot) geocoder — free, no key, richer POI coverage than Nominatim
+const PHOTON_URL = 'https://photon.komoot.io/api/';
+
+/** Format a Photon feature's properties into a short display label. */
+function photonLabel(props) {
+  const parts = [];
+  if (props.name)      parts.push(props.name);
+  if (props.street && !parts.includes(props.street))  parts.push(props.street);
+  const city = props.city || props.town || props.village || props.county;
+  if (city   && city !== props.name) parts.push(city);
+  const region = props.state;
+  if (region && region !== city) parts.push(region);
+  return parts.slice(0, 3).join(', ');
+}
+
 async function geocode(query) {
-  const url  = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
-  const opts = { headers: { 'Accept-Language': 'fr' } };
-  // Nominatim occasionally fails on first cold-connection attempt (rate-limit
-  // or missing CORS header on error response).  Retry once after a short pause.
+  // Photon: bias toward France/neighbors using a rough bbox
+  const url = `${PHOTON_URL}?q=${encodeURIComponent(query)}&limit=1&lang=fr`;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const r    = await fetch(url, opts);
+      const r    = await fetch(url);
       const data = await r.json();
-      if (!data.length) throw new Error(`"${query}" introuvable`);
-      return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+      if (!data.features?.length) throw new Error(`"${query}" introuvable`);
+      const [lon, lat] = data.features[0].geometry.coordinates;
+      return [lon, lat];
     } catch (e) {
       if (attempt === 1 || e.message.includes('introuvable')) throw e;
       await new Promise(r => setTimeout(r, 800));
@@ -1336,14 +1350,14 @@ document.getElementById('route-clear').addEventListener('click', clearRoute);
 
 // Keyboard Enter on route inputs is handled inside setupAutocomplete below.
 
-// Warm up the connection to Nominatim on first input focus so the TCP+TLS
-// handshake is already done by the time the user clicks "Calculer".
-let nominatimWarmedUp = false;
+// U-6 — Warm up the connection to Photon on first input focus so the TCP+TLS
+// handshake is already done by the time the user types.
+let photonWarmedUp = false;
 ['route-start', 'route-end'].forEach(id =>
   document.getElementById(id).addEventListener('focus', () => {
-    if (nominatimWarmedUp) return;
-    nominatimWarmedUp = true;
-    fetch('https://nominatim.openstreetmap.org/status.php', { method: 'HEAD' }).catch(() => {});
+    if (photonWarmedUp) return;
+    photonWarmedUp = true;
+    fetch(`${PHOTON_URL}?q=a&limit=1`, { method: 'HEAD' }).catch(() => {});
   }, { once: false })
 );
 
@@ -1460,23 +1474,25 @@ function setupAutocomplete(inputId) {
 
 async function fetchAutocompleteSuggestions(q, dropdown, input) {
   try {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=fr,be,ch,lu`;
-    const data = await fetch(url, { headers: { 'Accept-Language': 'fr' } }).then(r => r.json());
+    // U-6 — Photon API: GeoJSON FeatureCollection, no key required
+    const url = `${PHOTON_URL}?q=${encodeURIComponent(q)}&limit=5&lang=fr`;
+    const data = await fetch(url).then(r => r.json());
     dropdown.innerHTML = '';
-    data.forEach(item => {
+    (data.features || []).forEach(feat => {
+      const props  = feat.properties || {};
+      const coords = [feat.geometry.coordinates[0], feat.geometry.coordinates[1]];
+      const label  = photonLabel(props);
+      if (!label) return;
       const div = document.createElement('div');
       div.className = 'autocomplete-item';
-      // Show a short label: first two comma-separated parts of display_name
-      const parts  = item.display_name.split(',');
-      div.textContent = parts.slice(0, 2).join(',').trim();
-      div.title = item.display_name;
+      div.textContent = label;
+      div.title = [props.name, props.street, props.city || props.town, props.country]
+        .filter(Boolean).join(', ');
       div.addEventListener('mousedown', () => {
-        const text = parts.slice(0, 2).join(',').trim();
-        const coords = [parseFloat(item.lon), parseFloat(item.lat)];
-        input.value   = text;
+        input.value   = label;
         input._coords = coords;
         dropdown.innerHTML = '';
-        localStorage.setItem('irve-' + input.id, JSON.stringify({ text, coords }));
+        localStorage.setItem('irve-' + input.id, JSON.stringify({ text: label, coords }));
       });
       dropdown.appendChild(div);
     });
