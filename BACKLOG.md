@@ -72,6 +72,9 @@ Idées, améliorations et bugs connus, classés par thème.
 | # | Statut | Bug | Root cause | Fix |
 |---|:------:|-----|-----------|-----|
 | B-1 | ✅ | ~~**Bouton Calculer silencieux au premier chargement**~~ | ✅ commit `056a83c` |
+| B-2 | ✅ | ~~**Titre du panneau figé à "≥ 150 kW" après changement de filtre puissance**~~ | `subEl.textContent` utilisait `150` en dur | ✅ |
+| B-3 | ✅ | ~~**Recommandation réseau non recalculée après changement de filtre ou de corridor**~~ | Handlers power/corridor/cheap appelaient `updateVisibility()` sans `showNetworkRecommendation()` | ✅ |
+| B-4 | ✅ | ~~**Markers standards absents intermittents au premier calcul**~~ | Appels concurrents à `calculateRoute()` possibles via Enter ou `_autoCalcOnReady` | `_calcInProgress` guard + `try/finally` |
 
 ---
 
