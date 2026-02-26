@@ -1323,10 +1323,15 @@ function refreshDrivePanel() {
     const power   = m._maxPowerKw ? `${Math.round(m._maxPowerKw)} kW` : '';
     const star    = isPref ? '<span class="dm-preferred-star">★</span>' : '';
     html += `<div class="${cls}" data-drive-idx="${i}">
-      <div class="dm-distance">${distStr}<span class="dm-unit"> km</span></div>
-      <div class="dm-operator"><span class="dm-op-dot" style="background:${m._op.color}"></span>${m._op.name}${star}</div>
-      ${power ? `<div class="dm-power">${power}</div>` : ''}
-      <div class="dm-avail"></div>
+      <div class="dm-card-left">
+        <div class="dm-distance">${distStr}<span class="dm-unit"> km</span></div>
+      </div>
+      <div class="dm-card-right">
+        <div class="dm-operator"><span class="dm-op-dot" style="background:${m._op.color}"></span>${m._op.name}${star}</div>
+        ${m._name ? `<div class="dm-name">${m._name}</div>` : ''}
+        ${power ? `<div class="dm-power">${power}</div>` : ''}
+        <div class="dm-avail"></div>
+      </div>
     </div>`;
   }
   _driveAhead  = ahead;
