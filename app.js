@@ -1347,14 +1347,23 @@ document.getElementById('dm-cards').addEventListener('click', e => {
   if (_driveFetched) _driveAhead.forEach(({ m }) => delete m._availCache);
   _driveFetched = true;
 
-  // Spinner on all avail slots, then fetch in parallel
-  _driveAhead.forEach(({ m }, i) => {
+  // Spinner on all avail slots, then fetch sequentially with 300 ms delay to avoid rate limiting
+  _driveAhead.forEach(({ m: _m }, i) => {
     const cardEl  = document.querySelector(`#dm-cards .dm-card[data-drive-idx="${i}"]`);
     const availEl = cardEl?.querySelector('.dm-avail');
-    if (!availEl) return;
-    availEl.innerHTML = AVAIL_SPINNER;
-    fetchAvailability(m).then(html => { availEl.innerHTML = html; });
+    if (availEl) availEl.innerHTML = AVAIL_SPINNER;
   });
+  (async () => {
+    for (let i = 0; i < _driveAhead.length; i++) {
+      if (i > 0) await new Promise(r => setTimeout(r, 300));
+      const { m } = _driveAhead[i];
+      const cardEl  = document.querySelector(`#dm-cards .dm-card[data-drive-idx="${i}"]`);
+      const availEl = cardEl?.querySelector('.dm-avail');
+      if (!availEl) continue;
+      const html = await fetchAvailability(m);
+      availEl.innerHTML = html;
+    }
+  })();
 });
 
 
