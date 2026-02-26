@@ -1287,8 +1287,9 @@ function exitDriveMode() {
   map.invalidateSize();
 }
 
-let _driveAhead  = [];  // current cards' markers — used by click handler
-let _driveFetched = false; // true once availability was fetched → next click force-refreshes
+let _driveAhead      = [];    // current cards' markers — used by click handler
+let _driveFetched    = false; // true once availability was fetched → next tap force-refreshes
+let _fetchInProgress = false; // guard against concurrent fetch loops
 
 function refreshDrivePanel() {
   if (!driveModeActive) return;
@@ -1331,39 +1332,41 @@ function refreshDrivePanel() {
   _driveAhead  = ahead;
   _driveFetched = false;
   cards.innerHTML = html;
+  _fetchDriveAvailability(false); // auto-fetch on panel refresh, uses cache if fresh
 }
 
 document.getElementById('drive-mode-btn').addEventListener('click', enterDriveMode);
 document.getElementById('dm-exit').addEventListener('click', exitDriveMode);
 
-// U-7b — click on any drive card fetches TomTom availability for all cards.
-// Second click force-refreshes (bypasses the 3-min cache).
-document.getElementById('dm-cards').addEventListener('click', e => {
-  if (!e.target.closest('.dm-card[data-drive-idx]')) return;
-  if (!_driveAhead.length) return;
-  if (!TOMTOM_API_KEY) return;
-
-  // Force-refresh on second click
-  if (_driveFetched) _driveAhead.forEach(({ m }) => delete m._availCache);
-  _driveFetched = true;
-
-  // Spinner on all avail slots, then fetch sequentially with 300 ms delay to avoid rate limiting
-  _driveAhead.forEach(({ m: _m }, i) => {
-    const cardEl  = document.querySelector(`#dm-cards .dm-card[data-drive-idx="${i}"]`);
-    const availEl = cardEl?.querySelector('.dm-avail');
-    if (availEl) availEl.innerHTML = AVAIL_SPINNER;
-  });
-  (async () => {
+// U-7b — fetch TomTom availability for all drive cards sequentially.
+// Called automatically on panel refresh (uses cache) and on manual tap (force-refreshes).
+async function _fetchDriveAvailability(forceRefresh) {
+  if (!TOMTOM_API_KEY || !_driveAhead.length) return;
+  if (_fetchInProgress && !forceRefresh) return;
+  if (forceRefresh) _driveAhead.forEach(({ m }) => delete m._availCache);
+  _driveFetched    = true;
+  _fetchInProgress = true;
+  try {
     for (let i = 0; i < _driveAhead.length; i++) {
       if (i > 0) await new Promise(r => setTimeout(r, 300));
       const { m } = _driveAhead[i];
       const cardEl  = document.querySelector(`#dm-cards .dm-card[data-drive-idx="${i}"]`);
       const availEl = cardEl?.querySelector('.dm-avail');
       if (!availEl) continue;
+      if (!m._availCache) availEl.innerHTML = AVAIL_SPINNER;
       const html = await fetchAvailability(m);
-      availEl.innerHTML = html;
+      if (availEl.isConnected) availEl.innerHTML = html;
     }
-  })();
+  } finally {
+    _fetchInProgress = false;
+  }
+}
+
+// Tap on any card = force-refresh (bypasses the 3-min cache)
+document.getElementById('dm-cards').addEventListener('click', e => {
+  if (!e.target.closest('.dm-card[data-drive-idx]')) return;
+  if (!_driveAhead.length) return;
+  _fetchDriveAvailability(true);
 });
 
 
