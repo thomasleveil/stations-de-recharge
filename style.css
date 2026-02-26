@@ -36,6 +36,11 @@ html, body {
   margin-bottom: 2px;
 }
 
+/* Drive mode — shift normal panel to the right of the drive sidebar */
+.drive-mode-active #panel {
+  left: calc(25vw + 6px);
+}
+
 /* D-2 — data freshness indicator */
 #data-freshness {
   font-size: 10px;
@@ -818,18 +823,18 @@ html, body {
 
 #drive-panel {
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
-  width: 33.33vw;
-  min-width: 260px;
+  bottom: 0;
+  width: 25vw;
+  min-width: 240px;
   z-index: 2000;
   background: #1e293b;
   padding: 10px 12px;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
-  border-top-right-radius: 10px;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.4);
+  border-radius: 0 10px 10px 0;
   flex-direction: column;
   gap: 8px;
-  max-height: 60vh;
 }
 
 .dm-header {
@@ -863,6 +868,8 @@ html, body {
 #dm-cards {
   display: flex;
   flex-direction: column-reverse;
+  flex: 1;
+  min-height: 0;
   gap: 6px;
   overflow-y: auto;
   overflow-x: hidden;

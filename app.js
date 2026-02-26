@@ -1275,7 +1275,7 @@ function _syncDriveModeBtn() {
 function enterDriveMode() {
   driveModeActive = true;
   document.getElementById('drive-panel').style.display = 'flex';
-  document.getElementById('panel').style.display = 'none';
+  document.body.classList.add('drive-mode-active');
   refreshDrivePanel();
   map.invalidateSize();
 }
@@ -1283,7 +1283,7 @@ function enterDriveMode() {
 function exitDriveMode() {
   driveModeActive = false;
   document.getElementById('drive-panel').style.display = 'none';
-  document.getElementById('panel').style.display = '';
+  document.body.classList.remove('drive-mode-active');
   map.invalidateSize();
 }
 
