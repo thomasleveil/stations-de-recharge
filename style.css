@@ -820,11 +820,13 @@ html, body {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
+  width: 33.33vw;
+  min-width: 260px;
   z-index: 2000;
   background: #1e293b;
   padding: 10px 12px;
   box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  border-top-right-radius: 10px;
   flex-direction: column;
   gap: 8px;
   max-height: 60vh;
