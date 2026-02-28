@@ -102,42 +102,6 @@ const cartoTile = L.tileLayer(
   }
 ).addTo(map);
 
-const AERIAL_SOURCES = {
-  esri: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri &mdash; Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP',
-  },
-  ign: {
-    url: 'https://data.geopf.fr/wmts?service=WMTS&request=GetTile&version=1.0.0' +
-         '&tilematrixset=PM&tilematrix={z}&tilecol={x}&tilerow={y}' +
-         '&layer=ORTHOIMAGERY.ORTHOPHOTOS&format=image/jpeg&style=normal',
-    attribution: 'IGN-F/Géoportail',
-  },
-};
-
-let aerialTile = null;
-
-function setAerialSource(src) {
-  const wasShowing = aerialTile && map.hasLayer(aerialTile);
-  if (aerialTile) map.removeLayer(aerialTile);
-  const s = AERIAL_SOURCES[src] || AERIAL_SOURCES.esri;
-  aerialTile = L.tileLayer(s.url, { attribution: s.attribution, maxZoom: 19 });
-  if (wasShowing) aerialTile.addTo(map);
-  localStorage.setItem('irve-aerial-source', src);
-}
-
-setAerialSource(localStorage.getItem('irve-aerial-source') || 'esri');
-
-map.on('zoomend', () => {
-  const z = map.getZoom();
-  if (z >= 18) {
-    if (map.hasLayer(cartoTile)) { map.removeLayer(cartoTile); aerialTile.addTo(map); }
-  } else {
-    if (map.hasLayer(aerialTile)) { map.removeLayer(aerialTile); cartoTile.addTo(map); }
-  }
-});
-
-
 // ── Route state (declared early — used by isVisible) ──────────────────────
 
 let ROUTE_BUFFER_KM = 0.2;
@@ -580,15 +544,13 @@ function buildCheapMarkers(rows) {
   }
 }
 
-/** Format a value for popup display — shared by buildPopup and buildCheapPopup. */
-function fmt(v, fallback = '—') { return (v && String(v).trim()) ? v : fallback; }
-
 function buildCheapPopup(p, op) {
-  const addr = fmt(p.adresse);
+  const hours = p.horaires || '—';
+  const addr = p.adresse || '—';
   const shortAddr = addr.length > 60 ? addr.slice(0, 60) + '…' : addr;
   return `
     <div>
-      <div class="popup-station">${fmt(p.nom_station)}</div>
+      <div class="popup-station">${p.nom_station || '—'}</div>
       <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
       <span class="popup-cheap-badge">€ Abordable</span>
       ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
@@ -597,10 +559,10 @@ function buildCheapPopup(p, op) {
         <span class="popup-power">${p.max_power_kw ? p.max_power_kw + ' kW' : '—'}</span>
 
         <span class="popup-label">Nb. de bornes</span>
-        <span>${fmt(p.nbre_pdc)}</span>
+        <span>${p.nbre_pdc || '—'}</span>
 
         <span class="popup-label">Horaires</span>
-        <span>${fmt(p.horaires).length > 50 ? fmt(p.horaires).slice(0, 50) + '…' : fmt(p.horaires)}</span>
+        <span>${hours.length > 50 ? hours.slice(0, 50) + '…' : hours}</span>
 
         <span class="popup-label">Adresse</span>
         <span>${shortAddr}</span>
@@ -766,15 +728,15 @@ initApp()
 // ── Popup builder ─────────────────────────────────────────────────────────
 
 function buildPopup(p, op) {
-  const hours = fmt(p.horaires);
+  const hours = p.horaires || '—';
   const shortHours = hours.length > 50 ? hours.slice(0, 50) + '…' : hours;
-  const addr = fmt(p.adresse);
+  const addr = p.adresse || '—';
   const shortAddr = addr.length > 60 ? addr.slice(0, 60) + '…' : addr;
   const typeLabel = p.station_type === 'parking' ? 'Parking privé' : 'Aire dédiée';
 
   return `
     <div>
-      <div class="popup-station">${fmt(p.nom_station)}</div>
+      <div class="popup-station">${p.nom_station || '—'}</div>
       <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
       ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
       <div class="popup-grid">
@@ -788,7 +750,7 @@ function buildPopup(p, op) {
         <span>${p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : '—'}</span>
 
         <span class="popup-label">Nb. de bornes total</span>
-        <span>${fmt(p.nbre_pdc)}</span>
+        <span>${p.nbre_pdc || '—'}</span>
 
         <span class="popup-label">Horaires</span>
         <span>${shortHours}</span>
@@ -2045,15 +2007,6 @@ function applyPreferredStyling() {
   const btn  = document.getElementById('settings-btn');
   const menu = document.getElementById('settings-menu');
   const bustBtn = document.getElementById('cache-bust-btn');
-
-  // Sync radio to current aerial source
-  const savedSrc = localStorage.getItem('irve-aerial-source') || 'esri';
-  const radio = menu.querySelector(`input[name="aerial-src"][value="${savedSrc}"]`);
-  if (radio) radio.checked = true;
-
-  menu.querySelectorAll('input[name="aerial-src"]').forEach(r => {
-    r.addEventListener('change', () => setAerialSource(r.value));
-  });
 
   btn.addEventListener('click', e => {
     e.stopPropagation();
