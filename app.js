@@ -103,6 +103,7 @@ const map = L.map('map', {
   zoomControl: false,
   preferCanvas: true,
 });
+window._leafletMap = map;  // exposed for Playwright tests
 L.control.zoom({ position: 'topright' }).addTo(map);
 
 // Shared canvas renderer with padding so markers near viewport edges stay visible during panning.
