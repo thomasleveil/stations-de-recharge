@@ -1035,6 +1035,14 @@ html, body {
 
 .nav-btn:hover { opacity: 0.85; }
 
+/* Override Leaflet's .leaflet-popup a { color: #0078a8 } which beats .nav-btn alone */
+.leaflet-popup-content .nav-btn,
+.leaflet-popup-content .nav-btn:visited,
+.leaflet-popup-content .nav-btn:hover {
+  color: white;
+  text-decoration: none;
+}
+
 .nav-btn-sm {
   min-height: 32px;
   min-width: auto;

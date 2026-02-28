@@ -36,6 +36,25 @@ test.describe('QA-1 — nav-btn contrast WCAG AA', () => {
     // #3b82f6 = rgb(59, 130, 246) — ancienne couleur qui ratait WCAG AA
     expect(bg).not.toBe('rgb(59, 130, 246)');
   });
+
+  test('nav-btn dans leaflet-popup-content a color white (override Leaflet link color)', async ({ page }) => {
+    // Leaflet injecte .leaflet-popup a { color: #0078a8 } qui écrase .nav-btn { color: white }
+    // Notre fix ajoute .leaflet-popup-content .nav-btn { color: white } avec plus de spécificité
+    const color = await page.evaluate(() => {
+      const popup = document.createElement('div');
+      popup.className = 'leaflet-popup-content';
+      const a = document.createElement('a');
+      a.className = 'nav-btn';
+      a.textContent = 'Y aller';
+      popup.appendChild(a);
+      document.body.appendChild(popup);
+      const c = getComputedStyle(a).color;
+      document.body.removeChild(popup);
+      return c;
+    });
+    // Doit être blanc (255, 255, 255), pas le bleu Leaflet (0, 120, 168)
+    expect(color).toBe('rgb(255, 255, 255)');
+  });
 });
 
 // ─── Fix 2: bouton 🧭 drive dans dm-card-left ────────────────────────────────
