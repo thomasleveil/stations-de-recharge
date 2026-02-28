@@ -48,19 +48,19 @@ let TOMTOM_API_KEY = localStorage.getItem('irve-tomtom-key') || '';
 // ── Operator definitions ──────────────────────────────────────────────────
 
 const OPERATORS = [
-  { match: ['totalenergies'],      name: 'TotalEnergies',    color: '#F97316' },
-  { match: ['ionity'],             name: 'IONITY',           color: '#1D4ED8' },
-  { match: ['allego', 'electra'],  name: 'Allego / Electra', color: '#16A34A' },
-  { match: ['fastned'],            name: 'Fastned',          color: '#DC2626' },
-  { match: ['engie', 'vianeo'],    name: 'ENGIE Vianeo',     color: '#7C3AED' },
-  { match: ['tesla'],              name: 'Tesla',            color: '#B91C1C' },
-  { match: ['zunder'],             name: 'Zunder',           color: '#0891B2' },
-  { match: ['e-vadea', 'vadea'],   name: 'e-Vadea',          color: '#2563EB' },
-  { match: ['atlante'],            name: 'Atlante',          color: '#D97706' },
-  { match: ['plenitude'],          name: 'Plenitude',        color: '#059669' },
-  { match: ['bp pulse', 'bp '],    name: 'bp pulse',         color: '#10B981' },
-  { match: ['iecharge', 'ie charge', 'ie-charge'], name: 'IECharge',    color: '#06B6D4' },
-  { match: ['izivia'],                             name: 'IZIVIA Fast', color: '#F59E0B' },
+  { match: ['totalenergies'],      name: 'TotalEnergies',    color: '#F97316', price: { tier: 2, range: '0.39–0.59 €/kWh', note: '' }, alerts: [{ icon: '⚠️', text: 'Frais de stationnement après 45 min' }] },
+  { match: ['ionity'],             name: 'IONITY',           color: '#1D4ED8', price: { tier: 3, range: '0.69–0.79 €/kWh', note: '0.39 avec Passport' }, alerts: [{ icon: '💸', text: 'Tarif élevé sans abonnement Passport' }] },
+  { match: ['allego', 'electra'],  name: 'Allego / Electra', color: '#16A34A', price: { tier: 2, range: '0.29–0.49 €/kWh', note: '0.29 avec abo Electra+' } },
+  { match: ['fastned'],            name: 'Fastned',          color: '#DC2626', price: { tier: 3, range: '0.59–0.69 €/kWh', note: '0.45 avec Gold' } },
+  { match: ['engie', 'vianeo'],    name: 'ENGIE Vianeo',     color: '#7C3AED', price: { tier: 2, range: '0.40–0.50 €/kWh', note: '' } },
+  { match: ['tesla'],              name: 'Tesla',            color: '#B91C1C', price: { tier: 3, range: '0.36–0.67 €/kWh', note: 'Prix dynamique' }, alerts: [{ icon: '📈', text: 'Prix dynamique variable' }] },
+  { match: ['zunder'],             name: 'Zunder',           color: '#0891B2', price: { tier: 1, range: '0.29–0.39 €/kWh', note: '' } },
+  { match: ['e-vadea', 'vadea'],   name: 'e-Vadea',          color: '#2563EB', price: { tier: 2, range: '0.40–0.50 €/kWh', note: '' } },
+  { match: ['atlante'],            name: 'Atlante',          color: '#D97706', price: { tier: 2, range: '0.35–0.50 €/kWh', note: '' } },
+  { match: ['plenitude'],          name: 'Plenitude',        color: '#059669', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
+  { match: ['bp pulse', 'bp '],    name: 'bp pulse',         color: '#10B981', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
+  { match: ['iecharge', 'ie charge', 'ie-charge'], name: 'IECharge',    color: '#06B6D4', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
+  { match: ['izivia'],                             name: 'IZIVIA Fast', color: '#F59E0B', price: { tier: 2, range: '0.40–0.50 €/kWh', note: '' } },
 ];
 
 // Try enseigne first, fall back to operateur field
@@ -73,6 +73,14 @@ function getOperator(props) {
     }
   }
   return { name: props.enseigne || props.operateur || 'Autre', color: '#6B7280' };
+}
+
+// P1 — Navigation URL: native geo: on touch devices, Google Maps elsewhere
+function navUrl(lat, lon) {
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    return `geo:${lat},${lon}?q=${lat},${lon}`;
+  }
+  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 }
 
 
@@ -95,6 +103,7 @@ const map = L.map('map', {
   zoomControl: false,
   preferCanvas: true,
 });
+window._leafletMap = map;  // exposed for Playwright tests
 L.control.zoom({ position: 'topright' }).addTo(map);
 
 // Shared canvas renderer with padding so markers near viewport edges stay visible during panning.
@@ -184,6 +193,7 @@ let _prevVisCheap = null;
 function isVisible(m) {
   // F-3 — minimum power filter
   if (m._maxPowerKw !== undefined && m._maxPowerKw < MIN_POWER_KW) return false;
+  if (emergencyModeActive && _emergencyMarkers.has(m)) return true;
   return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
 }
 
@@ -626,6 +636,7 @@ function buildCheapPopup(p, op) {
       <div class="popup-station">${fmt(p.nom_station)}</div>
       <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
       <span class="popup-cheap-badge">€ Abordable</span>
+      ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
       <div class="popup-grid">
         <span class="popup-label">Puissance max</span>
         <span class="popup-power">${p.max_power_kw ? p.max_power_kw + ' kW' : '—'}</span>
@@ -645,6 +656,8 @@ function buildCheapPopup(p, op) {
           <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
         </span>
       </div>
+      ${op.alerts ? op.alerts.map(a => `<span class="alert-badge">${a.icon} ${a.text}</span>`).join('') : ''}
+      <a href="${navUrl(p.lat, p.lon)}" class="nav-btn" target="_blank" rel="noopener">Y aller</a>
     </div>`;
 }
 
@@ -800,6 +813,7 @@ function buildPopup(p, op) {
     <div>
       <div class="popup-station">${fmt(p.nom_station)}</div>
       <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
+      ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
       <div class="popup-grid">
         <span class="popup-label">Type</span>
         <span>${typeLabel}</span>
@@ -825,6 +839,8 @@ function buildPopup(p, op) {
           <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
         </span>
       </div>
+      ${op.alerts ? op.alerts.map(a => `<span class="alert-badge">${a.icon} ${a.text}</span>`).join('') : ''}
+      <a href="${navUrl(p.lat, p.lon)}" class="nav-btn" target="_blank" rel="noopener">Y aller</a>
     </div>`;
 }
 
@@ -1249,16 +1265,31 @@ function showRouteResults() {
   if (!visible.length) { wrapper.style.display = 'none'; return; }
   title.textContent = `${visible.length} station${visible.length > 1 ? 's' : ''}`;
   let html = '';
-  for (const m of visible) {
+  for (let i = 0; i < visible.length; i++) {
+    const m = visible[i];
     const km    = currentRouteKm > 0 ? Math.round(currentRouteKm * (m._progressOnRoute ?? 0)) : null;
     const power = m._maxPowerKw ? `${Math.round(m._maxPowerKw)} kW` : '';
     const meta  = [km !== null ? `${km} km` : '', power].filter(Boolean).join(' · ');
+    const navLink = navUrl(m._lat, m._lon);
     html += `<div class="route-result-item">
       <span class="route-result-dot" style="background:${m._op.color}"></span>
       <span class="route-result-name">${m._name || m._op.name}</span>
       ${meta ? `<span class="route-result-meta">${meta}</span>` : ''}
+      ${m._op.price ? `<span class="price-tier price-tier-${m._op.price.tier}">${'€'.repeat(m._op.price.tier)}</span>` : ''}
+      <a href="${navLink}" class="nav-btn nav-btn-sm" target="_blank" rel="noopener">Y aller</a>
     </div>`;
+    // P2 — gap + next station info
+    if (currentRouteKm > 0 && i < visible.length - 1) {
+      const next = visible[i + 1];
+      const gapKm = Math.round(currentRouteKm * ((next._progressOnRoute ?? 0) - (m._progressOnRoute ?? 0)));
+      const nextName = next._name || next._op.name;
+      if (gapKm > 80) {
+        html += `<div class="route-gap-warning">&#x26A0;&#xFE0F; Zone blanche &mdash; ${gapKm} km sans borne rapide</div>`;
+      }
+      html += `<div class="route-gap-next">&rarr; Suivante : ${nextName}, +${gapKm} km</div>`;
+    }
   }
+  html += '<p class="price-disclaimer">Prix indicatifs — fév. 2026</p>';
   list.innerHTML = html;
   wrapper.style.display = '';
 }
@@ -1269,7 +1300,11 @@ document.getElementById('route-results-toggle').addEventListener('click', () => 
 
 // ── U-7 — Drive mode ──────────────────────────────────────────────────────
 
-let driveModeActive = false;
+let driveModeActive    = false;
+let emergencyModeActive = false;
+let _emergencyMarkers   = new Set();
+let _emergencyAhead     = [];   // sorted array {m, dist} for availability fetch
+let _emergencyFetchInProgress = false;
 
 function _syncDriveModeBtn() {
   const btn = document.getElementById('drive-mode-btn');
@@ -1277,10 +1312,115 @@ function _syncDriveModeBtn() {
   btn.style.display = (routeActive && geoState.available) ? '' : 'none';
 }
 
+function _syncEmergencyBtn() {
+  const btn = document.getElementById('emergency-btn');
+  if (!btn) return;
+  btn.style.display = geoState.available ? '' : 'none';
+}
+
+function enterEmergencyMode() {
+  if (!geoState.available || !markers.length) return;
+  if (driveModeActive) exitDriveMode();
+  emergencyModeActive = true;
+  // Precompute markers within 15 km (turf GeoJSON uses [lon, lat])
+  const pos = turf.point([geoState.lng, geoState.lat]);
+  _emergencyMarkers = new Set();
+  for (const m of markers) {
+    if (turf.distance(pos, turf.point([m._lon, m._lat]), { units: 'kilometers' }) <= 15) {
+      _emergencyMarkers.add(m);
+    }
+  }
+  document.getElementById('drive-panel').style.display = 'flex';
+  document.body.classList.add('drive-mode-active');
+  const titleEl = document.querySelector('#drive-panel .dm-title');
+  if (titleEl) titleEl.textContent = 'Bornes proches — 15 km';
+  refreshEmergencyPanel();
+  updateVisibility();
+  // Center map on GPS + fit all nearby markers
+  const bounds = L.latLngBounds([[geoState.lat, geoState.lng]]);
+  for (const m of _emergencyMarkers) bounds.extend([m._lat, m._lon]);
+  if (_emergencyMarkers.size > 0) {
+    map.fitBounds(bounds, { padding: [60, 40], maxZoom: 13 });
+  } else {
+    map.setView([geoState.lat, geoState.lng], 12);
+  }
+  map.invalidateSize();
+}
+
+function exitEmergencyMode() {
+  emergencyModeActive = false;
+  _emergencyMarkers   = new Set();
+  _emergencyAhead     = [];
+  document.getElementById('drive-panel').style.display = 'none';
+  document.body.classList.remove('drive-mode-active');
+  const titleEl = document.querySelector('#drive-panel .dm-title');
+  if (titleEl) titleEl.textContent = 'Mode conduite';
+  updateVisibility();
+  map.invalidateSize();
+}
+
+function refreshEmergencyPanel() {
+  if (!emergencyModeActive) return;
+  const cards = document.getElementById('dm-cards');
+  const sorted = [..._emergencyMarkers]
+    .map(m => ({ m, dist: _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000 }))
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, 20);
+  _emergencyAhead = sorted;
+  if (!sorted.length) {
+    cards.innerHTML = '<div class="dm-card dm-card--error">Aucune borne dans un rayon de 15 km</div>';
+    return;
+  }
+  let html = `<div class="emergency-header">⚡ ${sorted.length} borne${sorted.length > 1 ? 's' : ''} dans un rayon de 15 km</div>`;
+  for (let i = 0; i < sorted.length; i++) {
+    const { m, dist } = sorted[i];
+    const distStr = dist < 10 ? dist.toFixed(1) : String(Math.round(dist));
+    const power   = m._maxPowerKw ? `${Math.round(m._maxPowerKw)} kW` : '';
+    html += `<div class="dm-card" data-emergency-idx="${i}">
+      <div class="dm-card-left">
+        <div class="dm-distance">${distStr}<span class="dm-unit"> km</span></div>
+        <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-drive" target="_blank" rel="noopener">🧭</a>
+      </div>
+      <div class="dm-card-right">
+        <div class="dm-operator"><span class="dm-op-dot" style="background:${m._op.color}"></span>${m._op.name}</div>
+        ${m._name ? `<div class="dm-name">${m._name}</div>` : ''}
+        ${power ? `<div class="dm-power">${power}</div>` : ''}
+        <div class="dm-avail"></div>
+      </div>
+    </div>`;
+  }
+  cards.innerHTML = html;
+  _fetchEmergencyAvailability();
+}
+
+async function _fetchEmergencyAvailability() {
+  if (!TOMTOM_API_KEY || !_emergencyAhead.length) return;
+  if (_emergencyFetchInProgress) return;
+  _emergencyFetchInProgress = true;
+  try {
+    for (let i = 0; i < _emergencyAhead.length; i++) {
+      if (i > 0) await new Promise(r => setTimeout(r, 300));
+      if (!emergencyModeActive) break;
+      const { m } = _emergencyAhead[i];
+      const cardEl  = document.querySelector(`#dm-cards .dm-card[data-emergency-idx="${i}"]`);
+      const availEl = cardEl?.querySelector('.dm-avail');
+      if (!availEl) continue;
+      if (!m._availCache) availEl.innerHTML = AVAIL_SPINNER;
+      const html = await fetchAvailability(m);
+      if (availEl.isConnected) availEl.innerHTML = html;
+    }
+  } finally {
+    _emergencyFetchInProgress = false;
+  }
+}
+
 function enterDriveMode() {
+  if (emergencyModeActive) exitEmergencyMode();
   driveModeActive = true;
   document.getElementById('drive-panel').style.display = 'flex';
   document.body.classList.add('drive-mode-active');
+  const titleEl = document.querySelector('#drive-panel .dm-title');
+  if (titleEl) titleEl.textContent = 'Mode conduite';
   refreshDrivePanel();
   map.invalidateSize();
 }
@@ -1340,6 +1480,7 @@ function refreshDrivePanel() {
     html += `<div class="${cls}" data-drive-idx="${i}">
       <div class="dm-card-left">
         <div class="dm-distance">${distStr}<span class="dm-unit"> km</span></div>
+        <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-drive" target="_blank" rel="noopener">🧭</a>
       </div>
       <div class="dm-card-right">
         <div class="dm-operator"><span class="dm-op-dot" style="background:${m._op.color}"></span>${m._op.name}${star}</div>
@@ -1355,7 +1496,11 @@ function refreshDrivePanel() {
 }
 
 document.getElementById('drive-mode-btn').addEventListener('click', enterDriveMode);
-document.getElementById('dm-exit').addEventListener('click', exitDriveMode);
+document.getElementById('emergency-btn').addEventListener('click', enterEmergencyMode);
+document.getElementById('dm-exit').addEventListener('click', () => {
+  if (emergencyModeActive) exitEmergencyMode();
+  else exitDriveMode();
+});
 document.getElementById('dm-refresh').addEventListener('click', () => _fetchDriveAvailability(true));
 
 // U-7b — fetch TomTom availability for all drive cards sequentially.
@@ -1383,12 +1528,26 @@ async function _fetchDriveAvailability(forceRefresh) {
 
 // Tap on a card = center map on that station
 document.getElementById('dm-cards').addEventListener('click', e => {
-  const card = e.target.closest('.dm-card[data-drive-idx]');
-  if (!card || !_driveAhead.length) return;
-  const idx = parseInt(card.dataset.driveIdx, 10);
-  if (isNaN(idx) || !_driveAhead[idx]) return;
-  const { m } = _driveAhead[idx];
-  map.setView([m._lat, m._lon], Math.max(map.getZoom(), 13));
+  if (e.target.closest('.nav-btn')) return;  // navigation link handles its own action
+
+  const driveCard = e.target.closest('.dm-card[data-drive-idx]');
+  if (driveCard && _driveAhead.length) {
+    const idx = parseInt(driveCard.dataset.driveIdx, 10);
+    if (!isNaN(idx) && _driveAhead[idx]) {
+      const { m } = _driveAhead[idx];
+      map.setView([m._lat, m._lon], Math.max(map.getZoom(), 13));
+    }
+    return;
+  }
+
+  const emergencyCard = e.target.closest('.dm-card[data-emergency-idx]');
+  if (emergencyCard && _emergencyAhead.length) {
+    const idx = parseInt(emergencyCard.dataset.emergencyIdx, 10);
+    if (!isNaN(idx) && _emergencyAhead[idx]) {
+      const { m } = _emergencyAhead[idx];
+      map.setView([m._lat, m._lon], Math.max(map.getZoom(), 14));
+    }
+  }
 });
 
 
@@ -2162,6 +2321,7 @@ function _onGeoSuccess(pos) {
   }
   _syncGoBtn();
   _syncDriveModeBtn();
+  _syncEmergencyBtn();
 
   // FIX 4 — throttle refreshDrivePanel: skip if < 3s since last refresh AND moved < 100m
   const _driveNow = Date.now();
@@ -2172,6 +2332,7 @@ function _onGeoSuccess(pos) {
   _lastDriveRefreshTime = _driveNow;
   _lastDrivePos = { lat, lon: lng };
   refreshDrivePanel();
+  if (emergencyModeActive) refreshEmergencyPanel();
 }
 
 function _onGeoError(err) {
