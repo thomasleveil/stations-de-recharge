@@ -1415,6 +1415,7 @@ async function _fetchEmergencyAvailability() {
 }
 
 function enterDriveMode() {
+  if (emergencyModeActive) exitEmergencyMode();
   driveModeActive = true;
   document.getElementById('drive-panel').style.display = 'flex';
   document.body.classList.add('drive-mode-active');
