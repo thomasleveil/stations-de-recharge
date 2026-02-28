@@ -191,29 +191,6 @@ function isCheapVisible(m) {
   return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= CHEAP_CORRIDOR_KM);
 }
 
-// Equirectangular nearest-distance (km) from point to polyline flat array.
-// Mirror of nearestDist in filter-worker.js — used in main thread for cheap markers.
-function nearestDistMain(lon, lat, flat) {
-  const cosLat = Math.cos(lat * Math.PI / 180);
-  const K = 111.32;
-  let minD2 = Infinity;
-  const len = flat.length;
-  for (let i = 0; i < len - 2; i += 2) {
-    const ax = flat[i],     ay = flat[i + 1];
-    const bx = flat[i + 2], by = flat[i + 3];
-    const dx = bx - ax, dy = by - ay;
-    const len2 = dx * dx + dy * dy;
-    const t = len2 > 0
-      ? Math.max(0, Math.min(1, ((lon - ax) * dx + (lat - ay) * dy) / len2))
-      : 0;
-    const ex = (ax + t * dx - lon) * cosLat * K;
-    const ey = (ay + t * dy - lat) * K;
-    const d2 = ex * ex + ey * ey;
-    if (d2 < minD2) minD2 = d2;
-  }
-  return Math.sqrt(minD2);
-}
-
 function updateVisibility() {
   Perf.start('updateVisibility');
 
@@ -228,11 +205,15 @@ function updateVisibility() {
   // Apply setStyle only to markers whose visibility status changed.
   // On the first call (_prevVisMain === null) every marker is dirty — fall through to full pass.
   let setStyleCount = 0;
+  // Preferred network styling: gold stroke on visible preferred markers when route active
+  const _hasPref = preferredNetworks.size > 0 && routeActive;
+
   if (_prevVisMain === null) {
     // First call: apply style to every marker (same as before).
     for (const m of markers) {
       const v = nextVisMain.has(m);
-      m.setStyle({ opacity: v ? 1 : 0, fillOpacity: v ? 0.9 : 0 });
+      const pref = _hasPref && v && preferredNetworks.has(m._op.name);
+      m.setStyle({ opacity: v ? 1 : 0, fillOpacity: v ? 0.9 : 0, color: pref ? '#F59E0B' : '#ffffff', weight: pref ? 3 : 2 });
       m.options.interactive = v; // disable canvas hit-test for invisible markers
       const el = m.getElement();
       if (el) el.style.pointerEvents = v ? '' : 'none';
@@ -248,7 +229,7 @@ function updateVisibility() {
     }
   } else {
     // Subsequent calls: only touch markers that changed status.
-    for (const m of nextVisMain)  { if (!_prevVisMain.has(m))  { m.setStyle({ opacity: 1, fillOpacity: 0.9 });  m.options.interactive = true;  const el = m.getElement(); if (el) el.style.pointerEvents = '';     setStyleCount++; } }
+    for (const m of nextVisMain)  { if (!_prevVisMain.has(m))  { const pref = _hasPref && preferredNetworks.has(m._op.name); m.setStyle({ opacity: 1, fillOpacity: 0.9, color: pref ? '#F59E0B' : '#ffffff', weight: pref ? 3 : 2 });  m.options.interactive = true;  const el = m.getElement(); if (el) el.style.pointerEvents = '';     setStyleCount++; } }
     for (const m of _prevVisMain) { if (!nextVisMain.has(m))   { m.setStyle({ opacity: 0, fillOpacity: 0 });    m.options.interactive = false; const el = m.getElement(); if (el) el.style.pointerEvents = 'none'; setStyleCount++; } }
     for (const m of nextVisCheap) { if (!_prevVisCheap.has(m)) { m.setStyle({ opacity: 1, fillOpacity: 0.75 }); m.options.interactive = true;  if (m._el) m._el.style.pointerEvents = '';     setStyleCount++; } }
     for (const m of _prevVisCheap){ if (!nextVisCheap.has(m))  { m.setStyle({ opacity: 0, fillOpacity: 0 });    m.options.interactive = false; if (m._el) m._el.style.pointerEvents = 'none'; setStyleCount++; } }
@@ -266,23 +247,25 @@ function updateVisibility() {
     subEl.textContent = `${count} station${count !== 1 ? 's' : ''} · CCS ≥ ${MIN_POWER_KW} kW`;
   }
 
-  updateLegend();
-  // F-9b — apply gold-stroke styling to preferred networks when route is active
-  if (typeof applyPreferredStyling === 'function') applyPreferredStyling();
+  updateLegend(_prevVisMain, _prevVisCheap);
+  // F-9b — preferred styling now applied inline in the delta loop above
   Perf.end('updateVisibility');
 }
 
 // Piste 3.2 — legend hash cache: avoid DOM rebuild when nothing changed.
 let _lastLegendKey = '';
 
-function updateLegend() {
+function updateLegend(visMain, visCheap) {
   Perf.start('updateLegend');
 
   // Count visible stations per operator (main CCS markers)
+  // When called with pre-computed sets from updateVisibility(), use them directly
+  // instead of re-iterating all markers with isVisible().
   const opCounts = new Map();
   let autreCount = 0;
-  markers.forEach(m => {
-    if (!isVisible(m)) return;
+  const mainSource = visMain || markers;
+  for (const m of mainSource) {
+    if (!visMain && !isVisible(m)) continue;
     const isKnown = OPERATORS.some(op => op.name === m._op.name);
     if (isKnown) {
       const key = m._op.name;
@@ -291,17 +274,18 @@ function updateLegend() {
     } else {
       autreCount++;
     }
-  });
+  }
 
   // Build cheap counts (always, even when not route active — needed for fingerprint)
   const cheapOpCounts = new Map();
   if (routeActive) {
-    cheapMarkers.forEach(m => {
-      if (!isCheapVisible(m)) return;
+    const cheapSource = visCheap || cheapMarkers;
+    for (const m of cheapSource) {
+      if (!visCheap && !isCheapVisible(m)) continue;
       const key = m._op.name;
       if (!cheapOpCounts.has(key)) cheapOpCounts.set(key, { op: m._op, count: 0 });
       cheapOpCounts.get(key).count++;
-    });
+    }
   }
 
   // Fingerprint: routeActive flag + sorted operator:count pairs (main + cheap)
@@ -631,8 +615,10 @@ function buildCheapMarkers(rows) {
   Perf.end('buildCheapMarkers');
 }
 
+/** Format a value for popup display — shared by buildPopup and buildCheapPopup. */
+function fmt(v, fallback = '—') { return (v && String(v).trim()) ? v : fallback; }
+
 function buildCheapPopup(p, op) {
-  const fmt = (v, fallback = '—') => (v && String(v).trim()) ? v : fallback;
   const addr = fmt(p.adresse);
   const shortAddr = addr.length > 60 ? addr.slice(0, 60) + '…' : addr;
   return `
@@ -687,17 +673,16 @@ async function initApp() {
   // T-3 — HEAD request to detect if the Parquet has been updated server-side.
   // Compares ETag or Last-Modified with the value stored at last fetch.
   // Network errors are silently ignored — TTL-based invalidation remains the fallback.
-  let serverEtag = null;
-  try {
-    const headResp = await fetch(PARQUET_URL, { method: 'HEAD' });
-    serverEtag = headResp.headers.get('ETag') || headResp.headers.get('Last-Modified');
-  } catch (_) { /* offline or CORS — skip ETag check */ }
+  // HEAD fetch and IndexedDB cache read run in parallel for faster startup.
+  const [serverEtag, cached] = await Promise.all([
+    fetch(PARQUET_URL, { method: 'HEAD' })
+      .then(r => r.headers.get('ETag') || r.headers.get('Last-Modified'))
+      .catch(() => null),
+    cacheGet('stations-v2').catch(() => null),
+  ]);
 
   const storedEtag = localStorage.getItem(PARQUET_ETAG_KEY);
   const etagChanged = serverEtag && storedEtag && serverEtag !== storedEtag;
-
-  // 1. Try IndexedDB cache (single unified dataset since stations-v2)
-  const cached = await cacheGet('stations-v2').catch(() => null);
   if (cached && Date.now() - cached.ts < CACHE_TTL && !etagChanged) {
     showDataFreshness(cached.ts);
     buildMarkers(cached.rows.filter(r => !r.cheap));
@@ -780,6 +765,12 @@ async function initApp() {
   if (serverEtag) localStorage.setItem(PARQUET_ETAG_KEY, serverEtag);
   showDataFreshness(nowTs);
 
+  // Release DuckDB resources — frees ~60-80 MB on constrained devices
+  try {
+    await db.dropFile('irve_raw.parquet');
+    await db.terminate();
+  } catch (_) {}
+
   // 7. Build markers and refresh map
   buildMarkers(rows.filter(r => !r.cheap));
   buildCheapMarkers(rows.filter(r => r.cheap));
@@ -799,7 +790,6 @@ initApp()
 // ── Popup builder ─────────────────────────────────────────────────────────
 
 function buildPopup(p, op) {
-  const fmt = (v, fallback = '—') => (v && String(v).trim()) ? v : fallback;
   const hours = fmt(p.horaires);
   const shortHours = hours.length > 50 ? hours.slice(0, 50) + '…' : hours;
   const addr = fmt(p.adresse);
@@ -1304,7 +1294,6 @@ function exitDriveMode() {
 }
 
 let _driveAhead           = [];    // current cards' markers — used by click handler
-let _driveFetched         = false; // true once availability was fetched → next tap force-refreshes
 let _fetchInProgress      = false; // guard against concurrent fetch loops
 let _lastDriveFingerprint = '';    // fingerprint of last rendered card list — skip DOM rebuild if unchanged
 
@@ -1361,7 +1350,6 @@ function refreshDrivePanel() {
     </div>`;
   }
   _driveAhead  = ahead;
-  _driveFetched = false;
   cards.innerHTML = html;
   _fetchDriveAvailability(false); // auto-fetch on panel refresh, uses cache if fresh
 }
@@ -1376,7 +1364,6 @@ async function _fetchDriveAvailability(forceRefresh) {
   if (!TOMTOM_API_KEY || !_driveAhead.length) return;
   if (_fetchInProgress && !forceRefresh) return;
   if (forceRefresh) _driveAhead.forEach(({ m }) => delete m._availCache);
-  _driveFetched    = true;
   _fetchInProgress = true;
   try {
     for (let i = 0; i < _driveAhead.length; i++) {
@@ -1409,7 +1396,7 @@ function clearRoute() {
   if (driveModeActive) exitDriveMode();
   routeActive = false;
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
-  markers.forEach(m => { delete m._distFromRoute; delete m._distAlongRoute; });
+  markers.forEach(m => { delete m._distFromRoute; });
   document.getElementById('network-recommendation').style.display = 'none';
   cheapMarkers.forEach(m => { delete m._distFromRoute; });
   updateVisibility();
@@ -1623,6 +1610,7 @@ const _sliderTooltip = document.createElement('div');
 _sliderTooltip.id = 'corridor-slider-tooltip';
 document.getElementById('corridor-row').appendChild(_sliderTooltip);
 
+let _sliderRaf = null;
 document.getElementById('corridor-slider').addEventListener('input', () => {
   const slider = document.getElementById('corridor-slider');
   const v = parseInt(slider.value, 10);
@@ -1641,12 +1629,16 @@ document.getElementById('corridor-slider').addEventListener('input', () => {
   _sliderTooltip.style.display = 'block';
 
   if (routeActive) {
-    const info = document.getElementById('route-info');
-    info.className = 'route-stat';
-    info.textContent = `${currentRouteKm} km`;
-    updateVisibility();
-    showNetworkRecommendation(currentRouteKm);
-    showRouteResults();
+    if (_sliderRaf) cancelAnimationFrame(_sliderRaf);
+    _sliderRaf = requestAnimationFrame(() => {
+      _sliderRaf = null;
+      const info = document.getElementById('route-info');
+      info.className = 'route-stat';
+      info.textContent = `${currentRouteKm} km`;
+      updateVisibility();
+      showNetworkRecommendation(currentRouteKm);
+      showRouteResults();
+    });
   }
 });
 
@@ -1934,9 +1926,11 @@ let preferredNetworks = new Set(
  */
 function applyPreferredStyling() {
   if (!preferredNetworks.size) return; // nothing to do
-  for (const m of markers) {
-    const vis = isVisible(m);
-    const pref = routeActive && vis && preferredNetworks.has(m._op.name);
+  // Only iterate visible markers (from _prevVisMain) for efficiency
+  const source = _prevVisMain || markers;
+  for (const m of source) {
+    if (!_prevVisMain && !isVisible(m)) continue;
+    const pref = routeActive && preferredNetworks.has(m._op.name);
     m.setStyle(pref
       ? { color: '#F59E0B', weight: 3 }
       : { color: '#ffffff', weight: 2 });
@@ -2065,6 +2059,9 @@ const _geoHistory = [];   // rolling buffer of last positions for bearing
 let _geoMarker    = null;
 let _geoLocateBtn = null;
 let _geoWatchId   = null;
+let _lastDriveRefreshTime = 0;
+let _lastDrivePos  = null;
+let _lastHeading   = null;
 
 function _geoComputeBearing(lat1, lon1, lat2, lon2) {
   const toRad = x => x * Math.PI / 180;
@@ -2125,12 +2122,19 @@ function _onGeoSuccess(pos) {
   geoState.lng = lng;
   geoState.heading = heading;
 
-  const icon = _makeArrowIcon(heading);
-  if (!_geoMarker) {
-    _geoMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000, interactive: false }).addTo(map);
-  } else {
+  // FIX 5 — skip icon rebuild when heading changed <= 5 degrees
+  const _headingChanged = _lastHeading === null || Math.abs(heading - _lastHeading) > 5;
+  if (_headingChanged) {
+    _lastHeading = heading;
+    const icon = _makeArrowIcon(heading);
+    if (!_geoMarker) {
+      _geoMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000, interactive: false }).addTo(map);
+    } else {
+      _geoMarker.setLatLng([lat, lng]);
+      _geoMarker.setIcon(icon);
+    }
+  } else if (_geoMarker) {
     _geoMarker.setLatLng([lat, lng]);
-    _geoMarker.setIcon(icon);
   }
 
   if (_geoLocateBtn) {
@@ -2158,6 +2162,15 @@ function _onGeoSuccess(pos) {
   }
   _syncGoBtn();
   _syncDriveModeBtn();
+
+  // FIX 4 — throttle refreshDrivePanel: skip if < 3s since last refresh AND moved < 100m
+  const _driveNow = Date.now();
+  const dlat = lat - (_lastDrivePos?.lat || lat);
+  const dlon = lng - (_lastDrivePos?.lon || lng);
+  const approxKm = Math.sqrt(dlat * dlat + dlon * dlon) * 111;
+  if (_driveNow - _lastDriveRefreshTime < 3000 && approxKm < 0.1) return;
+  _lastDriveRefreshTime = _driveNow;
+  _lastDrivePos = { lat, lon: lng };
   refreshDrivePanel();
 }
 
