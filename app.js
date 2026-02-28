@@ -48,19 +48,19 @@ let TOMTOM_API_KEY = localStorage.getItem('irve-tomtom-key') || '';
 // ── Operator definitions ──────────────────────────────────────────────────
 
 const OPERATORS = [
-  { match: ['totalenergies'],      name: 'TotalEnergies',    color: '#F97316' },
-  { match: ['ionity'],             name: 'IONITY',           color: '#1D4ED8' },
-  { match: ['allego', 'electra'],  name: 'Allego / Electra', color: '#16A34A' },
-  { match: ['fastned'],            name: 'Fastned',          color: '#DC2626' },
-  { match: ['engie', 'vianeo'],    name: 'ENGIE Vianeo',     color: '#7C3AED' },
-  { match: ['tesla'],              name: 'Tesla',            color: '#B91C1C' },
-  { match: ['zunder'],             name: 'Zunder',           color: '#0891B2' },
-  { match: ['e-vadea', 'vadea'],   name: 'e-Vadea',          color: '#2563EB' },
-  { match: ['atlante'],            name: 'Atlante',          color: '#D97706' },
-  { match: ['plenitude'],          name: 'Plenitude',        color: '#059669' },
-  { match: ['bp pulse', 'bp '],    name: 'bp pulse',         color: '#10B981' },
-  { match: ['iecharge', 'ie charge', 'ie-charge'], name: 'IECharge',    color: '#06B6D4' },
-  { match: ['izivia'],                             name: 'IZIVIA Fast', color: '#F59E0B' },
+  { match: ['totalenergies'],      name: 'TotalEnergies',    color: '#F97316', price: { tier: 2, range: '0.39–0.59 €/kWh', note: '' }, alerts: [{ icon: '⚠️', text: 'Frais de stationnement après 45 min' }] },
+  { match: ['ionity'],             name: 'IONITY',           color: '#1D4ED8', price: { tier: 3, range: '0.69–0.79 €/kWh', note: '0.39 avec Passport' }, alerts: [{ icon: '💸', text: 'Tarif élevé sans abonnement Passport' }] },
+  { match: ['allego', 'electra'],  name: 'Allego / Electra', color: '#16A34A', price: { tier: 2, range: '0.29–0.49 €/kWh', note: '0.29 avec abo Electra+' } },
+  { match: ['fastned'],            name: 'Fastned',          color: '#DC2626', price: { tier: 3, range: '0.59–0.69 €/kWh', note: '0.45 avec Gold' } },
+  { match: ['engie', 'vianeo'],    name: 'ENGIE Vianeo',     color: '#7C3AED', price: { tier: 2, range: '0.40–0.50 €/kWh', note: '' } },
+  { match: ['tesla'],              name: 'Tesla',            color: '#B91C1C', price: { tier: 3, range: '0.36–0.67 €/kWh', note: 'Prix dynamique' }, alerts: [{ icon: '📈', text: 'Prix dynamique variable' }] },
+  { match: ['zunder'],             name: 'Zunder',           color: '#0891B2', price: { tier: 1, range: '0.29–0.39 €/kWh', note: '' } },
+  { match: ['e-vadea', 'vadea'],   name: 'e-Vadea',          color: '#2563EB', price: { tier: 2, range: '0.40–0.50 €/kWh', note: '' } },
+  { match: ['atlante'],            name: 'Atlante',          color: '#D97706', price: { tier: 2, range: '0.35–0.50 €/kWh', note: '' } },
+  { match: ['plenitude'],          name: 'Plenitude',        color: '#059669', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
+  { match: ['bp pulse', 'bp '],    name: 'bp pulse',         color: '#10B981', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
+  { match: ['iecharge', 'ie charge', 'ie-charge'], name: 'IECharge',    color: '#06B6D4', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
+  { match: ['izivia'],                             name: 'IZIVIA Fast', color: '#F59E0B', price: { tier: 2, range: '0.40–0.50 €/kWh', note: '' } },
 ];
 
 // Try enseigne first, fall back to operateur field
@@ -634,6 +634,7 @@ function buildCheapPopup(p, op) {
       <div class="popup-station">${fmt(p.nom_station)}</div>
       <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
       <span class="popup-cheap-badge">€ Abordable</span>
+      ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
       <div class="popup-grid">
         <span class="popup-label">Puissance max</span>
         <span class="popup-power">${p.max_power_kw ? p.max_power_kw + ' kW' : '—'}</span>
@@ -653,6 +654,7 @@ function buildCheapPopup(p, op) {
           <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
         </span>
       </div>
+      ${op.alerts ? op.alerts.map(a => `<span class="alert-badge">${a.icon} ${a.text}</span>`).join('') : ''}
       <a href="${navUrl(p.lat, p.lon)}" class="nav-btn" target="_blank" rel="noopener">Y aller</a>
     </div>`;
 }
@@ -809,6 +811,7 @@ function buildPopup(p, op) {
     <div>
       <div class="popup-station">${fmt(p.nom_station)}</div>
       <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
+      ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
       <div class="popup-grid">
         <span class="popup-label">Type</span>
         <span>${typeLabel}</span>
@@ -834,6 +837,7 @@ function buildPopup(p, op) {
           <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
         </span>
       </div>
+      ${op.alerts ? op.alerts.map(a => `<span class="alert-badge">${a.icon} ${a.text}</span>`).join('') : ''}
       <a href="${navUrl(p.lat, p.lon)}" class="nav-btn" target="_blank" rel="noopener">Y aller</a>
     </div>`;
 }
@@ -1269,6 +1273,7 @@ function showRouteResults() {
       <span class="route-result-dot" style="background:${m._op.color}"></span>
       <span class="route-result-name">${m._name || m._op.name}</span>
       ${meta ? `<span class="route-result-meta">${meta}</span>` : ''}
+      ${m._op.price ? `<span class="price-tier price-tier-${m._op.price.tier}">${'€'.repeat(m._op.price.tier)}</span>` : ''}
       <a href="${navLink}" class="nav-btn nav-btn-sm" target="_blank" rel="noopener">Y aller</a>
     </div>`;
     // P2 — gap + next station info
@@ -1282,6 +1287,7 @@ function showRouteResults() {
       html += `<div class="route-gap-next">&rarr; Suivante : ${nextName}, +${gapKm} km</div>`;
     }
   }
+  html += '<p class="price-disclaimer">Prix indicatifs — fév. 2026</p>';
   list.innerHTML = html;
   wrapper.style.display = '';
 }

@@ -1084,3 +1084,45 @@ html, body {
   font-style: italic;
   color: #64748b;
 }
+
+/* ── P3 — Pricing tiers ──────────────────────────────────────── */
+
+.popup-price {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.price-tier {
+  font-weight: 700;
+  font-size: 13px;
+}
+.price-tier-1 { color: #10b981; }
+.price-tier-2 { color: #f59e0b; }
+.price-tier-3 { color: #ef4444; }
+
+.price-note {
+  color: #94a3b8;
+}
+
+.price-disclaimer {
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* ── P4 — Alert badges ──────────────────────────────────────── */
+
+.alert-badge {
+  display: inline-block;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-right: 4px;
+}
