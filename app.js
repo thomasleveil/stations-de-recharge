@@ -12,35 +12,6 @@ let CHEAP_CORRIDOR_KM = Math.max(1, Math.min(50,
 // F-3 — Minimum power filter (kW). Persisted in localStorage.
 let MIN_POWER_KW = parseInt(localStorage.getItem('irve-min-power-kw'), 10) || 150;
 
-// ── Performance recorder (debug) ──────────────────────────────────────────
-// Expose as window.Perf for console access: Perf.report(), Perf.reset()
-const Perf = (function () {
-  const _m = {}, _r = [];
-  return {
-    start(label) { _m[label] = performance.now(); },
-    end(label) {
-      const ms = +(performance.now() - (_m[label] ?? performance.now())).toFixed(2);
-      _r.push({ label, ms, ts: Date.now() });
-      console.debug(`[Perf] ${label}: ${ms} ms`);
-      return ms;
-    },
-    report() { console.table(_r); return JSON.stringify(_r, null, 2); },
-    reset()  { Object.keys(_m).forEach(k => delete _m[k]); _r.length = 0; },
-    results: _r,
-  };
-}());
-window.Perf = Perf;
-
-// Long Tasks observer — logs any main-thread block > 50 ms
-try {
-  new PerformanceObserver(list => {
-    list.getEntries().forEach(e => {
-      Perf.results.push({ label: 'longTask', ms: +e.duration.toFixed(1), ts: Date.now() });
-      console.warn(`[LongTask] ${e.duration.toFixed(0)} ms @ ${e.startTime.toFixed(0)} ms`);
-    });
-  }).observe({ type: 'longtask', buffered: true });
-} catch (_) { /* Safari < 16 */ }
-
 // TomTom API key for real-time charging availability (free tier: 2500 req/day).
 // Set via the ⚙ settings menu — persisted in localStorage.
 let TOMTOM_API_KEY = localStorage.getItem('irve-tomtom-key') || '';
@@ -202,8 +173,6 @@ function isCheapVisible(m) {
 }
 
 function updateVisibility() {
-  Perf.start('updateVisibility');
-
   // ── Piste 2.2 : delta-updates ──────────────────────────────────────────
   // Compute the next-visible sets first (O(N) but no DOM/canvas touches).
   const nextVisMain  = new Set();
@@ -248,9 +217,6 @@ function updateVisibility() {
   _prevVisMain  = nextVisMain;
   _prevVisCheap = nextVisCheap;
 
-  Perf.results.push({ label: 'setStyle_count', ms: setStyleCount, ts: Date.now() });
-  console.debug(`[Perf] setStyle_count: ${setStyleCount} / ${markers.length + cheapMarkers.length}`);
-
   if (routeActive) {
     subEl.textContent = `${count} station${count !== 1 ? 's' : ''} sur le trajet`;
   } else {
@@ -259,15 +225,12 @@ function updateVisibility() {
 
   updateLegend(_prevVisMain, _prevVisCheap);
   // F-9b — preferred styling now applied inline in the delta loop above
-  Perf.end('updateVisibility');
 }
 
 // Piste 3.2 — legend hash cache: avoid DOM rebuild when nothing changed.
 let _lastLegendKey = '';
 
 function updateLegend(visMain, visCheap) {
-  Perf.start('updateLegend');
-
   // Count visible stations per operator (main CCS markers)
   // When called with pre-computed sets from updateVisibility(), use them directly
   // instead of re-iterating all markers with isVisible().
@@ -305,10 +268,7 @@ function updateLegend(visMain, visCheap) {
     .map(([k,v]) => `${k}:${v.count}`).join(',');
   const key = `${routeActive ? 1 : 0}|${autreCount}|${mainPart}|${cheapPart}`;
 
-  if (key === _lastLegendKey) {
-    Perf.end('updateLegend'); // skip — DOM already up to date
-    return;
-  }
+  if (key === _lastLegendKey) return;
   _lastLegendKey = key;
 
   // DOM rebuild (only when fingerprint changed)
@@ -333,7 +293,6 @@ function updateLegend(visMain, visCheap) {
       .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count, true));
   }
 
-  Perf.end('updateLegend');
 }
 
 function appendLegendItem(name, color, count, cheap) {
@@ -494,7 +453,6 @@ function buildMarkers(rows) {
     if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
   }
   rows = [..._locSeen.values()];
-  Perf.start('buildMarkers');
   for (const p of rows) {
     const op = getOperator(p);
     const displayCount = p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : (parseInt(p.nbre_pdc) || 1);
@@ -536,7 +494,6 @@ function buildMarkers(rows) {
     circle.addTo(map);
     markers.push(circle);
   }
-  Perf.end('buildMarkers');
 }
 
 // ── Budget network marker builder ─────────────────────────────────────────
@@ -573,7 +530,6 @@ function buildCheapMarkers(rows) {
     if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
   }
   rows = [..._locSeen.values()];
-  Perf.start('buildCheapMarkers');
   for (const p of rows) {
     let op = getOperator(p);
     if (op.name === 'ENGIE Vianeo') op = { ...op, name: 'ENGIE Vianeo - B&B HOTELS' };
@@ -622,7 +578,6 @@ function buildCheapMarkers(rows) {
     circle._el = circle.getElement(); // piste 2.4 — cache _el, avoid DOM lookup in updateVisibility
     cheapMarkers.push(circle);
   }
-  Perf.end('buildCheapMarkers');
 }
 
 /** Format a value for popup display — shared by buildPopup and buildCheapPopup. */
@@ -698,6 +653,10 @@ async function initApp() {
   const etagChanged = serverEtag && storedEtag && serverEtag !== storedEtag;
   if (cached && Date.now() - cached.ts < CACHE_TTL && !etagChanged) {
     showDataFreshness(cached.ts);
+    markers.forEach(m => map.removeLayer(m));
+    markers.length = 0;
+    cheapMarkers.forEach(m => map.removeLayer(m));
+    cheapMarkers.length = 0;
     buildMarkers(cached.rows.filter(r => !r.cheap));
     buildCheapMarkers(cached.rows.filter(r => r.cheap));
     updateVisibility();
@@ -785,6 +744,10 @@ async function initApp() {
   } catch (_) {}
 
   // 7. Build markers and refresh map
+  markers.forEach(m => map.removeLayer(m));
+  markers.length = 0;
+  cheapMarkers.forEach(m => map.removeLayer(m));
+  cheapMarkers.length = 0;
   buildMarkers(rows.filter(r => !r.cheap));
   buildCheapMarkers(rows.filter(r => r.cheap));
   updateVisibility();
@@ -1042,10 +1005,6 @@ async function applyRouteFilter(routeLine, onProgress) {
   const nearbyCheap = cheapMarkers.filter(
     m => m._lon >= minLon && m._lon <= maxLon && m._lat >= minLat && m._lat <= maxLat
   );
-  console.debug(`[Perf] bbox_filter: ${nearbyMarkers.length}/${markers.length} main, ${nearbyCheap.length}/${cheapMarkers.length} cheap`);
-  Perf.results.push({ label: 'main_in_bbox',  ms: nearbyMarkers.length, ts: Date.now() });
-  Perf.results.push({ label: 'cheap_in_bbox', ms: nearbyCheap.length,   ts: Date.now() });
-
   // Pack only bbox-filtered markers into transferable arrays
   const stationsFlat = new Float64Array(nearbyMarkers.length * 2);
   for (let i = 0; i < nearbyMarkers.length; i++) {
@@ -1058,8 +1017,6 @@ async function applyRouteFilter(routeLine, onProgress) {
     cheapStationsFlat[i * 2 + 1] = nearbyCheap[i]._lat;
   }
 
-  Perf.start('worker_roundtrip');
-
   return new Promise(resolve => {
     const worker = getFilterWorker();
     worker.onmessage = ({ data }) => {
@@ -1067,8 +1024,6 @@ async function applyRouteFilter(routeLine, onProgress) {
         if (onProgress) onProgress(data.done, data.total);
       } else {
         // data.type === 'done'
-        Perf.end('worker_roundtrip');
-
         const results      = new Float32Array(data.results);
         const progressFlat = new Float32Array(data.progressFlat);
 
@@ -1445,12 +1400,15 @@ function refreshDrivePanel() {
     _lastDriveFingerprint = '';
     return;
   }
-  const ahead = markers
-    .filter(m => isVisible(m) && m._progressOnRoute !== undefined)
-    .map(m => ({ m, dist: _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000 }))
-    .filter(({ dist }) => dist > 0.5)
-    .sort((a, b) => a.dist - b.dist)
-    .slice(0, 10);
+  const sorted = [];
+  for (const m of markers) {
+    if (!isVisible(m) || m._progressOnRoute === undefined) continue;
+    const dist = _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000;
+    if (dist <= 0.5) continue;
+    sorted.push({ m, dist });
+  }
+  sorted.sort((a, b) => a.m._progressOnRoute - b.m._progressOnRoute);
+  const ahead = sorted.slice(0, 10);
   if (!ahead.length) {
     cards.innerHTML = '<div class="dm-card dm-card--done">✓ Destination proche</div>';
     _driveAhead = [];
@@ -1631,21 +1589,15 @@ async function calculateRoute() {
     requestAnimationFrame(() => requestAnimationFrame(r));
   });
 
-  const t0 = performance.now();
-
   try {
     const useGeoStart = !startVal && geoState.available;
     await step(useGeoStart ? '📍 Position GPS du départ…' : '📍 Géocodage du départ…');
-    const t1 = performance.now();
     const from = useGeoStart ? [geoState.lng, geoState.lat] : (startInput._coords || await geocode(startVal));
     await step('📍 Géocodage de l\'arrivée…');
     const to = endInput._coords || await geocode(endVal);
-    console.log(`geocode: ${Math.round(performance.now() - t1)} ms`);
 
     await step('🗺 Calcul d\'itinéraire…');
-    const t2 = performance.now();
     const route = await fetchRoute(from, to);
-    console.log(`osrm: ${Math.round(performance.now() - t2)} ms`);
 
     if (routeLayer) map.removeLayer(routeLayer);
     // Simplify display geometry only — corridor filtering uses full-precision route.geometry.coordinates
@@ -1671,17 +1623,11 @@ async function calculateRoute() {
     info.className = 'route-progress';
     info.textContent = `⚡ Filtrage 0/${markers.length}…`;
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-    const t3 = performance.now();
     routeActive = true;
     await applyRouteFilter(
       turf.lineString(route.geometry.coordinates),
       (done, total) => { info.textContent = `⚡ Filtrage ${done}/${total}…`; }
     );
-    console.log(`applyRouteFilter: ${Math.round(performance.now() - t3)} ms`);
-
-    // Cheap marker distances are now computed in the worker (piste 2.1).
-    // applyRouteFilter() above already called updateVisibility() + staggeredFadeIn().
-    console.log(`total: ${Math.round(performance.now() - t0)} ms`);
 
     currentRouteKm = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
     info.className = 'route-stat';
