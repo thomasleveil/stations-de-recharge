@@ -1475,13 +1475,13 @@ function refreshDrivePanel() {
     html += `<div class="${cls}" data-drive-idx="${i}">
       <div class="dm-card-left">
         <div class="dm-distance">${distStr}<span class="dm-unit"> km</span></div>
+        <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-drive" target="_blank" rel="noopener">🧭</a>
       </div>
       <div class="dm-card-right">
         <div class="dm-operator"><span class="dm-op-dot" style="background:${m._op.color}"></span>${m._op.name}${star}</div>
         ${m._name ? `<div class="dm-name">${m._name}</div>` : ''}
         ${power ? `<div class="dm-power">${power}</div>` : ''}
         <div class="dm-avail"></div>
-        <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-drive" target="_blank" rel="noopener">🧭</a>
       </div>
     </div>`;
   }
@@ -1523,12 +1523,26 @@ async function _fetchDriveAvailability(forceRefresh) {
 
 // Tap on a card = center map on that station
 document.getElementById('dm-cards').addEventListener('click', e => {
-  const card = e.target.closest('.dm-card[data-drive-idx]');
-  if (!card || !_driveAhead.length) return;
-  const idx = parseInt(card.dataset.driveIdx, 10);
-  if (isNaN(idx) || !_driveAhead[idx]) return;
-  const { m } = _driveAhead[idx];
-  map.setView([m._lat, m._lon], Math.max(map.getZoom(), 13));
+  if (e.target.closest('.nav-btn')) return;  // navigation link handles its own action
+
+  const driveCard = e.target.closest('.dm-card[data-drive-idx]');
+  if (driveCard && _driveAhead.length) {
+    const idx = parseInt(driveCard.dataset.driveIdx, 10);
+    if (!isNaN(idx) && _driveAhead[idx]) {
+      const { m } = _driveAhead[idx];
+      map.setView([m._lat, m._lon], Math.max(map.getZoom(), 13));
+    }
+    return;
+  }
+
+  const emergencyCard = e.target.closest('.emergency-card[data-emergency-idx]');
+  if (emergencyCard && _emergencyAhead.length) {
+    const idx = parseInt(emergencyCard.dataset.emergencyIdx, 10);
+    if (!isNaN(idx) && _emergencyAhead[idx]) {
+      const { m } = _emergencyAhead[idx];
+      map.setView([m._lat, m._lon], Math.max(map.getZoom(), 14));
+    }
+  }
 });
 
 
