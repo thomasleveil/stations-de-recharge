@@ -28,7 +28,7 @@
 
   <!-- Top-left control panel -->
   <div id="panel">
-    <div class="panel-title" id="panel-title">Bornes rapides ≥ 150 kW<span class="panel-chevron">▸</span></div>
+    <div class="panel-title" id="panel-title"><span id="panel-title-kw">Bornes rapides ≥ 150 kW</span><span class="panel-chevron">▸</span></div>
     <div class="panel-sub"></div>
     <div id="data-freshness"></div>
 
@@ -66,6 +66,7 @@
   <!-- Drive mode bottom panel (U-7) -->
   <div id="drive-panel" style="display:none">
     <div class="dm-header">
+      <button class="dm-refresh" id="dm-refresh" title="Actualiser">↺</button>
       <span class="dm-title">Mode conduite</span>
       <button class="dm-exit" id="dm-exit">✕</button>
     </div>

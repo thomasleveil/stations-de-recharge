@@ -1186,13 +1186,28 @@ function computeNetworkRecommendation(routeKm) {
     }
   }
 
+  // Tesla is classified as a cheap network (FRTSL*) but is relevant for route planning.
+  // Its cheap markers have _progressOnRoute set by the worker — include them here.
+  for (const m of cheapMarkers) {
+    if (m._op.name !== 'Tesla' || !isCheapVisible(m)) continue;
+    const km = (m._progressOnRoute ?? 0) * routeKm;
+    if (km < zoneStart) continue;
+    const seg = Math.min(Math.floor((km - zoneStart) / 80), nSegs - 1);
+    if (!segSets.has('Tesla')) segSets.set('Tesla', new Set());
+    segSets.get('Tesla').add(seg);
+  }
+
   // Build scored entries
   const entries = [];
   for (const [name, segs] of segSets) {
     const score = segs.size / nSegs;
     if (score === 0) continue;
+    const allianceMemberLabel = n => n === 'Allego / Electra' ? 'Electra' : n;
+    const allianceMembers = [...ALLIANCE_NAMES]
+      .sort((a, b) => (segSets.get(b)?.size || 0) - (segSets.get(a)?.size || 0))
+      .map(allianceMemberLabel).join(' · ');
     const op = (name === 'Alliance')
-      ? { name: 'Alliance (Electra · IONITY · Fastned · Atlante)', color: '#7C3AED' }
+      ? { name: `Alliance (${allianceMembers})`, color: '#7C3AED' }
       : (OPERATORS.find(o => o.name === name) || { name, color: '#6B7280' });
     entries.push({ name, op, score, segs: segs.size, nSegs });
   }
@@ -1284,12 +1299,14 @@ function exitDriveMode() {
   driveModeActive = false;
   document.getElementById('drive-panel').style.display = 'none';
   document.body.classList.remove('drive-mode-active');
+  _lastDriveFingerprint = '';
   map.invalidateSize();
 }
 
-let _driveAhead      = [];    // current cards' markers — used by click handler
-let _driveFetched    = false; // true once availability was fetched → next tap force-refreshes
-let _fetchInProgress = false; // guard against concurrent fetch loops
+let _driveAhead           = [];    // current cards' markers — used by click handler
+let _driveFetched         = false; // true once availability was fetched → next tap force-refreshes
+let _fetchInProgress      = false; // guard against concurrent fetch loops
+let _lastDriveFingerprint = '';    // fingerprint of last rendered card list — skip DOM rebuild if unchanged
 
 function refreshDrivePanel() {
   if (!driveModeActive) return;
@@ -1297,6 +1314,7 @@ function refreshDrivePanel() {
   if (!geoState.available) {
     cards.innerHTML = '<div class="dm-card dm-card--error">Signal GPS perdu</div>';
     _driveAhead = [];
+    _lastDriveFingerprint = '';
     return;
   }
   const ahead = markers
@@ -1308,8 +1326,16 @@ function refreshDrivePanel() {
   if (!ahead.length) {
     cards.innerHTML = '<div class="dm-card dm-card--done">✓ Destination proche</div>';
     _driveAhead = [];
+    _lastDriveFingerprint = '';
     return;
   }
+  // Skip DOM rebuild if the same stations are still shown — avoids flicker on GPS updates
+  const fingerprint = ahead.map(({ m }) => `${m._lat},${m._lon}`).join('|');
+  if (fingerprint === _lastDriveFingerprint) {
+    _fetchDriveAvailability(false);
+    return;
+  }
+  _lastDriveFingerprint = fingerprint;
   // Guard: preferredNetworks may not exist if F-9b is not yet merged
   const preferredSet = (typeof preferredNetworks !== 'undefined') ? preferredNetworks : null;
   let html = '';
@@ -1342,6 +1368,7 @@ function refreshDrivePanel() {
 
 document.getElementById('drive-mode-btn').addEventListener('click', enterDriveMode);
 document.getElementById('dm-exit').addEventListener('click', exitDriveMode);
+document.getElementById('dm-refresh').addEventListener('click', () => _fetchDriveAvailability(true));
 
 // U-7b — fetch TomTom availability for all drive cards sequentially.
 // Called automatically on panel refresh (uses cache) and on manual tap (force-refreshes).
@@ -1367,11 +1394,14 @@ async function _fetchDriveAvailability(forceRefresh) {
   }
 }
 
-// Tap on any card = force-refresh (bypasses the 3-min cache)
+// Tap on a card = center map on that station
 document.getElementById('dm-cards').addEventListener('click', e => {
-  if (!e.target.closest('.dm-card[data-drive-idx]')) return;
-  if (!_driveAhead.length) return;
-  _fetchDriveAvailability(true);
+  const card = e.target.closest('.dm-card[data-drive-idx]');
+  if (!card || !_driveAhead.length) return;
+  const idx = parseInt(card.dataset.driveIdx, 10);
+  if (isNaN(idx) || !_driveAhead[idx]) return;
+  const { m } = _driveAhead[idx];
+  map.setView([m._lat, m._lon], Math.max(map.getZoom(), 13));
 });
 
 
@@ -1957,9 +1987,12 @@ function applyPreferredStyling() {
   const savedPower = localStorage.getItem('irve-min-power-kw') || '150';
   const powerRadio = menu.querySelector(`input[name="min-power"][value="${savedPower}"]`);
   if (powerRadio) powerRadio.checked = true;
+  // Reflect saved preference in panel title on load
+  document.getElementById('panel-title-kw').textContent = `Bornes rapides ≥ ${MIN_POWER_KW} kW`;
   menu.querySelectorAll('input[name="min-power"]').forEach(r => {
     r.addEventListener('change', () => {
       MIN_POWER_KW = parseInt(r.value, 10);
+      document.getElementById('panel-title-kw').textContent = `Bornes rapides ≥ ${MIN_POWER_KW} kW`;
       localStorage.setItem('irve-min-power-kw', r.value);
       updateVisibility();
       if (routeActive) { showNetworkRecommendation(currentRouteKm); showRouteResults(); }

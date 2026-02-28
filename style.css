@@ -856,14 +856,37 @@ html, body {
   background: none;
   border: none;
   color: #64748b;
-  font-size: 14px;
+  font-size: 24px;
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 6px 8px;
   line-height: 1;
   font-family: inherit;
-  border-radius: 4px;
+  border-radius: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .dm-exit:hover { color: #f8fafc; background: rgba(255,255,255,0.1); }
+
+.dm-refresh {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px 8px;
+  line-height: 1;
+  font-family: inherit;
+  border-radius: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dm-refresh:hover { color: #f8fafc; background: rgba(255,255,255,0.1); }
 
 #dm-cards {
   display: flex;
