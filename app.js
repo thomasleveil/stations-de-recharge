@@ -75,6 +75,14 @@ function getOperator(props) {
   return { name: props.enseigne || props.operateur || 'Autre', color: '#6B7280' };
 }
 
+// P1 — Navigation URL: native geo: on touch devices, Google Maps elsewhere
+function navUrl(lat, lon) {
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    return `geo:${lat},${lon}?q=${lat},${lon}`;
+  }
+  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
+}
+
 
 // ── Marker sizing (radius in px) ──────────────────────────────────────────
 
@@ -645,6 +653,7 @@ function buildCheapPopup(p, op) {
           <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
         </span>
       </div>
+      <a href="${navUrl(p.lat, p.lon)}" class="nav-btn" target="_blank" rel="noopener">Y aller</a>
     </div>`;
 }
 
@@ -825,6 +834,7 @@ function buildPopup(p, op) {
           <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
         </span>
       </div>
+      <a href="${navUrl(p.lat, p.lon)}" class="nav-btn" target="_blank" rel="noopener">Y aller</a>
     </div>`;
 }
 
@@ -1249,15 +1259,28 @@ function showRouteResults() {
   if (!visible.length) { wrapper.style.display = 'none'; return; }
   title.textContent = `${visible.length} station${visible.length > 1 ? 's' : ''}`;
   let html = '';
-  for (const m of visible) {
+  for (let i = 0; i < visible.length; i++) {
+    const m = visible[i];
     const km    = currentRouteKm > 0 ? Math.round(currentRouteKm * (m._progressOnRoute ?? 0)) : null;
     const power = m._maxPowerKw ? `${Math.round(m._maxPowerKw)} kW` : '';
     const meta  = [km !== null ? `${km} km` : '', power].filter(Boolean).join(' · ');
+    const navLink = navUrl(m._lat, m._lon);
     html += `<div class="route-result-item">
       <span class="route-result-dot" style="background:${m._op.color}"></span>
       <span class="route-result-name">${m._name || m._op.name}</span>
       ${meta ? `<span class="route-result-meta">${meta}</span>` : ''}
+      <a href="${navLink}" class="nav-btn nav-btn-sm" target="_blank" rel="noopener">Y aller</a>
     </div>`;
+    // P2 — gap + next station info
+    if (currentRouteKm > 0 && i < visible.length - 1) {
+      const next = visible[i + 1];
+      const gapKm = Math.round(currentRouteKm * ((next._progressOnRoute ?? 0) - (m._progressOnRoute ?? 0)));
+      const nextName = next._name || next._op.name;
+      if (gapKm > 80) {
+        html += `<div class="route-gap-warning">&#x26A0;&#xFE0F; Zone blanche &mdash; ${gapKm} km sans borne rapide</div>`;
+      }
+      html += `<div class="route-gap-next">&rarr; Suivante : ${nextName}, +${gapKm} km</div>`;
+    }
   }
   list.innerHTML = html;
   wrapper.style.display = '';
@@ -1346,6 +1369,8 @@ function refreshDrivePanel() {
         ${m._name ? `<div class="dm-name">${m._name}</div>` : ''}
         ${power ? `<div class="dm-power">${power}</div>` : ''}
         <div class="dm-avail"></div>
+        <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-drive" target="_blank" rel="noopener">Naviguer</a>
+        ${i < ahead.length - 1 ? `<div class="dm-planb">Plan B : ${ahead[i+1].m._name || ahead[i+1].m._op.name} <a href="${navUrl(ahead[i+1].m._lat, ahead[i+1].m._lon)}" target="_blank" rel="noopener" class="dm-planb-link">&rarr;</a></div>` : '<div class="dm-planb dm-planb-last">Dernière borne du corridor</div>'}
       </div>
     </div>`;
   }

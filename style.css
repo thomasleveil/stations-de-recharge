@@ -1003,3 +1003,84 @@ html, body {
   stroke-dashoffset: 5000;
   animation: drawRoute 0.8s ease-out forwards;
 }
+
+/* ── P1 — Navigation button ──────────────────────────────────── */
+
+.nav-btn {
+  display: inline-block;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 16px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  line-height: 24px;
+  margin-top: 8px;
+}
+
+.nav-btn:hover { opacity: 0.85; }
+
+.nav-btn-sm {
+  min-height: 32px;
+  min-width: auto;
+  padding: 4px 10px;
+  font-size: 11px;
+  line-height: 24px;
+  margin-top: 0;
+  flex-shrink: 0;
+  border-radius: 6px;
+}
+
+.nav-btn-drive {
+  min-height: 44px;
+  padding: 8px 14px;
+  font-size: 13px;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* ── P2 — Gap warnings and Plan B ────────────────────────────── */
+
+.route-gap-next {
+  font-size: 11px;
+  color: #94a3b8;
+  padding: 2px 4px 2px 22px;
+}
+
+.route-gap-warning {
+  padding: 4px 8px;
+  margin: 2px 0;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #9a3412;
+  font-weight: 600;
+}
+
+.dm-planb {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.dm-planb-link {
+  color: #0891B2;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-block;
+  text-align: center;
+}
+.dm-planb-link:hover { color: #06b6d4; }
+
+.dm-planb-last {
+  font-style: italic;
+  color: #64748b;
+}
