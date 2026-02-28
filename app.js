@@ -178,8 +178,12 @@ function updateVisibility() {
     for (const m of _prevVisCheap){ if (!nextVisCheap.has(m))  { m.setStyle({ opacity: 0, fillOpacity: 0 });    m.options.interactive = false; if (m._el) m._el.style.pointerEvents = 'none'; setStyleCount++; } }
   }
 
-  _prevVisMain  = nextVisMain;
+  const tmpMain = _prevVisMain;
+  _prevVisMain = nextVisMain;
+  if (tmpMain) tmpMain.clear();
+  const tmpCheap = _prevVisCheap;
   _prevVisCheap = nextVisCheap;
+  if (tmpCheap) tmpCheap.clear();
 
   if (routeActive) {
     subEl.textContent = `${count} station${count !== 1 ? 's' : ''} sur le trajet`;
@@ -1222,6 +1226,7 @@ let emergencyModeActive = false;
 let _emergencyMarkers   = new Set();
 let _emergencyAhead     = [];   // sorted array {m, dist} for availability fetch
 let _emergencyFetchInProgress = false;
+let _lastEmergencyFp    = '';   // fingerprint cache — skip DOM rebuild if unchanged
 
 function _syncDriveModeBtn() {
   const btn = document.getElementById('drive-mode-btn');
@@ -1239,9 +1244,14 @@ function enterEmergencyMode() {
   if (!geoState.available || !markers.length) return;
   if (driveModeActive) exitDriveMode();
   emergencyModeActive = true;
-  // Precompute markers within 15 km — use inline haversine (no turf object allocations)
+  // Precompute markers within 15 km — bbox pre-filter then haversine
+  // 15 km ≈ 0.135° lat, 0.18° lon at France latitudes
+  const LAT_DELTA = 0.135, LON_DELTA = 0.18;
+  const latMin = geoState.lat - LAT_DELTA, latMax = geoState.lat + LAT_DELTA;
+  const lonMin = geoState.lng - LON_DELTA, lonMax = geoState.lng + LON_DELTA;
   _emergencyMarkers = new Set();
   for (const m of markers) {
+    if (m._lat < latMin || m._lat > latMax || m._lon < lonMin || m._lon > lonMax) continue;
     if (_geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) <= 15_000) {
       _emergencyMarkers.add(m);
     }
@@ -1267,6 +1277,7 @@ function exitEmergencyMode() {
   emergencyModeActive = false;
   _emergencyMarkers   = new Set();
   _emergencyAhead     = [];
+  _lastEmergencyFp    = '';
   document.getElementById('drive-panel').style.display = 'none';
   document.body.classList.remove('drive-mode-active');
   const titleEl = document.querySelector('#drive-panel .dm-title');
@@ -1285,8 +1296,15 @@ function refreshEmergencyPanel() {
   _emergencyAhead = sorted;
   if (!sorted.length) {
     cards.innerHTML = '<div class="dm-card dm-card--error">Aucune borne dans un rayon de 15 km</div>';
+    _lastEmergencyFp = '';
     return;
   }
+  const fp = sorted.map(({ m }) => `${m._lat},${m._lon}`).join('|');
+  if (fp === _lastEmergencyFp) {
+    _fetchEmergencyAvailability();
+    return;
+  }
+  _lastEmergencyFp = fp;
   let html = `<div class="emergency-header">⚡ ${sorted.length} borne${sorted.length > 1 ? 's' : ''} dans un rayon de 15 km</div>`;
   for (let i = 0; i < sorted.length; i++) {
     const { m, dist } = sorted[i];
@@ -1409,7 +1427,8 @@ function refreshDrivePanel() {
       </div>
     </div>`;
   }
-  _driveAhead  = ahead;
+  _driveAhead.length = 0;
+  ahead.forEach(item => _driveAhead.push(item));
   cards.innerHTML = html;
   _fetchDriveAvailability(false); // auto-fetch on panel refresh, uses cache if fresh
 }
