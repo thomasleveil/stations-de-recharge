@@ -72,11 +72,11 @@ test.describe('U-7 — Drive mode panel', () => {
     await expect(page.locator('.dm-title')).toBeAttached();
   });
 
-  test('enterDriveMode affiche le panneau et masque le panel principal', async ({ page }) => {
+  test('enterDriveMode affiche le panneau et décale le panel principal', async ({ page }) => {
     // enterDriveMode is a function declaration, accessible via window
     await page.evaluate(() => window.enterDriveMode());
     await expect(page.locator('#drive-panel')).toBeVisible();
-    await expect(page.locator('#panel')).toBeHidden();
+    await expect(page.locator('#panel')).toBeVisible();
     // dm-cards has content (at least GPS-lost card since no GPS in test)
     const cards = page.locator('#dm-cards');
     const text = await cards.textContent();
