@@ -12,35 +12,6 @@ let CHEAP_CORRIDOR_KM = Math.max(1, Math.min(50,
 // F-3 — Minimum power filter (kW). Persisted in localStorage.
 let MIN_POWER_KW = parseInt(localStorage.getItem('irve-min-power-kw'), 10) || 150;
 
-// ── Performance recorder (debug) ──────────────────────────────────────────
-// Expose as window.Perf for console access: Perf.report(), Perf.reset()
-const Perf = (function () {
-  const _m = {}, _r = [];
-  return {
-    start(label) { _m[label] = performance.now(); },
-    end(label) {
-      const ms = +(performance.now() - (_m[label] ?? performance.now())).toFixed(2);
-      _r.push({ label, ms, ts: Date.now() });
-      console.debug(`[Perf] ${label}: ${ms} ms`);
-      return ms;
-    },
-    report() { console.table(_r); return JSON.stringify(_r, null, 2); },
-    reset()  { Object.keys(_m).forEach(k => delete _m[k]); _r.length = 0; },
-    results: _r,
-  };
-}());
-window.Perf = Perf;
-
-// Long Tasks observer — logs any main-thread block > 50 ms
-try {
-  new PerformanceObserver(list => {
-    list.getEntries().forEach(e => {
-      Perf.results.push({ label: 'longTask', ms: +e.duration.toFixed(1), ts: Date.now() });
-      console.warn(`[LongTask] ${e.duration.toFixed(0)} ms @ ${e.startTime.toFixed(0)} ms`);
-    });
-  }).observe({ type: 'longtask', buffered: true });
-} catch (_) { /* Safari < 16 */ }
-
 // TomTom API key for real-time charging availability (free tier: 2500 req/day).
 // Set via the ⚙ settings menu — persisted in localStorage.
 let TOMTOM_API_KEY = localStorage.getItem('irve-tomtom-key') || '';
@@ -131,42 +102,6 @@ const cartoTile = L.tileLayer(
   }
 ).addTo(map);
 
-const AERIAL_SOURCES = {
-  esri: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri &mdash; Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP',
-  },
-  ign: {
-    url: 'https://data.geopf.fr/wmts?service=WMTS&request=GetTile&version=1.0.0' +
-         '&tilematrixset=PM&tilematrix={z}&tilecol={x}&tilerow={y}' +
-         '&layer=ORTHOIMAGERY.ORTHOPHOTOS&format=image/jpeg&style=normal',
-    attribution: 'IGN-F/Géoportail',
-  },
-};
-
-let aerialTile = null;
-
-function setAerialSource(src) {
-  const wasShowing = aerialTile && map.hasLayer(aerialTile);
-  if (aerialTile) map.removeLayer(aerialTile);
-  const s = AERIAL_SOURCES[src] || AERIAL_SOURCES.esri;
-  aerialTile = L.tileLayer(s.url, { attribution: s.attribution, maxZoom: 19 });
-  if (wasShowing) aerialTile.addTo(map);
-  localStorage.setItem('irve-aerial-source', src);
-}
-
-setAerialSource(localStorage.getItem('irve-aerial-source') || 'esri');
-
-map.on('zoomend', () => {
-  const z = map.getZoom();
-  if (z >= 18) {
-    if (map.hasLayer(cartoTile)) { map.removeLayer(cartoTile); aerialTile.addTo(map); }
-  } else {
-    if (map.hasLayer(aerialTile)) { map.removeLayer(aerialTile); cartoTile.addTo(map); }
-  }
-});
-
-
 // ── Route state (declared early — used by isVisible) ──────────────────────
 
 let ROUTE_BUFFER_KM = 0.2;
@@ -202,8 +137,6 @@ function isCheapVisible(m) {
 }
 
 function updateVisibility() {
-  Perf.start('updateVisibility');
-
   // ── Piste 2.2 : delta-updates ──────────────────────────────────────────
   // Compute the next-visible sets first (O(N) but no DOM/canvas touches).
   const nextVisMain  = new Set();
@@ -245,11 +178,12 @@ function updateVisibility() {
     for (const m of _prevVisCheap){ if (!nextVisCheap.has(m))  { m.setStyle({ opacity: 0, fillOpacity: 0 });    m.options.interactive = false; if (m._el) m._el.style.pointerEvents = 'none'; setStyleCount++; } }
   }
 
-  _prevVisMain  = nextVisMain;
+  const tmpMain = _prevVisMain;
+  _prevVisMain = nextVisMain;
+  if (tmpMain) tmpMain.clear();
+  const tmpCheap = _prevVisCheap;
   _prevVisCheap = nextVisCheap;
-
-  Perf.results.push({ label: 'setStyle_count', ms: setStyleCount, ts: Date.now() });
-  console.debug(`[Perf] setStyle_count: ${setStyleCount} / ${markers.length + cheapMarkers.length}`);
+  if (tmpCheap) tmpCheap.clear();
 
   if (routeActive) {
     subEl.textContent = `${count} station${count !== 1 ? 's' : ''} sur le trajet`;
@@ -259,15 +193,12 @@ function updateVisibility() {
 
   updateLegend(_prevVisMain, _prevVisCheap);
   // F-9b — preferred styling now applied inline in the delta loop above
-  Perf.end('updateVisibility');
 }
 
 // Piste 3.2 — legend hash cache: avoid DOM rebuild when nothing changed.
 let _lastLegendKey = '';
 
 function updateLegend(visMain, visCheap) {
-  Perf.start('updateLegend');
-
   // Count visible stations per operator (main CCS markers)
   // When called with pre-computed sets from updateVisibility(), use them directly
   // instead of re-iterating all markers with isVisible().
@@ -305,10 +236,7 @@ function updateLegend(visMain, visCheap) {
     .map(([k,v]) => `${k}:${v.count}`).join(',');
   const key = `${routeActive ? 1 : 0}|${autreCount}|${mainPart}|${cheapPart}`;
 
-  if (key === _lastLegendKey) {
-    Perf.end('updateLegend'); // skip — DOM already up to date
-    return;
-  }
+  if (key === _lastLegendKey) return;
   _lastLegendKey = key;
 
   // DOM rebuild (only when fingerprint changed)
@@ -333,7 +261,6 @@ function updateLegend(visMain, visCheap) {
       .forEach(({ op, count }) => appendLegendItem(op.name, op.color, count, true));
   }
 
-  Perf.end('updateLegend');
 }
 
 function appendLegendItem(name, color, count, cheap) {
@@ -494,7 +421,6 @@ function buildMarkers(rows) {
     if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
   }
   rows = [..._locSeen.values()];
-  Perf.start('buildMarkers');
   for (const p of rows) {
     const op = getOperator(p);
     const displayCount = p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : (parseInt(p.nbre_pdc) || 1);
@@ -536,7 +462,6 @@ function buildMarkers(rows) {
     circle.addTo(map);
     markers.push(circle);
   }
-  Perf.end('buildMarkers');
 }
 
 // ── Budget network marker builder ─────────────────────────────────────────
@@ -573,7 +498,6 @@ function buildCheapMarkers(rows) {
     if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
   }
   rows = [..._locSeen.values()];
-  Perf.start('buildCheapMarkers');
   for (const p of rows) {
     let op = getOperator(p);
     if (op.name === 'ENGIE Vianeo') op = { ...op, name: 'ENGIE Vianeo - B&B HOTELS' };
@@ -622,18 +546,15 @@ function buildCheapMarkers(rows) {
     circle._el = circle.getElement(); // piste 2.4 — cache _el, avoid DOM lookup in updateVisibility
     cheapMarkers.push(circle);
   }
-  Perf.end('buildCheapMarkers');
 }
 
-/** Format a value for popup display — shared by buildPopup and buildCheapPopup. */
-function fmt(v, fallback = '—') { return (v && String(v).trim()) ? v : fallback; }
-
 function buildCheapPopup(p, op) {
-  const addr = fmt(p.adresse);
+  const hours = p.horaires || '—';
+  const addr = p.adresse || '—';
   const shortAddr = addr.length > 60 ? addr.slice(0, 60) + '…' : addr;
   return `
     <div>
-      <div class="popup-station">${fmt(p.nom_station)}</div>
+      <div class="popup-station">${p.nom_station || '—'}</div>
       <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
       <span class="popup-cheap-badge">€ Abordable</span>
       ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
@@ -642,10 +563,10 @@ function buildCheapPopup(p, op) {
         <span class="popup-power">${p.max_power_kw ? p.max_power_kw + ' kW' : '—'}</span>
 
         <span class="popup-label">Nb. de bornes</span>
-        <span>${fmt(p.nbre_pdc)}</span>
+        <span>${p.nbre_pdc || '—'}</span>
 
         <span class="popup-label">Horaires</span>
-        <span>${fmt(p.horaires).length > 50 ? fmt(p.horaires).slice(0, 50) + '…' : fmt(p.horaires)}</span>
+        <span>${hours.length > 50 ? hours.slice(0, 50) + '…' : hours}</span>
 
         <span class="popup-label">Adresse</span>
         <span>${shortAddr}</span>
@@ -698,6 +619,10 @@ async function initApp() {
   const etagChanged = serverEtag && storedEtag && serverEtag !== storedEtag;
   if (cached && Date.now() - cached.ts < CACHE_TTL && !etagChanged) {
     showDataFreshness(cached.ts);
+    markers.forEach(m => map.removeLayer(m));
+    markers.length = 0;
+    cheapMarkers.forEach(m => map.removeLayer(m));
+    cheapMarkers.length = 0;
     buildMarkers(cached.rows.filter(r => !r.cheap));
     buildCheapMarkers(cached.rows.filter(r => r.cheap));
     updateVisibility();
@@ -785,6 +710,10 @@ async function initApp() {
   } catch (_) {}
 
   // 7. Build markers and refresh map
+  markers.forEach(m => map.removeLayer(m));
+  markers.length = 0;
+  cheapMarkers.forEach(m => map.removeLayer(m));
+  cheapMarkers.length = 0;
   buildMarkers(rows.filter(r => !r.cheap));
   buildCheapMarkers(rows.filter(r => r.cheap));
   updateVisibility();
@@ -803,15 +732,15 @@ initApp()
 // ── Popup builder ─────────────────────────────────────────────────────────
 
 function buildPopup(p, op) {
-  const hours = fmt(p.horaires);
+  const hours = p.horaires || '—';
   const shortHours = hours.length > 50 ? hours.slice(0, 50) + '…' : hours;
-  const addr = fmt(p.adresse);
+  const addr = p.adresse || '—';
   const shortAddr = addr.length > 60 ? addr.slice(0, 60) + '…' : addr;
   const typeLabel = p.station_type === 'parking' ? 'Parking privé' : 'Aire dédiée';
 
   return `
     <div>
-      <div class="popup-station">${fmt(p.nom_station)}</div>
+      <div class="popup-station">${p.nom_station || '—'}</div>
       <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
       ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
       <div class="popup-grid">
@@ -825,7 +754,7 @@ function buildPopup(p, op) {
         <span>${p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : '—'}</span>
 
         <span class="popup-label">Nb. de bornes total</span>
-        <span>${fmt(p.nbre_pdc)}</span>
+        <span>${p.nbre_pdc || '—'}</span>
 
         <span class="popup-label">Horaires</span>
         <span>${shortHours}</span>
@@ -1042,10 +971,6 @@ async function applyRouteFilter(routeLine, onProgress) {
   const nearbyCheap = cheapMarkers.filter(
     m => m._lon >= minLon && m._lon <= maxLon && m._lat >= minLat && m._lat <= maxLat
   );
-  console.debug(`[Perf] bbox_filter: ${nearbyMarkers.length}/${markers.length} main, ${nearbyCheap.length}/${cheapMarkers.length} cheap`);
-  Perf.results.push({ label: 'main_in_bbox',  ms: nearbyMarkers.length, ts: Date.now() });
-  Perf.results.push({ label: 'cheap_in_bbox', ms: nearbyCheap.length,   ts: Date.now() });
-
   // Pack only bbox-filtered markers into transferable arrays
   const stationsFlat = new Float64Array(nearbyMarkers.length * 2);
   for (let i = 0; i < nearbyMarkers.length; i++) {
@@ -1058,8 +983,6 @@ async function applyRouteFilter(routeLine, onProgress) {
     cheapStationsFlat[i * 2 + 1] = nearbyCheap[i]._lat;
   }
 
-  Perf.start('worker_roundtrip');
-
   return new Promise(resolve => {
     const worker = getFilterWorker();
     worker.onmessage = ({ data }) => {
@@ -1067,8 +990,6 @@ async function applyRouteFilter(routeLine, onProgress) {
         if (onProgress) onProgress(data.done, data.total);
       } else {
         // data.type === 'done'
-        Perf.end('worker_roundtrip');
-
         const results      = new Float32Array(data.results);
         const progressFlat = new Float32Array(data.progressFlat);
 
@@ -1305,6 +1226,7 @@ let emergencyModeActive = false;
 let _emergencyMarkers   = new Set();
 let _emergencyAhead     = [];   // sorted array {m, dist} for availability fetch
 let _emergencyFetchInProgress = false;
+let _lastEmergencyFp    = '';   // fingerprint cache — skip DOM rebuild if unchanged
 
 function _syncDriveModeBtn() {
   const btn = document.getElementById('drive-mode-btn');
@@ -1322,11 +1244,15 @@ function enterEmergencyMode() {
   if (!geoState.available || !markers.length) return;
   if (driveModeActive) exitDriveMode();
   emergencyModeActive = true;
-  // Precompute markers within 15 km (turf GeoJSON uses [lon, lat])
-  const pos = turf.point([geoState.lng, geoState.lat]);
+  // Precompute markers within 15 km — bbox pre-filter then haversine
+  // 15 km ≈ 0.135° lat, 0.18° lon at France latitudes
+  const LAT_DELTA = 0.135, LON_DELTA = 0.18;
+  const latMin = geoState.lat - LAT_DELTA, latMax = geoState.lat + LAT_DELTA;
+  const lonMin = geoState.lng - LON_DELTA, lonMax = geoState.lng + LON_DELTA;
   _emergencyMarkers = new Set();
   for (const m of markers) {
-    if (turf.distance(pos, turf.point([m._lon, m._lat]), { units: 'kilometers' }) <= 15) {
+    if (m._lat < latMin || m._lat > latMax || m._lon < lonMin || m._lon > lonMax) continue;
+    if (_geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) <= 15_000) {
       _emergencyMarkers.add(m);
     }
   }
@@ -1351,6 +1277,7 @@ function exitEmergencyMode() {
   emergencyModeActive = false;
   _emergencyMarkers   = new Set();
   _emergencyAhead     = [];
+  _lastEmergencyFp    = '';
   document.getElementById('drive-panel').style.display = 'none';
   document.body.classList.remove('drive-mode-active');
   const titleEl = document.querySelector('#drive-panel .dm-title');
@@ -1369,8 +1296,15 @@ function refreshEmergencyPanel() {
   _emergencyAhead = sorted;
   if (!sorted.length) {
     cards.innerHTML = '<div class="dm-card dm-card--error">Aucune borne dans un rayon de 15 km</div>';
+    _lastEmergencyFp = '';
     return;
   }
+  const fp = sorted.map(({ m }) => `${m._lat},${m._lon}`).join('|');
+  if (fp === _lastEmergencyFp) {
+    _fetchEmergencyAvailability();
+    return;
+  }
+  _lastEmergencyFp = fp;
   let html = `<div class="emergency-header">⚡ ${sorted.length} borne${sorted.length > 1 ? 's' : ''} dans un rayon de 15 km</div>`;
   for (let i = 0; i < sorted.length; i++) {
     const { m, dist } = sorted[i];
@@ -1446,12 +1380,15 @@ function refreshDrivePanel() {
     _lastDriveFingerprint = '';
     return;
   }
-  const ahead = markers
-    .filter(m => isVisible(m) && m._progressOnRoute !== undefined)
-    .map(m => ({ m, dist: _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000 }))
-    .filter(({ dist }) => dist > 0.5)
-    .sort((a, b) => a.dist - b.dist)
-    .slice(0, 10);
+  const sorted = [];
+  for (const m of markers) {
+    if (!isVisible(m) || m._progressOnRoute === undefined) continue;
+    const dist = _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000;
+    if (dist <= 0.5) continue;
+    sorted.push({ m, dist });
+  }
+  sorted.sort((a, b) => a.m._progressOnRoute - b.m._progressOnRoute);
+  const ahead = sorted.slice(0, 10);
   if (!ahead.length) {
     cards.innerHTML = '<div class="dm-card dm-card--done">✓ Destination proche</div>';
     _driveAhead = [];
@@ -1490,7 +1427,8 @@ function refreshDrivePanel() {
       </div>
     </div>`;
   }
-  _driveAhead  = ahead;
+  _driveAhead.length = 0;
+  ahead.forEach(item => _driveAhead.push(item));
   cards.innerHTML = html;
   _fetchDriveAvailability(false); // auto-fetch on panel refresh, uses cache if fresh
 }
@@ -1632,21 +1570,15 @@ async function calculateRoute() {
     requestAnimationFrame(() => requestAnimationFrame(r));
   });
 
-  const t0 = performance.now();
-
   try {
     const useGeoStart = !startVal && geoState.available;
     await step(useGeoStart ? '📍 Position GPS du départ…' : '📍 Géocodage du départ…');
-    const t1 = performance.now();
     const from = useGeoStart ? [geoState.lng, geoState.lat] : (startInput._coords || await geocode(startVal));
     await step('📍 Géocodage de l\'arrivée…');
     const to = endInput._coords || await geocode(endVal);
-    console.log(`geocode: ${Math.round(performance.now() - t1)} ms`);
 
     await step('🗺 Calcul d\'itinéraire…');
-    const t2 = performance.now();
     const route = await fetchRoute(from, to);
-    console.log(`osrm: ${Math.round(performance.now() - t2)} ms`);
 
     if (routeLayer) map.removeLayer(routeLayer);
     // Simplify display geometry only — corridor filtering uses full-precision route.geometry.coordinates
@@ -1672,17 +1604,11 @@ async function calculateRoute() {
     info.className = 'route-progress';
     info.textContent = `⚡ Filtrage 0/${markers.length}…`;
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-    const t3 = performance.now();
     routeActive = true;
     await applyRouteFilter(
       turf.lineString(route.geometry.coordinates),
       (done, total) => { info.textContent = `⚡ Filtrage ${done}/${total}…`; }
     );
-    console.log(`applyRouteFilter: ${Math.round(performance.now() - t3)} ms`);
-
-    // Cheap marker distances are now computed in the worker (piste 2.1).
-    // applyRouteFilter() above already called updateVisibility() + staggeredFadeIn().
-    console.log(`total: ${Math.round(performance.now() - t0)} ms`);
 
     currentRouteKm = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
     info.className = 'route-stat';
@@ -2100,15 +2026,6 @@ function applyPreferredStyling() {
   const btn  = document.getElementById('settings-btn');
   const menu = document.getElementById('settings-menu');
   const bustBtn = document.getElementById('cache-bust-btn');
-
-  // Sync radio to current aerial source
-  const savedSrc = localStorage.getItem('irve-aerial-source') || 'esri';
-  const radio = menu.querySelector(`input[name="aerial-src"][value="${savedSrc}"]`);
-  if (radio) radio.checked = true;
-
-  menu.querySelectorAll('input[name="aerial-src"]').forEach(r => {
-    r.addEventListener('change', () => setAerialSource(r.value));
-  });
 
   btn.addEventListener('click', e => {
     e.stopPropagation();
