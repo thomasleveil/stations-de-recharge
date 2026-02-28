@@ -997,8 +997,10 @@ html, body {
 
 .dm-avail { font-size: 11px; min-height: 14px; }
 
-.dm-card[data-drive-idx] { cursor: pointer; }
-.dm-card[data-drive-idx]:active { opacity: 0.75; }
+.dm-card[data-drive-idx],
+.dm-card[data-emergency-idx] { cursor: pointer; }
+.dm-card[data-drive-idx]:active,
+.dm-card[data-emergency-idx]:active { opacity: 0.75; }
 
 .dm-preferred-star { color: #f59e0b; flex-shrink: 0; }
 
@@ -1134,56 +1136,6 @@ html, body {
   font-weight: 600;
 }
 
-.emergency-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.emergency-op-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.emergency-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.emergency-op {
-  display: block;
-  font-weight: 700;
-  font-size: 13px;
-  color: #1e293b;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.emergency-station {
-  display: block;
-  font-size: 12px;
-  color: #475569;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.emergency-dist {
-  display: block;
-  font-size: 12px;
-  color: #64748b;
-}
-
-.emergency-avail {
-  display: block;
-  font-size: 11px;
-  margin-top: 2px;
-}
 
 /* ── P3 — Pricing tiers ──────────────────────────────────────── */
 

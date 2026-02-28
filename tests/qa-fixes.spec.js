@@ -128,7 +128,7 @@ test.describe('QA-3 — emergency mode: click sur card centre la carte', () => {
     // Patch map.setView avant tout
     await page.evaluate(() => {
       window.__mapViewCalls = [];
-      const orig = window._leafletMap.setView.bind(window.map);
+      const orig = window._leafletMap.setView.bind(window._leafletMap);
       window._leafletMap.setView = (center, zoom) => {
         const lat = Array.isArray(center) ? center[0] : center.lat;
         const lon = Array.isArray(center) ? center[1] : center.lng;
@@ -137,36 +137,29 @@ test.describe('QA-3 — emergency mode: click sur card centre la carte', () => {
       };
     });
 
-    // Injecter une emergency-card et exposer un faux _emergencyAhead via le DOM
-    // Le handler lit _emergencyAhead[idx] — variable interne, non accessible.
-    // On teste en mode intégration : enterEmergencyMode() avec GPS mock + markers injectés.
+    // Injecter une dm-card avec data-emergency-idx (nouvelle structure unifiée)
     await page.evaluate(({ lat, lon }) => {
-      // Injecter un faux marqueur dans window pour rendre enterEmergencyMode() opérationnel.
-      // markers est un let interne — on simule via la version minimale du handler :
-      // reproduire exactement ce que ferait le click handler si _emergencyAhead était peuplé.
       const cards = document.getElementById('dm-cards');
       cards.innerHTML = `
         <div class="emergency-header">⚡ 1 borne</div>
-        <div class="emergency-card" data-emergency-idx="0">
-          <div class="emergency-info">
-            <span class="emergency-op">IonityTest</span>
-            <span class="emergency-dist">3.2 km</span>
+        <div class="dm-card" data-emergency-idx="0">
+          <div class="dm-card-left">
+            <div class="dm-distance">3.2<span class="dm-unit"> km</span></div>
+            <a href="#" class="nav-btn nav-btn-drive">🧭</a>
           </div>
-          <a href="#" class="nav-btn nav-btn-sq">🧭</a>
+          <div class="dm-card-right">
+            <div class="dm-operator">IonityTest</div>
+            <div class="dm-avail"></div>
+          </div>
         </div>`;
       document.getElementById('drive-panel').style.display = 'flex';
 
-      // Exposer un faux _emergencyAhead sur window pour que le handler le trouve.
-      // Le handler fait : const emergencyCard = e.target.closest('.emergency-card[data-emergency-idx]');
-      // puis : _emergencyAhead[idx] — qui est la variable interne.
-      // On ne peut pas l'injecter directement, mais on peut patcher le handler
-      // en re-enregistrant un listener identique avec nos données.
       window.__testEmergencyAhead = [{ m: { _lat: lat, _lon: lon } }];
 
-      // Ré-enregistrer un handler supplémentaire sur dm-cards qui utilise notre fake
+      // Listener supplémentaire qui utilise notre fake _emergencyAhead
       cards.addEventListener('click', function qaTestHandler(e) {
         if (e.target.closest('.nav-btn')) return;
-        const card = e.target.closest('.emergency-card[data-emergency-idx]');
+        const card = e.target.closest('.dm-card[data-emergency-idx]');
         if (!card) return;
         const idx = parseInt(card.dataset.emergencyIdx, 10);
         const entry = window.__testEmergencyAhead?.[idx];
@@ -177,8 +170,8 @@ test.describe('QA-3 — emergency mode: click sur card centre la carte', () => {
       });
     }, { lat: targetLat, lon: targetLon });
 
-    // Cliquer sur le texte (pas sur le bouton nav)
-    await page.locator('.emergency-info').first().click();
+    // Cliquer sur le texte dans dm-card-right (pas sur le bouton nav)
+    await page.locator('.dm-card-right').first().click();
 
     const calls = await page.evaluate(() => window.__mapViewCalls ?? []);
     expect(calls.length).toBeGreaterThan(0);
@@ -188,28 +181,32 @@ test.describe('QA-3 — emergency mode: click sur card centre la carte', () => {
   });
 
   test('click sur le bouton nav-btn NE centre PAS la carte (guard)', async ({ page }) => {
-    // Patch map.setView
     await page.evaluate(() => {
       window.__mapViewCalls = [];
-      const orig = window._leafletMap.setView.bind(window.map);
+      const orig = window._leafletMap.setView.bind(window._leafletMap);
       window._leafletMap.setView = (center, zoom) => {
         window.__mapViewCalls.push({ center, zoom });
         return orig(center, zoom);
       };
     });
 
-    // Injecter une emergency-card avec un nav-btn
+    // Injecter une dm-card avec data-emergency-idx et nav-btn
     await page.evaluate(() => {
       const cards = document.getElementById('dm-cards');
       cards.innerHTML = `
-        <div class="emergency-card" data-emergency-idx="0">
-          <div class="emergency-info"><span class="emergency-op">TestNet</span></div>
-          <a href="#" class="nav-btn nav-btn-sq" id="qa-nav-btn">🧭</a>
+        <div class="dm-card" data-emergency-idx="0">
+          <div class="dm-card-left">
+            <div class="dm-distance">5<span class="dm-unit"> km</span></div>
+            <a href="#" class="nav-btn nav-btn-drive" id="qa-nav-btn">🧭</a>
+          </div>
+          <div class="dm-card-right">
+            <div class="dm-operator">TestNet</div>
+          </div>
         </div>`;
       document.getElementById('drive-panel').style.display = 'flex';
     });
 
-    // Cliquer sur le bouton nav (doit être stoppé par le guard)
+    // Cliquer sur le nav-btn (doit être stoppé par le guard)
     await page.evaluate(() => {
       document.getElementById('qa-nav-btn').dispatchEvent(
         new MouseEvent('click', { bubbles: true, cancelable: true })
@@ -217,22 +214,23 @@ test.describe('QA-3 — emergency mode: click sur card centre la carte', () => {
     });
 
     const calls = await page.evaluate(() => window.__mapViewCalls ?? []);
-    // Le guard `if (e.target.closest('.nav-btn')) return;` doit empêcher setView
     expect(calls.length).toBe(0);
   });
 
-  test('emergency-card possede l attribut data-emergency-idx', async ({ page }) => {
+  test('dm-card avec data-emergency-idx est correctement structurée', async ({ page }) => {
     await page.evaluate(() => {
       document.getElementById('dm-cards').innerHTML = `
-        <div class="emergency-card" data-emergency-idx="0">
-          <div class="emergency-info"><span>Test</span></div>
+        <div class="dm-card" data-emergency-idx="0">
+          <div class="dm-card-left"><div class="dm-distance">3<span class="dm-unit"> km</span></div></div>
+          <div class="dm-card-right"><div class="dm-operator">TestA</div></div>
         </div>
-        <div class="emergency-card" data-emergency-idx="1">
-          <div class="emergency-info"><span>Test 2</span></div>
+        <div class="dm-card" data-emergency-idx="1">
+          <div class="dm-card-left"><div class="dm-distance">5<span class="dm-unit"> km</span></div></div>
+          <div class="dm-card-right"><div class="dm-operator">TestB</div></div>
         </div>`;
     });
     const count = await page.evaluate(() =>
-      document.querySelectorAll('.emergency-card[data-emergency-idx]').length
+      document.querySelectorAll('.dm-card[data-emergency-idx]').length
     );
     expect(count).toBe(2);
   });

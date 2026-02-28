@@ -1375,17 +1375,18 @@ function refreshEmergencyPanel() {
   for (let i = 0; i < sorted.length; i++) {
     const { m, dist } = sorted[i];
     const distStr = dist < 10 ? dist.toFixed(1) : String(Math.round(dist));
-    const power   = m._maxPowerKw ? ` • ${Math.round(m._maxPowerKw)} kW` : '';
-    const name    = m._name ? `<span class="emergency-station">${m._name}</span>` : '';
-    html += `<div class="emergency-card" data-emergency-idx="${i}">
-      <div class="emergency-op-dot" style="background:${m._op.color}"></div>
-      <div class="emergency-info">
-        <span class="emergency-op">${m._op.name}</span>
-        ${name}
-        <span class="emergency-dist">${distStr} km${power}</span>
-        <span class="emergency-avail"></span>
+    const power   = m._maxPowerKw ? `${Math.round(m._maxPowerKw)} kW` : '';
+    html += `<div class="dm-card" data-emergency-idx="${i}">
+      <div class="dm-card-left">
+        <div class="dm-distance">${distStr}<span class="dm-unit"> km</span></div>
+        <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-drive" target="_blank" rel="noopener">🧭</a>
       </div>
-      <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-sq" target="_blank" rel="noopener">🧭</a>
+      <div class="dm-card-right">
+        <div class="dm-operator"><span class="dm-op-dot" style="background:${m._op.color}"></span>${m._op.name}</div>
+        ${m._name ? `<div class="dm-name">${m._name}</div>` : ''}
+        ${power ? `<div class="dm-power">${power}</div>` : ''}
+        <div class="dm-avail"></div>
+      </div>
     </div>`;
   }
   cards.innerHTML = html;
@@ -1401,8 +1402,8 @@ async function _fetchEmergencyAvailability() {
       if (i > 0) await new Promise(r => setTimeout(r, 300));
       if (!emergencyModeActive) break;
       const { m } = _emergencyAhead[i];
-      const cardEl  = document.querySelector(`#dm-cards .emergency-card[data-emergency-idx="${i}"]`);
-      const availEl = cardEl?.querySelector('.emergency-avail');
+      const cardEl  = document.querySelector(`#dm-cards .dm-card[data-emergency-idx="${i}"]`);
+      const availEl = cardEl?.querySelector('.dm-avail');
       if (!availEl) continue;
       if (!m._availCache) availEl.innerHTML = AVAIL_SPINNER;
       const html = await fetchAvailability(m);
@@ -1417,6 +1418,8 @@ function enterDriveMode() {
   driveModeActive = true;
   document.getElementById('drive-panel').style.display = 'flex';
   document.body.classList.add('drive-mode-active');
+  const titleEl = document.querySelector('#drive-panel .dm-title');
+  if (titleEl) titleEl.textContent = 'Mode conduite';
   refreshDrivePanel();
   map.invalidateSize();
 }
@@ -1536,7 +1539,7 @@ document.getElementById('dm-cards').addEventListener('click', e => {
     return;
   }
 
-  const emergencyCard = e.target.closest('.emergency-card[data-emergency-idx]');
+  const emergencyCard = e.target.closest('.dm-card[data-emergency-idx]');
   if (emergencyCard && _emergencyAhead.length) {
     const idx = parseInt(emergencyCard.dataset.emergencyIdx, 10);
     if (!isNaN(idx) && _emergencyAhead[idx]) {
