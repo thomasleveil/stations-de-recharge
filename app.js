@@ -1322,11 +1322,10 @@ function enterEmergencyMode() {
   if (!geoState.available || !markers.length) return;
   if (driveModeActive) exitDriveMode();
   emergencyModeActive = true;
-  // Precompute markers within 15 km (turf GeoJSON uses [lon, lat])
-  const pos = turf.point([geoState.lng, geoState.lat]);
+  // Precompute markers within 15 km — use inline haversine (no turf object allocations)
   _emergencyMarkers = new Set();
   for (const m of markers) {
-    if (turf.distance(pos, turf.point([m._lon, m._lat]), { units: 'kilometers' }) <= 15) {
+    if (_geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) <= 15_000) {
       _emergencyMarkers.add(m);
     }
   }
