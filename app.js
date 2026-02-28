@@ -192,6 +192,7 @@ let _prevVisCheap = null;
 function isVisible(m) {
   // F-3 — minimum power filter
   if (m._maxPowerKw !== undefined && m._maxPowerKw < MIN_POWER_KW) return false;
+  if (emergencyModeActive && _emergencyMarkers.has(m)) return true;
   return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
 }
 
@@ -1298,12 +1299,79 @@ document.getElementById('route-results-toggle').addEventListener('click', () => 
 
 // ── U-7 — Drive mode ──────────────────────────────────────────────────────
 
-let driveModeActive = false;
+let driveModeActive    = false;
+let emergencyModeActive = false;
+let _emergencyMarkers   = new Set();
 
 function _syncDriveModeBtn() {
   const btn = document.getElementById('drive-mode-btn');
   if (!btn) return;
   btn.style.display = (routeActive && geoState.available) ? '' : 'none';
+}
+
+function _syncEmergencyBtn() {
+  const btn = document.getElementById('emergency-btn');
+  if (!btn) return;
+  btn.style.display = geoState.available ? '' : 'none';
+}
+
+function enterEmergencyMode() {
+  if (!geoState.available || !markers.length) return;
+  if (driveModeActive) exitDriveMode();
+  emergencyModeActive = true;
+  // Precompute markers within 15 km (turf GeoJSON uses [lon, lat])
+  const pos = turf.point([geoState.lng, geoState.lat]);
+  _emergencyMarkers = new Set();
+  for (const m of markers) {
+    if (turf.distance(pos, turf.point([m._lon, m._lat]), { units: 'kilometers' }) <= 15) {
+      _emergencyMarkers.add(m);
+    }
+  }
+  document.getElementById('drive-panel').style.display = 'flex';
+  document.body.classList.add('drive-mode-active');
+  const titleEl = document.querySelector('#drive-panel .dm-title');
+  if (titleEl) titleEl.textContent = 'Bornes proches — 15 km';
+  refreshEmergencyPanel();
+  updateVisibility();
+  map.invalidateSize();
+}
+
+function exitEmergencyMode() {
+  emergencyModeActive = false;
+  _emergencyMarkers   = new Set();
+  document.getElementById('drive-panel').style.display = 'none';
+  document.body.classList.remove('drive-mode-active');
+  const titleEl = document.querySelector('#drive-panel .dm-title');
+  if (titleEl) titleEl.textContent = 'Mode conduite';
+  updateVisibility();
+  map.invalidateSize();
+}
+
+function refreshEmergencyPanel() {
+  if (!emergencyModeActive) return;
+  const cards = document.getElementById('dm-cards');
+  const sorted = [..._emergencyMarkers]
+    .map(m => ({ m, dist: _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000 }))
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, 20);
+  if (!sorted.length) {
+    cards.innerHTML = '<div class="dm-card dm-card--error">Aucune borne dans un rayon de 15 km</div>';
+    return;
+  }
+  let html = `<div class="emergency-header">⚡ ${sorted.length} borne${sorted.length > 1 ? 's' : ''} dans un rayon de 15 km</div>`;
+  for (const { m, dist } of sorted) {
+    const distStr = dist < 10 ? dist.toFixed(1) : String(Math.round(dist));
+    const power   = m._maxPowerKw ? ` • ${Math.round(m._maxPowerKw)} kW` : '';
+    html += `<div class="emergency-card">
+      <div class="emergency-op-dot" style="background:${m._op.color}"></div>
+      <div class="emergency-info">
+        <span class="emergency-name">${m._name || m._op.name}</span>
+        <span class="emergency-dist">${distStr} km${power}</span>
+      </div>
+      <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-sq" target="_blank" rel="noopener">🧭</a>
+    </div>`;
+  }
+  cards.innerHTML = html;
 }
 
 function enterDriveMode() {
@@ -1375,8 +1443,7 @@ function refreshDrivePanel() {
         ${m._name ? `<div class="dm-name">${m._name}</div>` : ''}
         ${power ? `<div class="dm-power">${power}</div>` : ''}
         <div class="dm-avail"></div>
-        <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-drive" target="_blank" rel="noopener">Naviguer</a>
-        ${i < ahead.length - 1 ? `<div class="dm-planb">Plan B : ${ahead[i+1].m._name || ahead[i+1].m._op.name} <a href="${navUrl(ahead[i+1].m._lat, ahead[i+1].m._lon)}" target="_blank" rel="noopener" class="dm-planb-link">&rarr;</a></div>` : '<div class="dm-planb dm-planb-last">Dernière borne du corridor</div>'}
+        <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-drive" target="_blank" rel="noopener">🧭</a>
       </div>
     </div>`;
   }
@@ -1386,7 +1453,11 @@ function refreshDrivePanel() {
 }
 
 document.getElementById('drive-mode-btn').addEventListener('click', enterDriveMode);
-document.getElementById('dm-exit').addEventListener('click', exitDriveMode);
+document.getElementById('emergency-btn').addEventListener('click', enterEmergencyMode);
+document.getElementById('dm-exit').addEventListener('click', () => {
+  if (emergencyModeActive) exitEmergencyMode();
+  else exitDriveMode();
+});
 document.getElementById('dm-refresh').addEventListener('click', () => _fetchDriveAvailability(true));
 
 // U-7b — fetch TomTom availability for all drive cards sequentially.
@@ -2193,6 +2264,7 @@ function _onGeoSuccess(pos) {
   }
   _syncGoBtn();
   _syncDriveModeBtn();
+  _syncEmergencyBtn();
 
   // FIX 4 — throttle refreshDrivePanel: skip if < 3s since last refresh AND moved < 100m
   const _driveNow = Date.now();
@@ -2203,6 +2275,7 @@ function _onGeoSuccess(pos) {
   _lastDriveRefreshTime = _driveNow;
   _lastDrivePos = { lat, lon: lng };
   refreshDrivePanel();
+  if (emergencyModeActive) refreshEmergencyPanel();
 }
 
 function _onGeoError(err) {

@@ -842,6 +842,17 @@ html, body {
 }
 .route-btn-drive:hover:not(:disabled) { background: #047857; opacity: 1; }
 
+.route-btn-emergency {
+  flex: none;
+  background: #ef4444;
+  color: white;
+  font-size: 16px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 5px 8px;
+}
+.route-btn-emergency:hover:not(:disabled) { background: #dc2626; opacity: 1; }
+
 /* ── U-7 — Drive mode panel ─────────────────────────────────── */
 
 #drive-panel {
@@ -1036,11 +1047,30 @@ html, body {
 }
 
 .nav-btn-drive {
+  width: 44px;
+  height: 44px;
   min-height: 44px;
-  padding: 8px 14px;
-  font-size: 13px;
+  min-width: 44px;
+  padding: 0;
+  font-size: 20px;
+  line-height: 44px;
   margin-top: 4px;
   text-align: center;
+  border-radius: 10px;
+}
+
+.nav-btn-sq {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0;
+  font-size: 20px;
+  line-height: 44px;
+  margin-top: 0;
+  text-align: center;
+  border-radius: 10px;
+  flex-shrink: 0;
 }
 
 /* ── P2 — Gap warnings and Plan B ────────────────────────────── */
@@ -1082,6 +1112,53 @@ html, body {
 
 .dm-planb-last {
   font-style: italic;
+  color: #64748b;
+}
+
+/* ── Emergency mode — bornes à proximité ─────────────────────── */
+
+.emergency-header {
+  background: #fef2f2;
+  border-bottom: 2px solid #ef4444;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.emergency-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.emergency-op-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.emergency-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.emergency-name {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.emergency-dist {
+  display: block;
+  font-size: 12px;
   color: #64748b;
 }
 
