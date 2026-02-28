@@ -1302,6 +1302,8 @@ document.getElementById('route-results-toggle').addEventListener('click', () => 
 let driveModeActive    = false;
 let emergencyModeActive = false;
 let _emergencyMarkers   = new Set();
+let _emergencyAhead     = [];   // sorted array {m, dist} for availability fetch
+let _emergencyFetchInProgress = false;
 
 function _syncDriveModeBtn() {
   const btn = document.getElementById('drive-mode-btn');
@@ -1333,12 +1335,21 @@ function enterEmergencyMode() {
   if (titleEl) titleEl.textContent = 'Bornes proches — 15 km';
   refreshEmergencyPanel();
   updateVisibility();
+  // Center map on GPS + fit all nearby markers
+  const bounds = L.latLngBounds([[geoState.lat, geoState.lng]]);
+  for (const m of _emergencyMarkers) bounds.extend([m._lat, m._lon]);
+  if (_emergencyMarkers.size > 0) {
+    map.fitBounds(bounds, { padding: [60, 40], maxZoom: 13 });
+  } else {
+    map.setView([geoState.lat, geoState.lng], 12);
+  }
   map.invalidateSize();
 }
 
 function exitEmergencyMode() {
   emergencyModeActive = false;
   _emergencyMarkers   = new Set();
+  _emergencyAhead     = [];
   document.getElementById('drive-panel').style.display = 'none';
   document.body.classList.remove('drive-mode-active');
   const titleEl = document.querySelector('#drive-panel .dm-title');
@@ -1354,24 +1365,51 @@ function refreshEmergencyPanel() {
     .map(m => ({ m, dist: _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000 }))
     .sort((a, b) => a.dist - b.dist)
     .slice(0, 20);
+  _emergencyAhead = sorted;
   if (!sorted.length) {
     cards.innerHTML = '<div class="dm-card dm-card--error">Aucune borne dans un rayon de 15 km</div>';
     return;
   }
   let html = `<div class="emergency-header">⚡ ${sorted.length} borne${sorted.length > 1 ? 's' : ''} dans un rayon de 15 km</div>`;
-  for (const { m, dist } of sorted) {
+  for (let i = 0; i < sorted.length; i++) {
+    const { m, dist } = sorted[i];
     const distStr = dist < 10 ? dist.toFixed(1) : String(Math.round(dist));
     const power   = m._maxPowerKw ? ` • ${Math.round(m._maxPowerKw)} kW` : '';
-    html += `<div class="emergency-card">
+    const name    = m._name ? `<span class="emergency-station">${m._name}</span>` : '';
+    html += `<div class="emergency-card" data-emergency-idx="${i}">
       <div class="emergency-op-dot" style="background:${m._op.color}"></div>
       <div class="emergency-info">
-        <span class="emergency-name">${m._name || m._op.name}</span>
+        <span class="emergency-op">${m._op.name}</span>
+        ${name}
         <span class="emergency-dist">${distStr} km${power}</span>
+        <span class="emergency-avail"></span>
       </div>
       <a href="${navUrl(m._lat, m._lon)}" class="nav-btn nav-btn-sq" target="_blank" rel="noopener">🧭</a>
     </div>`;
   }
   cards.innerHTML = html;
+  _fetchEmergencyAvailability();
+}
+
+async function _fetchEmergencyAvailability() {
+  if (!TOMTOM_API_KEY || !_emergencyAhead.length) return;
+  if (_emergencyFetchInProgress) return;
+  _emergencyFetchInProgress = true;
+  try {
+    for (let i = 0; i < _emergencyAhead.length; i++) {
+      if (i > 0) await new Promise(r => setTimeout(r, 300));
+      if (!emergencyModeActive) break;
+      const { m } = _emergencyAhead[i];
+      const cardEl  = document.querySelector(`#dm-cards .emergency-card[data-emergency-idx="${i}"]`);
+      const availEl = cardEl?.querySelector('.emergency-avail');
+      if (!availEl) continue;
+      if (!m._availCache) availEl.innerHTML = AVAIL_SPINNER;
+      const html = await fetchAvailability(m);
+      if (availEl.isConnected) availEl.innerHTML = html;
+    }
+  } finally {
+    _emergencyFetchInProgress = false;
+  }
 }
 
 function enterDriveMode() {
