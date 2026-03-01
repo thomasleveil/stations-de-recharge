@@ -68,20 +68,38 @@ const _savedLat  = parseFloat(localStorage.getItem('irve-map-lat'))  || 45.1;
 const _savedLon  = parseFloat(localStorage.getItem('irve-map-lon'))  || 4.8;
 const _savedZoom = parseInt(localStorage.getItem('irve-map-zoom'), 10) || 7;
 
-const map = L.map('map', {
-  center: [_savedLat, _savedLon],
-  zoom: _savedZoom,
-  zoomControl: false,
-  preferCanvas: true,
-});
-window._leafletMap = map;  // exposed for Playwright tests
-L.control.zoom({ position: 'topright' }).addTo(map);
+const CARTO_STYLE = {
+  version: 8,
+  sources: {
+    'carto-light': {
+      type: 'raster',
+      tiles: [
+        'https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
+        'https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
+        'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
+        'https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
+      ],
+      tileSize: 256,
+      attribution:
+        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+        '© <a href="https://carto.com/attributions">CARTO</a>',
+      maxzoom: 19,
+    },
+  },
+  layers: [{ id: 'carto-light', type: 'raster', source: 'carto-light' }],
+};
 
-// Shared canvas renderer with padding so markers near viewport edges stay visible during panning.
-const canvasRenderer = L.canvas({ padding: 0.5 });
+const map = new maplibregl.Map({
+  container: 'map',
+  style: CARTO_STYLE,
+  center: [_savedLon, _savedLat],  // MapLibre uses [lng, lat]
+  zoom: _savedZoom,
+});
+window._map = map;  // exposed for Playwright tests
+map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
 let _saveMapTimer = null;
-map.on('moveend zoomend', () => {
+function _saveMapPosition() {
   clearTimeout(_saveMapTimer);
   _saveMapTimer = setTimeout(() => {
     const c = map.getCenter();
@@ -89,26 +107,18 @@ map.on('moveend zoomend', () => {
     localStorage.setItem('irve-map-lon',  c.lng.toFixed(6));
     localStorage.setItem('irve-map-zoom', map.getZoom());
   }, 500);
-});
-
-const cartoTile = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  {
-    attribution:
-      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-      '© <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19,
-  }
-).addTo(map);
+}
+map.on('moveend', _saveMapPosition);
+map.on('zoomend', _saveMapPosition);
 
 // ── Route state (declared early — used by isVisible) ──────────────────────
 
 let ROUTE_BUFFER_KM = 0.2;
 let routeActive = false;
-let routeLayer  = null;
 let _markersReady    = false; // set true after initApp() resolves
 let _autoCalcOnReady = false; // set true when URL params want auto-calc but markers not yet ready
+let _hoverPopup    = null;    // tooltip popup on stations-layer hover
+let _currentPopup  = null;    // last opened station popup (auto-close on new click)
 
 // ── Draw markers (populated asynchronously by initApp) ────────────────────
 
@@ -137,53 +147,44 @@ function isCheapVisible(m) {
 }
 
 function updateVisibility() {
-  // ── Piste 2.2 : delta-updates ──────────────────────────────────────────
-  // Compute the next-visible sets first (O(N) but no DOM/canvas touches).
+  // Compute visible sets
   const nextVisMain  = new Set();
   const nextVisCheap = new Set();
   let count = 0;
   for (const m of markers)      { if (isVisible(m))      { nextVisMain.add(m);  count++; } }
   for (const m of cheapMarkers) { if (isCheapVisible(m)) { nextVisCheap.add(m); } }
 
-  // Apply setStyle only to markers whose visibility status changed.
-  // On the first call (_prevVisMain === null) every marker is dirty — fall through to full pass.
-  let setStyleCount = 0;
-  // Preferred network styling: gold stroke on visible preferred markers when route active
   const _hasPref = preferredNetworks.size > 0 && routeActive;
 
-  if (_prevVisMain === null) {
-    // First call: apply style to every marker (same as before).
-    for (const m of markers) {
-      const v = nextVisMain.has(m);
-      const pref = _hasPref && v && preferredNetworks.has(m._op.name);
-      m.setStyle({ opacity: v ? 1 : 0, fillOpacity: v ? 0.9 : 0, color: pref ? '#F59E0B' : '#ffffff', weight: pref ? 3 : 2 });
-      m.options.interactive = v; // disable canvas hit-test for invisible markers
-      const el = m.getElement();
-      if (el) el.style.pointerEvents = v ? '' : 'none';
-      setStyleCount++;
-    }
-    for (const m of cheapMarkers) {
-      const v = nextVisCheap.has(m);
-      m.setStyle({ opacity: v ? 1 : 0, fillOpacity: v ? 0.75 : 0 });
-      m.options.interactive = v; // disable canvas hit-test for invisible markers
-      const el = m.getElement();
-      if (el) el.style.pointerEvents = v ? '' : 'none';
-      setStyleCount++;
-    }
-  } else {
-    // Subsequent calls: only touch markers that changed status.
-    for (const m of nextVisMain)  { if (!_prevVisMain.has(m))  { const pref = _hasPref && preferredNetworks.has(m._op.name); m.setStyle({ opacity: 1, fillOpacity: 0.9, color: pref ? '#F59E0B' : '#ffffff', weight: pref ? 3 : 2 });  m.options.interactive = true;  const el = m.getElement(); if (el) el.style.pointerEvents = '';     setStyleCount++; } }
-    for (const m of _prevVisMain) { if (!nextVisMain.has(m))   { m.setStyle({ opacity: 0, fillOpacity: 0 });    m.options.interactive = false; const el = m.getElement(); if (el) el.style.pointerEvents = 'none'; setStyleCount++; } }
-    for (const m of nextVisCheap) { if (!_prevVisCheap.has(m)) { m.setStyle({ opacity: 1, fillOpacity: 0.75 }); m.options.interactive = true;  if (m._el) m._el.style.pointerEvents = '';     setStyleCount++; } }
-    for (const m of _prevVisCheap){ if (!nextVisCheap.has(m))  { m.setStyle({ opacity: 0, fillOpacity: 0 });    m.options.interactive = false; if (m._el) m._el.style.pointerEvents = 'none'; setStyleCount++; } }
+  // Build GeoJSON features for visible main markers
+  const features = [];
+  for (const m of nextVisMain) {
+    const pref = _hasPref && preferredNetworks.has(m._op.name);
+    features.push({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [m._lon, m._lat] },
+      properties: {
+        idx:         m._idx,
+        radius:      m._radius,
+        color:       m._op.color,
+        strokeColor: pref ? '#F59E0B' : '#ffffff',
+        strokeWidth: pref ? 3 : 2,
+      },
+    });
+  }
+  const src = map.getSource('stations');
+  if (src) src.setData({ type: 'FeatureCollection', features });
+
+  // Cheap markers: show/hide via addTo/remove
+  for (const m of cheapMarkers) {
+    const vis    = nextVisCheap.has(m);
+    const wasVis = _prevVisCheap !== null && _prevVisCheap.has(m);
+    if (vis && !wasVis) m.addTo(map);
+    else if (!vis && wasVis) m.remove();
   }
 
-  const tmpMain = _prevVisMain;
-  _prevVisMain = nextVisMain;
-  if (tmpMain) tmpMain.clear();
-  const tmpCheap = _prevVisCheap;
+  _prevVisMain  = nextVisMain;
   _prevVisCheap = nextVisCheap;
-  if (tmpCheap) tmpCheap.clear();
 
   if (routeActive) {
     subEl.textContent = `${count} station${count !== 1 ? 's' : ''} sur le trajet`;
@@ -192,7 +193,6 @@ function updateVisibility() {
   }
 
   updateLegend(_prevVisMain, _prevVisCheap);
-  // F-9b — preferred styling now applied inline in the delta loop above
 }
 
 // Piste 3.2 — legend hash cache: avoid DOM rebuild when nothing changed.
@@ -420,48 +420,23 @@ function buildMarkers(rows) {
     const ex = _locSeen.get(key);
     if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
   }
-  rows = [..._locSeen.values()];
-  for (const p of rows) {
+  for (const p of _locSeen.values()) {
     const op = getOperator(p);
     const displayCount = p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : (parseInt(p.nbre_pdc) || 1);
-    const circle = L.circleMarker([p.lat, p.lon], {
-      renderer:    canvasRenderer,
-      radius:      countRadius(displayCount),
-      fillColor:   op.color,
-      color:       '#ffffff',
-      weight:      2,
-      opacity:     1,
-      fillOpacity: 0.9,
-      interactive: true,
-    });
-
-    circle.bindPopup(() => buildPopup(p, op), { maxWidth: 300 });
-    circle.bindTooltip(p.nom_station, { direction: 'top', offset: [0, -8] });
-
-    circle._op          = op;
-    circle._lon         = p.lon;
-    circle._lat         = p.lat;
-    circle._name        = p.nom_station;
-    circle._maxPowerKw  = p.max_power_kw; // F-3 — used by isVisible() for power filtering
-    circle._nbrePdc     = parseInt(p.nbre_pdc) || 0;
-
-    circle.on('popupopen', () => {
-      const popupEl = circle.getPopup()?.getElement();
-      const avail      = popupEl?.querySelector('.popup-avail');
-      const refreshBtn = popupEl?.querySelector('.popup-avail-refresh');
-      fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
-      if (refreshBtn) {
-        refreshBtn.onclick = () => {
-          delete circle._availCache;
-          if (avail) avail.innerHTML = AVAIL_SPINNER;
-          fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
-        };
-      }
-    });
-
-    circle.addTo(map);
-    markers.push(circle);
+    const m = {
+      _p:          p,           // raw row data (for popup building)
+      _op:         op,
+      _lon:        p.lon,
+      _lat:        p.lat,
+      _name:       p.nom_station,
+      _maxPowerKw: p.max_power_kw,  // F-3 — used by isVisible() for power filtering
+      _nbrePdc:    parseInt(p.nbre_pdc) || 0,
+      _radius:     countRadius(displayCount),
+      _idx:        markers.length,  // stable index for GeoJSON feature lookup
+    };
+    markers.push(m);
   }
+  // GeoJSON source is populated by updateVisibility()
 }
 
 // ── Budget network marker builder ─────────────────────────────────────────
@@ -480,16 +455,10 @@ const BRAND_MARKER_HTML = {
     "<div style='width:18px;height:18px;background:#081C19;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center'><span style='color:#B1D600;font-weight:900;font-size:11px;font-family:Arial,sans-serif;line-height:1'>B</span></div>",
 };
 
-function makeBrandDivIcon(opName) {
-  const html = BRAND_MARKER_HTML[opName];
-  if (!html) return null;
-  const small = opName === "IZIVIA Fast - McDonald's";
-  const sz = small ? 11 : 18;
-  return L.divIcon({ html, iconSize: [sz, sz], iconAnchor: [sz / 2, sz / 2], popupAnchor: [0, -11], className: 'cheap-brand-marker' });
-}
-
 function buildCheapMarkers(rows) {
   _prevVisCheap = null; // reset delta-update state on marker rebuild
+  cheapMarkers.forEach(m => m.remove());
+  cheapMarkers.length = 0;
   // D-3 — same dedup as buildMarkers
   const _locSeen = new Map();
   for (const r of rows) {
@@ -497,54 +466,59 @@ function buildCheapMarkers(rows) {
     const ex = _locSeen.get(key);
     if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
   }
-  rows = [..._locSeen.values()];
-  for (const p of rows) {
+  for (const p of _locSeen.values()) {
     let op = getOperator(p);
     if (op.name === 'ENGIE Vianeo') op = { ...op, name: 'ENGIE Vianeo - B&B HOTELS' };
     if (op.name === 'IZIVIA Fast')  op = { ...op, name: "IZIVIA Fast - McDonald's" };
 
-    const brandIcon = makeBrandDivIcon(op.name);
-    let circle;
-    if (brandIcon) {
-      circle = L.marker([p.lat, p.lon], { icon: brandIcon, opacity: 0 });
-      // Polyfill setStyle for compatibility with updateVisibility (L.marker has no setStyle)
-      circle.setStyle = (opts) => circle.setOpacity(opts.opacity ?? 1);
+    const brandHtml = BRAND_MARKER_HTML[op.name];
+    const el = document.createElement('div');
+    if (brandHtml) {
+      el.innerHTML = brandHtml;
+      el.className = 'cheap-brand-marker';
     } else {
-      circle = L.circleMarker([p.lat, p.lon], {
-        renderer:    canvasRenderer,
-        radius:      7,
-        fillColor:   op.color,
-        color:       '#ffffff',
-        dashArray:   '3,3',
-        weight:      2,
-        opacity:     0,
-        fillOpacity: 0,
-        interactive: true,
-      });
+      // Dashed circle SVG (replaces L.circleMarker with dashArray)
+      el.innerHTML = `<svg width="18" height="18" viewBox="0 0 18 18">` +
+        `<circle cx="9" cy="9" r="6" fill="${op.color}" fill-opacity="0.75" ` +
+        `stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/></svg>`;
+      el.className = 'cheap-brand-marker';
     }
-    circle.bindPopup(() => buildCheapPopup(p, op), { maxWidth: 300 });
-    circle.bindTooltip(`${p.nom_station} €`, { direction: 'top', offset: [0, -8] });
-    circle._op  = op;
-    circle._lon = p.lon;
-    circle._lat = p.lat;
+    el.style.cursor = 'pointer';
 
-    circle.on('popupopen', () => {
-      const popupEl = circle.getPopup()?.getElement();
-      const avail      = popupEl?.querySelector('.popup-avail');
-      const refreshBtn = popupEl?.querySelector('.popup-avail-refresh');
-      fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
-      if (refreshBtn) {
-        refreshBtn.onclick = () => {
-          delete circle._availCache;
-          if (avail) avail.innerHTML = AVAIL_SPINNER;
-          fetchAvailability(circle).then(html => { if (avail) avail.innerHTML = html; });
-        };
-      }
+    const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
+      .setLngLat([p.lon, p.lat]);
+
+    marker._p    = p;
+    marker._op   = op;
+    marker._lon  = p.lon;
+    marker._lat  = p.lat;
+    marker._name = p.nom_station;
+
+    el.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      if (_currentPopup) { _currentPopup.remove(); _currentPopup = null; }
+      const popup = new maplibregl.Popup({ maxWidth: '300px', offset: 10 })
+        .setLngLat([p.lon, p.lat]).setHTML(buildCheapPopup(p, op));
+      popup.on('close', () => { if (_currentPopup === popup) _currentPopup = null; });
+      popup.on('open', () => {
+        const popupEl = popup.getElement();
+        const avail      = popupEl?.querySelector('.popup-avail');
+        const refreshBtn = popupEl?.querySelector('.popup-avail-refresh');
+        fetchAvailability(marker).then(html => { if (avail) avail.innerHTML = html; });
+        if (refreshBtn) {
+          refreshBtn.onclick = () => {
+            delete marker._availCache;
+            if (avail) avail.innerHTML = AVAIL_SPINNER;
+            fetchAvailability(marker).then(html => { if (avail) avail.innerHTML = html; });
+          };
+        }
+      });
+      popup.addTo(map);
+      _currentPopup = popup;
     });
 
-    circle.addTo(map);
-    circle._el = circle.getElement(); // piste 2.4 — cache _el, avoid DOM lookup in updateVisibility
-    cheapMarkers.push(circle);
+    // Do NOT addTo(map) here — visibility managed by updateVisibility()
+    cheapMarkers.push(marker);
   }
 }
 
@@ -619,10 +593,9 @@ async function initApp() {
   const etagChanged = serverEtag && storedEtag && serverEtag !== storedEtag;
   if (cached && Date.now() - cached.ts < CACHE_TTL && !etagChanged) {
     showDataFreshness(cached.ts);
-    markers.forEach(m => map.removeLayer(m));
     markers.length = 0;
-    cheapMarkers.forEach(m => map.removeLayer(m));
-    cheapMarkers.length = 0;
+    const src = map.getSource('stations');
+    if (src) src.setData({ type: 'FeatureCollection', features: [] });
     buildMarkers(cached.rows.filter(r => !r.cheap));
     buildCheapMarkers(cached.rows.filter(r => r.cheap));
     updateVisibility();
@@ -710,24 +683,102 @@ async function initApp() {
   } catch (_) {}
 
   // 7. Build markers and refresh map
-  markers.forEach(m => map.removeLayer(m));
   markers.length = 0;
-  cheapMarkers.forEach(m => map.removeLayer(m));
-  cheapMarkers.length = 0;
+  const src = map.getSource('stations');
+  if (src) src.setData({ type: 'FeatureCollection', features: [] });
   buildMarkers(rows.filter(r => !r.cheap));
   buildCheapMarkers(rows.filter(r => r.cheap));
   updateVisibility();
 }
 
-initApp()
-  .then(() => {
+// ── Initialisation après chargement de la carte ──────────────────────────
+
+map.on('load', () => {
+  // ── GeoJSON sources ──────────────────────────────────────────────────────
+  map.addSource('route', {
+    type: 'geojson',
+    data: { type: 'FeatureCollection', features: [] },
+  });
+  map.addSource('stations', {
+    type: 'geojson',
+    data: { type: 'FeatureCollection', features: [] },
+  });
+
+  // ── Route line layer (below station dots) ────────────────────────────────
+  map.addLayer({
+    id:     'route-layer',
+    type:   'line',
+    source: 'route',
+    layout: { 'line-join': 'round', 'line-cap': 'round' },
+    paint:  { 'line-color': '#1D4ED8', 'line-width': 4, 'line-opacity': 0.75 },
+  });
+
+  // ── Stations circle layer (WebGL) ─────────────────────────────────────────
+  map.addLayer({
+    id:     'stations-layer',
+    type:   'circle',
+    source: 'stations',
+    paint: {
+      'circle-radius':         ['get', 'radius'],
+      'circle-color':          ['get', 'color'],
+      'circle-stroke-color':   ['get', 'strokeColor'],
+      'circle-stroke-width':   ['get', 'strokeWidth'],
+      'circle-opacity':        0.9,
+      'circle-stroke-opacity': 1,
+    },
+  });
+
+  // ── Hover tooltip ─────────────────────────────────────────────────────────
+  map.on('mouseenter', 'stations-layer', e => {
+    map.getCanvas().style.cursor = 'pointer';
+    const idx = e.features[0].properties.idx;
+    const m = markers[idx];
+    if (!m) return;
+    _hoverPopup = new maplibregl.Popup({ closeButton: false, offset: 8, className: 'station-tooltip' })
+      .setLngLat(e.lngLat)
+      .setHTML(m._name || '')
+      .addTo(map);
+  });
+  map.on('mouseleave', 'stations-layer', () => {
+    map.getCanvas().style.cursor = '';
+    if (_hoverPopup) { _hoverPopup.remove(); _hoverPopup = null; }
+  });
+
+  // ── Click → popup ─────────────────────────────────────────────────────────
+  map.on('click', 'stations-layer', e => {
+    if (_hoverPopup) { _hoverPopup.remove(); _hoverPopup = null; }
+    if (_currentPopup) { _currentPopup.remove(); _currentPopup = null; }
+    const idx = e.features[0].properties.idx;
+    const m = markers[idx];
+    if (!m) return;
+    const popup = new maplibregl.Popup({ maxWidth: '300px', offset: 10 })
+      .setLngLat(e.lngLat)
+      .setHTML(buildPopup(m._p, m._op));
+    popup.on('close', () => { if (_currentPopup === popup) _currentPopup = null; });
+    popup.on('open', () => {
+      const popupEl = popup.getElement();
+      const avail = popupEl.querySelector('.popup-avail');
+      const refreshBtn = popupEl.querySelector('.popup-avail-refresh');
+      fetchAvailability(m).then(html => { if (avail) avail.innerHTML = html; });
+      if (refreshBtn) refreshBtn.onclick = () => {
+        delete m._availCache;
+        avail.innerHTML = AVAIL_SPINNER;
+        fetchAvailability(m).then(html => { if (avail) avail.innerHTML = html; });
+      };
+    });
+    popup.addTo(map);
+    _currentPopup = popup;
+  });
+
+  // ── Lancer l'app ─────────────────────────────────────────────────────────
+  initApp().then(() => {
     _markersReady = true;
     if (_autoCalcOnReady) { _autoCalcOnReady = false; calculateRoute(); }
-  })
-  .catch(err => {
+  }).catch(err => {
     console.error('initApp:', err);
     subEl.textContent = '⚠ Erreur de chargement';
   });
+});
 
 // ── Popup builder ─────────────────────────────────────────────────────────
 
@@ -1029,25 +1080,24 @@ async function applyRouteFilter(routeLine, onProgress) {
 function staggeredFadeIn() {
   if (!routeActive) return;
 
-  // Build a unified list of all visible corridor markers (main + cheap) sorted
-  // by their progress along the route so they appear from start to end.
-  // {m, cheapFill} tuples let us restore the correct fillOpacity per type.
   const visible = [
-    ...markers.filter(m => isVisible(m)).map(m => ({ m, fill: 0.9 })),
-    ...cheapMarkers.filter(m => isCheapVisible(m)).map(m => ({ m, fill: 0.75 })),
+    ...markers.filter(m => isVisible(m)).map(m => ({ m, isMain: true })),
+    ...cheapMarkers.filter(m => isCheapVisible(m)).map(m => ({ m, isMain: false })),
   ].sort((a, b) => (a.m._progressOnRoute ?? 0) - (b.m._progressOnRoute ?? 0));
 
   if (visible.length === 0) return;
 
-  // Invalidate delta-update state for both marker sets: any concurrent
-  // updateVisibility() call must do a full pass, not a no-op delta.
+  // Invalidate delta-update state: next updateVisibility() must do a full pass.
   _prevVisMain  = null;
   _prevVisCheap = null;
 
-  // Reset all to invisible — we'll reanimate them
-  visible.forEach(({ m }) => m.setStyle({ opacity: 0, fillOpacity: 0 }));
+  // Hide everything at the start — rebuild progressively via setData
+  const srcSta = map.getSource('stations');
+  if (srcSta) srcSta.setData({ type: 'FeatureCollection', features: [] });
+  cheapMarkers.forEach(m => m.remove());
 
-  const STEP_MS = 22;  // ms between each station appearing (~22 stations/500ms)
+  const _hasPref = preferredNetworks.size > 0 && routeActive;
+  const STEP_MS = 22;
   const startTime = performance.now();
   let lastShownIdx = -1;
 
@@ -1056,15 +1106,34 @@ function staggeredFadeIn() {
       Math.floor((now - startTime) / STEP_MS),
       visible.length - 1
     );
-    // Show all newly eligible in this frame — batched into one canvas repaint
-    for (let i = lastShownIdx + 1; i <= showUpTo; i++) {
-      const item = visible[i];
-      if (!item) break; // defensive: concurrent call may have invalidated visible
-      const { m, fill } = item;
-      m.setStyle({ opacity: 1, fillOpacity: fill });
+    if (showUpTo <= lastShownIdx) { requestAnimationFrame(frame); return; }
+
+    // Rebuild GeoJSON features for all main markers shown so far
+    const feats = [];
+    for (let i = 0; i <= showUpTo; i++) {
+      const { m, isMain } = visible[i];
+      if (isMain) {
+        const pref = _hasPref && preferredNetworks.has(m._op.name);
+        feats.push({
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [m._lon, m._lat] },
+          properties: {
+            idx:         m._idx,
+            radius:      m._radius,
+            color:       m._op.color,
+            strokeColor: pref ? '#F59E0B' : '#ffffff',
+            strokeWidth: pref ? 3 : 2,
+          },
+        });
+      } else if (i > lastShownIdx) {
+        m.addTo(map);
+      }
     }
+    const srcSta2 = map.getSource('stations');
+    if (srcSta2) srcSta2.setData({ type: 'FeatureCollection', features: feats });
     lastShownIdx = showUpTo;
     if (showUpTo < visible.length - 1) requestAnimationFrame(frame);
+    else updateVisibility(); // finalize with complete state
   })(performance.now());
 }
 
@@ -1263,14 +1332,17 @@ function enterEmergencyMode() {
   refreshEmergencyPanel();
   updateVisibility();
   // Center map on GPS + fit all nearby markers
-  const bounds = L.latLngBounds([[geoState.lat, geoState.lng]]);
-  for (const m of _emergencyMarkers) bounds.extend([m._lat, m._lon]);
   if (_emergencyMarkers.size > 0) {
-    map.fitBounds(bounds, { padding: [60, 40], maxZoom: 13 });
+    const lngs = [geoState.lng, ...[..._emergencyMarkers].map(m => m._lon)];
+    const lats = [geoState.lat, ...[..._emergencyMarkers].map(m => m._lat)];
+    map.fitBounds(
+      [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
+      { padding: { top: 60, right: 40, bottom: 60, left: 40 }, maxZoom: 13 },
+    );
   } else {
-    map.setView([geoState.lat, geoState.lng], 12);
+    map.jumpTo({ center: [geoState.lng, geoState.lat], zoom: 12 });
   }
-  map.invalidateSize();
+  map.resize();
 }
 
 function exitEmergencyMode() {
@@ -1283,7 +1355,7 @@ function exitEmergencyMode() {
   const titleEl = document.querySelector('#drive-panel .dm-title');
   if (titleEl) titleEl.textContent = 'Mode conduite';
   updateVisibility();
-  map.invalidateSize();
+  map.resize();
 }
 
 function refreshEmergencyPanel() {
@@ -1356,7 +1428,7 @@ function enterDriveMode() {
   const titleEl = document.querySelector('#drive-panel .dm-title');
   if (titleEl) titleEl.textContent = 'Mode conduite';
   refreshDrivePanel();
-  map.invalidateSize();
+  map.resize();
 }
 
 function exitDriveMode() {
@@ -1364,7 +1436,7 @@ function exitDriveMode() {
   document.getElementById('drive-panel').style.display = 'none';
   document.body.classList.remove('drive-mode-active');
   _lastDriveFingerprint = '';
-  map.invalidateSize();
+  map.resize();
 }
 
 let _driveAhead           = [];    // current cards' markers — used by click handler
@@ -1473,7 +1545,7 @@ document.getElementById('dm-cards').addEventListener('click', e => {
     const idx = parseInt(driveCard.dataset.driveIdx, 10);
     if (!isNaN(idx) && _driveAhead[idx]) {
       const { m } = _driveAhead[idx];
-      map.setView([m._lat, m._lon], Math.max(map.getZoom(), 13));
+      map.jumpTo({ center: [m._lon, m._lat], zoom: Math.max(map.getZoom(), 13) });
     }
     return;
   }
@@ -1483,7 +1555,7 @@ document.getElementById('dm-cards').addEventListener('click', e => {
     const idx = parseInt(emergencyCard.dataset.emergencyIdx, 10);
     if (!isNaN(idx) && _emergencyAhead[idx]) {
       const { m } = _emergencyAhead[idx];
-      map.setView([m._lat, m._lon], Math.max(map.getZoom(), 14));
+      map.jumpTo({ center: [m._lon, m._lat], zoom: Math.max(map.getZoom(), 14) });
     }
   }
 });
@@ -1492,7 +1564,7 @@ document.getElementById('dm-cards').addEventListener('click', e => {
 function clearRoute() {
   if (driveModeActive) exitDriveMode();
   routeActive = false;
-  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+  map.getSource('route')?.setData({ type: 'FeatureCollection', features: [] });
   markers.forEach(m => { delete m._distFromRoute; });
   document.getElementById('network-recommendation').style.display = 'none';
   cheapMarkers.forEach(m => { delete m._distFromRoute; });
@@ -1580,26 +1652,21 @@ async function calculateRoute() {
     await step('🗺 Calcul d\'itinéraire…');
     const route = await fetchRoute(from, to);
 
-    if (routeLayer) map.removeLayer(routeLayer);
     // Simplify display geometry only — corridor filtering uses full-precision route.geometry.coordinates
     const _displayLine = turf.simplify(
       turf.lineString(route.geometry.coordinates),
       { tolerance: 0.00005, highQuality: false }
     );
-    routeLayer = L.geoJSON(_displayLine, {
-      // Explicit SVG renderer overrides map preferCanvas:true — needed for CSS dash animation (piste 4.4)
-      renderer: L.svg(),
-      style: { color: '#1D4ED8', weight: 4, opacity: 0.75, className: 'route-polyline' },
-    }).addTo(map);
-    routeLayer.bringToBack();
+    map.getSource('route').setData(_displayLine);
 
     // 4.3 — adaptive padding: account for actual panel dimensions
     const _panel    = document.getElementById('panel');
     const _isMobile = window.matchMedia('(max-width: 640px)').matches;
-    const _padding  = _isMobile
-      ? [40, 40, _panel.offsetHeight + 24, 40]   // panel is a bottom sheet on mobile
-      : [40, 40, 40, _panel.offsetWidth  + 20];  // panel is on the left on desktop
-    map.fitBounds(routeLayer.getBounds(), { padding: _padding });
+    const bbox = turf.bbox(_displayLine);
+    const _paddingObj = _isMobile
+      ? { top: 40, right: 40, bottom: _panel.offsetHeight + 24, left: 40 }
+      : { top: 40, right: 40, bottom: 40, left: _panel.offsetWidth + 20 };
+    map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], { padding: _paddingObj });
 
     info.className = 'route-progress';
     info.textContent = `⚡ Filtrage 0/${markers.length}…`;
@@ -2010,16 +2077,9 @@ let preferredNetworks = new Set(
  * after preferred settings change.
  */
 function applyPreferredStyling() {
-  if (!preferredNetworks.size) return; // nothing to do
-  // Only iterate visible markers (from _prevVisMain) for efficiency
-  const source = _prevVisMain || markers;
-  for (const m of source) {
-    if (!_prevVisMain && !isVisible(m)) continue;
-    const pref = routeActive && preferredNetworks.has(m._op.name);
-    m.setStyle(pref
-      ? { color: '#F59E0B', weight: 3 }
-      : { color: '#ffffff', weight: 2 });
-  }
+  // Preferred styling is now embedded in GeoJSON properties (strokeColor/strokeWidth)
+  // and computed inline in updateVisibility(). Just refresh the source.
+  updateVisibility();
 }
 
 (function setupSettings() {
@@ -2133,6 +2193,7 @@ function applyPreferredStyling() {
 const geoState = { available: false, pending: false, lat: null, lng: null, heading: 0 };
 const _geoHistory = [];   // rolling buffer of last positions for bearing
 let _geoMarker    = null;
+let _geoMarkerEl  = null; // inner element for heading updates without full marker rebuild
 let _geoLocateBtn = null;
 let _geoWatchId   = null;
 let _lastDriveRefreshTime = 0;
@@ -2156,16 +2217,18 @@ function _geoHaversineM(lat1, lon1, lat2, lon2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-function _makeArrowIcon(heading) {
-  return L.divIcon({
-    className: 'geoloc-marker-outer',
-    html: `<div class="geoloc-marker" style="transform:rotate(${Math.round(heading)}deg)">` +
-          `<svg width="24" height="24" viewBox="0 0 24 24">` +
-          `<path d="M12 2 L20 20 L12 16 L4 20 Z" fill="#EF4444" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>` +
-          `</svg></div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-  });
+function _makeGeoMarkerEl(heading) {
+  const outer = document.createElement('div');
+  outer.className = 'geoloc-marker-outer';
+  const inner = document.createElement('div');
+  inner.className = 'geoloc-marker';
+  inner.style.transform = `rotate(${Math.round(heading)}deg)`;
+  inner.innerHTML =
+    `<svg width="24" height="24" viewBox="0 0 24 24">` +
+    `<path d="M12 2 L20 20 L12 16 L4 20 Z" fill="#EF4444" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>` +
+    `</svg>`;
+  outer.appendChild(inner);
+  return outer;
 }
 
 function _onGeoSuccess(pos) {
@@ -2198,19 +2261,23 @@ function _onGeoSuccess(pos) {
   geoState.lng = lng;
   geoState.heading = heading;
 
-  // FIX 5 — skip icon rebuild when heading changed <= 5 degrees
+  // FIX 5 — skip DOM rebuild when heading changed <= 5 degrees
   const _headingChanged = _lastHeading === null || Math.abs(heading - _lastHeading) > 5;
-  if (_headingChanged) {
+  if (!_geoMarker) {
+    // First fix: create the marker
     _lastHeading = heading;
-    const icon = _makeArrowIcon(heading);
-    if (!_geoMarker) {
-      _geoMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000, interactive: false }).addTo(map);
-    } else {
-      _geoMarker.setLatLng([lat, lng]);
-      _geoMarker.setIcon(icon);
+    _geoMarkerEl = _makeGeoMarkerEl(heading);
+    _geoMarker = new maplibregl.Marker({ element: _geoMarkerEl, anchor: 'center' })
+      .setLngLat([lng, lat])
+      .addTo(map);
+  } else {
+    // Subsequent fixes: just update position and optionally heading
+    _geoMarker.setLngLat([lng, lat]);
+    if (_headingChanged) {
+      _lastHeading = heading;
+      const inner = _geoMarkerEl.querySelector('.geoloc-marker');
+      if (inner) inner.style.transform = `rotate(${Math.round(heading)}deg)`;
     }
-  } else if (_geoMarker) {
-    _geoMarker.setLatLng([lat, lng]);
   }
 
   if (_geoLocateBtn) {
@@ -2266,13 +2333,14 @@ function _onGeoError(err) {
   }
 }
 
-// Locate button — custom Leaflet control positioned below zoom buttons
+// Locate button — MapLibre IControl positioned below zoom buttons
 (function () {
-  const LocateControl = L.Control.extend({
-    options: { position: 'topright' },
+  const locateControl = {
     onAdd() {
-      const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-      const btn = L.DomUtil.create('button', 'leaflet-control-locate', container);
+      const container = document.createElement('div');
+      container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
+      const btn = document.createElement('button');
+      btn.className = 'maplibregl-ctrl-locate';
       btn.type = 'button';
       btn.title = 'Géolocalisation indisponible';
       btn.disabled = true;
@@ -2282,10 +2350,10 @@ function _onGeoError(err) {
         `<line x1="12" y1="2" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="22"/>` +
         `<line x1="2" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="22" y2="12"/>` +
         `</svg>`;
-      L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation);
-      L.DomEvent.on(btn, 'click', () => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
         if (geoState.available) {
-          map.setView([geoState.lat, geoState.lng], 14);
+          map.jumpTo({ center: [geoState.lng, geoState.lat], zoom: 14 });
         } else if (navigator.geolocation) {
           // Re-demander la permission (déclenche le dialog navigateur si pas encore refus permanent)
           navigator.geolocation.getCurrentPosition(
@@ -2295,11 +2363,13 @@ function _onGeoError(err) {
           );
         }
       });
+      container.appendChild(btn);
       _geoLocateBtn = btn;
       return container;
     },
-  });
-  new LocateControl().addTo(map);
+    onRemove() {},
+  };
+  map.addControl(locateControl, 'top-right');
 }());
 
 function _startWatch() {
