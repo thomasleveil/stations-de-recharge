@@ -74,6 +74,15 @@ Static frontend — no backend, no build step. Three files:
 Quand une feature est implémentée, marquer l'item ✅ avec la référence du commit.
 Quand une nouvelle idée émerge pendant un chantier, l'ajouter immédiatement au backlog.
 
+## Git Workflow
+
+**Ne jamais committer directement sur `main`.** Toujours créer une branche feature :
+1. `git checkout -b feat/description` ou `fix/description`
+2. Commits sur la branche feature
+3. Push + PR
+
+Après le merge d'une PR, si du travail continue, créer immédiatement une nouvelle branche.
+
 ## Development
 
 ```bash
