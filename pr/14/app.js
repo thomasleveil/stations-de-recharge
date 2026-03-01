@@ -117,7 +117,8 @@ let ROUTE_BUFFER_KM = 0.2;
 let routeActive = false;
 let _markersReady    = false; // set true after initApp() resolves
 let _autoCalcOnReady = false; // set true when URL params want auto-calc but markers not yet ready
-let _hoverPopup = null;       // tooltip popup on stations-layer hover
+let _hoverPopup    = null;    // tooltip popup on stations-layer hover
+let _currentPopup  = null;    // last opened station popup (auto-close on new click)
 
 // ── Draw markers (populated asynchronously by initApp) ────────────────────
 
@@ -495,8 +496,10 @@ function buildCheapMarkers(rows) {
 
     el.addEventListener('click', (ev) => {
       ev.stopPropagation();
+      if (_currentPopup) { _currentPopup.remove(); _currentPopup = null; }
       const popup = new maplibregl.Popup({ maxWidth: '300px', offset: 10 })
         .setLngLat([p.lon, p.lat]).setHTML(buildCheapPopup(p, op));
+      popup.on('close', () => { if (_currentPopup === popup) _currentPopup = null; });
       popup.on('open', () => {
         const popupEl = popup.getElement();
         const avail      = popupEl?.querySelector('.popup-avail');
@@ -511,6 +514,7 @@ function buildCheapMarkers(rows) {
         }
       });
       popup.addTo(map);
+      _currentPopup = popup;
     });
 
     // Do NOT addTo(map) here — visibility managed by updateVisibility()
@@ -743,12 +747,14 @@ map.on('load', () => {
   // ── Click → popup ─────────────────────────────────────────────────────────
   map.on('click', 'stations-layer', e => {
     if (_hoverPopup) { _hoverPopup.remove(); _hoverPopup = null; }
+    if (_currentPopup) { _currentPopup.remove(); _currentPopup = null; }
     const idx = e.features[0].properties.idx;
     const m = markers[idx];
     if (!m) return;
     const popup = new maplibregl.Popup({ maxWidth: '300px', offset: 10 })
       .setLngLat(e.lngLat)
       .setHTML(buildPopup(m._p, m._op));
+    popup.on('close', () => { if (_currentPopup === popup) _currentPopup = null; });
     popup.on('open', () => {
       const popupEl = popup.getElement();
       const avail = popupEl.querySelector('.popup-avail');
@@ -761,6 +767,7 @@ map.on('load', () => {
       };
     });
     popup.addTo(map);
+    _currentPopup = popup;
   });
 
   // ── Lancer l'app ─────────────────────────────────────────────────────────
