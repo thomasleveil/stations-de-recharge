@@ -34,7 +34,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | F-4 | ✅ | ~~**Affichage disponibilité temps réel**~~ — indicateur de disponibilité des connecteurs au clic sur une station | ✅ Via TomTom EV Charging Stations Availability API (optionnel, clé dans ⚙) ; `fetchAvailability(m)` avec cache 3 min ; spinner dans popup, bouton ↺ refresh ; aussi dans les cards mode conduite (U-7b) et mode urgence |
 | F-5 | ✅ | ~~**Partage de trajet**~~ | ✅ commit `e7b7fce` |
 | F-6 | ✅ | ~~**Historique des trajets récents**~~ | ✅ |
-| F-7 | 💡 | **Mode sombre** — thème sombre pour la carte et le panel | MapLibre : swapper le style raster (`CARTO_STYLE`) vers tiles CartoDB Dark + CSS variables pour le panel |
+| F-7 | ✅ | ~~**Mode sombre**~~ — thème automatique via SunCalc (crépuscule civil) + bouton ☀/☽ en haut à droite. Panels drive/emergency adaptés au thème. | ✅ PR #17 — SunCalc.js CDN (~3 kB), `_checkSunCalcTheme()` au GPS fix + toutes les 5 min, override session-only, `prefers-color-scheme` en fallback, scrollbar adaptée en dark |
 | F-8 | ✅ | ~~**Détection auto départ = position GPS**~~ | ✅ |
 | F-9a | ✅ | **Recommandation réseau pré-trajet** — après calcul d'itinéraire, suggérer 1-2 réseaux auprès desquels souscrire un abonnement mensuel sans engagement pour ce trajet. | ✅ Encart `#network-recommendation` sous `#route-info` ; algorithme `computeNetworkRecommendation()` : zone utile = `min(150 km, routeKm×40%)`, tronçons 80 km, score = tronçons couverts / total, Alliance virtuelle {Electra+IONITY+Fastned+Atlante} |
 | F-9b | ✅ | **Réseau préféré en route** — l'utilisateur configure manuellement les réseaux pour lesquels il dispose d'un avantage tarifaire (persisté en localStorage) ; quand un itinéraire est actif, les stations de ces réseaux ont une bordure or. Pas un filtre exclusif. | ✅ Checkboxes par opérateur dans les Paramètres (⚙), `preferredNetworks` Set persisté (`irve-preferred-networks`), `applyPreferredStyling()` délègue à `updateVisibility()` ; bordure or (`#F59E0B`, `strokeWidth: 3`) injectée dans les propriétés GeoJSON |
@@ -85,6 +85,6 @@ Idées, améliorations et bugs connus, classés par thème.
 | # | Statut | Idée | Notes |
 |---|:------:|------|-------|
 | T-1 | 💡 | **Séparation `app.js` en modules ES** — le fichier fait ~2 400 lignes ; découper en `map.js`, `route.js`, `markers.js`, `worker-bridge.js` | Nécessite un bundler ou `<script type="module">` + import maps |
-| T-2 | 💡 | **Tests automatisés (couverture fonctionnelle)** — tests Playwright partiels en place (`tests/geoloc.spec.js`, `tests/qa-fixes.spec.js`) ; manque : route Paris→Lyon, non-régression comptage stations, drive/emergency mode | Socle existant à compléter |
+| T-2 | 💡 | **Tests automatisés (couverture fonctionnelle)** — tests Playwright partiels en place (`tests/geoloc.spec.js`, `tests/qa-fixes.spec.js`, `tests/suncalc-dark-mode.spec.js`) ; manque : route Paris→Lyon, non-régression comptage stations, drive/emergency mode | Socle existant à compléter |
 | T-3 | ✅ | ~~**Mise à jour automatique Parquet**~~ | ✅ |
 | T-4 | ✅ | ~~**Migration MapLibre GL JS**~~ — remplacer Leaflet 1.9.4 par MapLibre GL JS (rendu WebGL) | ✅ PR #14 — source GeoJSON + layer `circle` WebGL pour les markers principaux, `maplibregl.Marker` DOM pour les réseaux abordables, `IControl` plain object pour le bouton géoloc, `map.jumpTo()` / `map.resize()` / `map.fitBounds()` |
