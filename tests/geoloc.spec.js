@@ -130,7 +130,7 @@ test.describe('Geolocalisation — marqueur fleche', () => {
     const prev = await getArrowRotation(page);
     await moveTo(context, page, lat2, ORIGIN.lon, prev);
 
-    const btn = page.locator('.leaflet-control-locate');
+    const btn = page.locator('.maplibregl-ctrl-locate');
     await expect(btn).toBeEnabled();
 
     // Verifier que le marqueur N'est PAS au centre avant le clic
@@ -169,7 +169,7 @@ test.describe('Geolocalisation — marqueur fleche', () => {
     await page2.waitForLoadState('domcontentloaded');
     await page2.waitForTimeout(1500);
 
-    const btn = page2.locator('.leaflet-control-locate');
+    const btn = page2.locator('.maplibregl-ctrl-locate');
     // Bouton ACTIVE (pas disabled) mais avec classe retry
     await expect(btn).toBeEnabled();
     await expect(btn).toHaveClass(/geoloc-retry/);

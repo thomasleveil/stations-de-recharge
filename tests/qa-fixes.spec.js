@@ -37,12 +37,11 @@ test.describe('QA-1 — nav-btn contrast WCAG AA', () => {
     expect(bg).not.toBe('rgb(59, 130, 246)');
   });
 
-  test('nav-btn dans leaflet-popup-content a color white (override Leaflet link color)', async ({ page }) => {
-    // Leaflet injecte .leaflet-popup a { color: #0078a8 } qui écrase .nav-btn { color: white }
-    // Notre fix ajoute .leaflet-popup-content .nav-btn { color: white } avec plus de spécificité
+  test('nav-btn dans maplibregl-popup-content a color white (override MapLibre link color)', async ({ page }) => {
+    // MapLibre peut injecter des couleurs sur les liens popup — notre fix assure que nav-btn reste blanc
     const color = await page.evaluate(() => {
       const popup = document.createElement('div');
-      popup.className = 'leaflet-popup-content';
+      popup.className = 'maplibregl-popup-content';
       const a = document.createElement('a');
       a.className = 'nav-btn';
       a.textContent = 'Y aller';
@@ -52,7 +51,7 @@ test.describe('QA-1 — nav-btn contrast WCAG AA', () => {
       document.body.removeChild(popup);
       return c;
     });
-    // Doit être blanc (255, 255, 255), pas le bleu Leaflet (0, 120, 168)
+    // Doit être blanc (255, 255, 255)
     expect(color).toBe('rgb(255, 255, 255)');
   });
 });
@@ -121,19 +120,21 @@ test.describe('QA-3 — emergency mode: click sur card centre la carte', () => {
     await page.waitForLoadState('domcontentloaded');
   });
 
-  test('click sur le texte d une emergency-card appelle map.setView', async ({ page }) => {
+  test('click sur le texte d une emergency-card appelle map.jumpTo', async ({ page }) => {
     const targetLat = 45.764;
     const targetLon = 4.836;
 
-    // Patch map.setView avant tout
+    // Patch map.jumpTo avant tout
     await page.evaluate(() => {
       window.__mapViewCalls = [];
-      const orig = window._leafletMap.setView.bind(window._leafletMap);
-      window._leafletMap.setView = (center, zoom) => {
-        const lat = Array.isArray(center) ? center[0] : center.lat;
-        const lon = Array.isArray(center) ? center[1] : center.lng;
-        window.__mapViewCalls.push({ lat, lon, zoom });
-        return orig(center, zoom);
+      const orig = window._map.jumpTo.bind(window._map);
+      window._map.jumpTo = (options) => {
+        window.__mapViewCalls.push({
+          lat:  options.center[1],
+          lon:  options.center[0],
+          zoom: options.zoom,
+        });
+        return orig(options);
       };
     });
 
@@ -165,7 +166,7 @@ test.describe('QA-3 — emergency mode: click sur card centre la carte', () => {
         const entry = window.__testEmergencyAhead?.[idx];
         if (!entry) return;
         const { m } = entry;
-        window._leafletMap.setView([m._lat, m._lon], Math.max(window._leafletMap.getZoom(), 14));
+        window._map.jumpTo({ center: [m._lon, m._lat], zoom: Math.max(window._map.getZoom(), 14) });
         cards.removeEventListener('click', qaTestHandler);
       });
     }, { lat: targetLat, lon: targetLon });
@@ -183,10 +184,10 @@ test.describe('QA-3 — emergency mode: click sur card centre la carte', () => {
   test('click sur le bouton nav-btn NE centre PAS la carte (guard)', async ({ page }) => {
     await page.evaluate(() => {
       window.__mapViewCalls = [];
-      const orig = window._leafletMap.setView.bind(window._leafletMap);
-      window._leafletMap.setView = (center, zoom) => {
-        window.__mapViewCalls.push({ center, zoom });
-        return orig(center, zoom);
+      const orig = window._map.jumpTo.bind(window._map);
+      window._map.jumpTo = (options) => {
+        window.__mapViewCalls.push(options);
+        return orig(options);
       };
     });
 
