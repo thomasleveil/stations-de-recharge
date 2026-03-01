@@ -89,7 +89,8 @@
     <div id="dm-cards"></div>
   </div>
 
-  <!-- Top-right settings -->
+  <!-- Top-right controls -->
+  <div id="theme-toggle-btn" title="Basculer clair / sombre">☀</div>
   <div id="settings-btn" title="Paramètres">⚙</div>
   <div class="settings-backdrop" style="display:none"></div>
   <div id="settings-menu" style="display:none">
@@ -136,13 +137,6 @@
     </div>
     <div id="preferred-networks-list" class="settings-tesla-hide"></div>
     <hr class="settings-divider" />
-    <!-- R4 — Dark mode toggle -->
-    <div class="settings-section-label">Apparence</div>
-    <label class="settings-checkbox-item">
-      <input type="checkbox" id="dark-mode-toggle" />
-      <span>Mode sombre</span>
-    </label>
-    <hr class="settings-divider" />
     <button id="cache-bust-btn" class="settings-item">🗑 Vider le cache</button>
   </div>
 
@@ -155,6 +149,7 @@
 
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
   <script defer src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
