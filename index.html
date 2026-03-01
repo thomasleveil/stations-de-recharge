@@ -26,8 +26,22 @@
 <body>
   <div id="map"></div>
 
+  <!-- R2 — Loading overlay -->
+  <div id="loading-overlay">
+    <div class="loading-content">
+      <div class="loading-icon">⚡</div>
+      <div class="loading-title">Bornes de recharge rapides</div>
+      <div id="loading-step" class="loading-step">Connexion aux données IRVE...</div>
+      <div class="loading-bar-track">
+        <div id="loading-bar" class="loading-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Top-left control panel -->
   <div id="panel">
+    <!-- R3 — Bottom sheet drag handle (mobile) -->
+    <div class="bs-handle"></div>
     <div class="panel-title" id="panel-title"><span id="panel-title-kw">Bornes rapides ≥ 150 kW</span><span class="panel-chevron">▸</span></div>
     <div class="panel-sub"></div>
     <div id="data-freshness"></div>
@@ -76,7 +90,9 @@
 
   <!-- Top-right settings -->
   <div id="settings-btn" title="Paramètres">⚙</div>
+  <div class="settings-backdrop" style="display:none"></div>
   <div id="settings-menu" style="display:none">
+    <button class="settings-close-mobile">✕</button>
     <div class="settings-section-label">
       Disponibilité temps réel
       <a href="https://developer.tomtom.com" target="_blank" rel="noopener" class="settings-api-help" title="Obtenir une clé gratuite TomTom">?</a>
@@ -104,20 +120,27 @@
     </div>
     <hr class="settings-divider" />
     <!-- U-10 — CHEAP corridor width -->
-    <div class="settings-section-label">Corridor réseaux abordables</div>
-    <div class="settings-api-row">
+    <div class="settings-section-label settings-tesla-hide">Corridor réseaux abordables</div>
+    <div class="settings-api-row settings-tesla-hide">
       <input type="number" id="cheap-corridor-input" class="settings-api-input"
              min="1" max="50" step="1" value="10"
              placeholder="km" style="width:60px" />
       <span class="settings-hint" style="margin-left:6px">km de part et d'autre</span>
     </div>
-    <hr class="settings-divider" />
+    <hr class="settings-divider settings-tesla-hide" />
     <!-- F-9b — Preferred networks -->
-    <div class="settings-section-label">
+    <div class="settings-section-label settings-tesla-hide">
       Mes réseaux préférés
       <span class="settings-api-help" title="Les stations de ces réseaux seront mises en avant (bordure or) quand un itinéraire est actif">?</span>
     </div>
-    <div id="preferred-networks-list"></div>
+    <div id="preferred-networks-list" class="settings-tesla-hide"></div>
+    <hr class="settings-divider" />
+    <!-- R4 — Dark mode toggle -->
+    <div class="settings-section-label">Apparence</div>
+    <label class="settings-checkbox-item">
+      <input type="checkbox" id="dark-mode-toggle" />
+      <span>Mode sombre</span>
+    </label>
     <hr class="settings-divider" />
     <button id="cache-bust-btn" class="settings-item">🗑 Vider le cache</button>
   </div>

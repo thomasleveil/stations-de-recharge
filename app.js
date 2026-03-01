@@ -70,6 +70,7 @@ const _savedZoom = parseInt(localStorage.getItem('irve-map-zoom'), 10) || 7;
 
 const CARTO_STYLE = {
   version: 8,
+  glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
   sources: {
     'carto-light': {
       type: 'raster',
@@ -85,8 +86,25 @@ const CARTO_STYLE = {
         '© <a href="https://carto.com/attributions">CARTO</a>',
       maxzoom: 19,
     },
+    'carto-dark': {
+      type: 'raster',
+      tiles: [
+        'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+      ],
+      tileSize: 256,
+      attribution:
+        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+        '© <a href="https://carto.com/attributions">CARTO</a>',
+      maxzoom: 19,
+    },
   },
-  layers: [{ id: 'carto-light', type: 'raster', source: 'carto-light' }],
+  layers: [
+    { id: 'carto-light', type: 'raster', source: 'carto-light' },
+    { id: 'carto-dark', type: 'raster', source: 'carto-dark', layout: { visibility: 'none' } },
+  ],
 };
 
 const map = new maplibregl.Map({
@@ -524,32 +542,26 @@ function buildCheapMarkers(rows) {
 
 function buildCheapPopup(p, op) {
   const hours = p.horaires || '—';
+  const shortHours = hours.length > 30 ? hours.slice(0, 30) + '…' : hours;
   const addr = p.adresse || '—';
   const shortAddr = addr.length > 60 ? addr.slice(0, 60) + '…' : addr;
   return `
-    <div>
-      <div class="popup-station">${p.nom_station || '—'}</div>
-      <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
-      <span class="popup-cheap-badge">€ Abordable</span>
-      ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
-      <div class="popup-grid">
-        <span class="popup-label">Puissance max</span>
-        <span class="popup-power">${p.max_power_kw ? p.max_power_kw + ' kW' : '—'}</span>
-
-        <span class="popup-label">Nb. de bornes</span>
-        <span>${p.nbre_pdc || '—'}</span>
-
-        <span class="popup-label">Horaires</span>
-        <span>${hours.length > 50 ? hours.slice(0, 50) + '…' : hours}</span>
-
-        <span class="popup-label">Adresse</span>
-        <span>${shortAddr}</span>
-
-        <span class="popup-label">Disponibilité CCS2</span>
-        <span class="popup-avail-cell">
-          <span class="popup-avail">${AVAIL_SPINNER}</span>
-          <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
-        </span>
+    <div class="popup-card">
+      <div class="popup-card-header">
+        <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
+        <span class="popup-cheap-badge">€ Abordable</span>
+        <div class="popup-card-badges">
+          ${p.max_power_kw ? `<span class="popup-badge">${Math.round(p.max_power_kw)} kW</span>` : ''}
+          ${p.nbre_pdc ? `<span class="popup-badge">${p.nbre_pdc} PDC</span>` : ''}
+          <span class="popup-badge">${shortHours}</span>
+        </div>
+      </div>
+      <div class="popup-card-name">${p.nom_station || '—'}</div>
+      <div class="popup-card-addr">${shortAddr}</div>
+      ${op.price ? `<div class="popup-card-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> ${op.price.range}${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</div>` : ''}
+      <div class="popup-card-avail">
+        <span class="popup-avail">${AVAIL_SPINNER}</span>
+        <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
       </div>
       ${op.alerts ? op.alerts.map(a => `<span class="alert-badge">${a.icon} ${a.text}</span>`).join('') : ''}
       <a href="${navUrl(p.lat, p.lon)}" class="nav-btn" target="_blank" rel="noopener">Y aller</a>
@@ -578,6 +590,23 @@ function showDataFreshness(ts) {
 async function initApp() {
   subEl.textContent = 'Chargement…';
 
+  // R2 — Loading overlay progress helpers
+  const _loadOverlay = document.getElementById('loading-overlay');
+  const _loadStep    = document.getElementById('loading-step');
+  const _loadBar     = document.getElementById('loading-bar');
+  function _setLoading(msg, pct) {
+    if (_loadStep) _loadStep.textContent = msg;
+    if (_loadBar)  _loadBar.style.width  = pct + '%';
+  }
+  function _hideLoading() {
+    if (_loadOverlay) {
+      _loadOverlay.classList.add('fade-out');
+      _loadOverlay.addEventListener('transitionend', () => _loadOverlay.remove(), { once: true });
+    }
+  }
+
+  _setLoading('Connexion aux données IRVE...', 5);
+
   // T-3 — HEAD request to detect if the Parquet has been updated server-side.
   // Compares ETag or Last-Modified with the value stored at last fetch.
   // Network errors are silently ignored — TTL-based invalidation remains the fallback.
@@ -592,6 +621,7 @@ async function initApp() {
   const storedEtag = localStorage.getItem(PARQUET_ETAG_KEY);
   const etagChanged = serverEtag && storedEtag && serverEtag !== storedEtag;
   if (cached && Date.now() - cached.ts < CACHE_TTL && !etagChanged) {
+    _setLoading('Chargement depuis le cache...', 80);
     showDataFreshness(cached.ts);
     markers.length = 0;
     const src = map.getSource('stations');
@@ -599,10 +629,13 @@ async function initApp() {
     buildMarkers(cached.rows.filter(r => !r.cheap));
     buildCheapMarkers(cached.rows.filter(r => r.cheap));
     updateVisibility();
+    _setLoading(`${markers.length} stations affichées`, 100);
+    _hideLoading();
     return;
   }
 
   // 2. Initialize DuckDB WASM
+  _setLoading('Initialisation DuckDB...', 10);
   subEl.textContent = 'Chargement DuckDB…';
   const duckdb = await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@latest/+esm');
   const bundle = await duckdb.selectBundle(duckdb.getJsDelivrBundles());
@@ -617,6 +650,7 @@ async function initApp() {
   URL.revokeObjectURL(workerUrl);
 
   // 3. Fetch raw IRVE parquet from data.gouv.fr with progress indication
+  _setLoading('Téléchargement des données IRVE...', 20);
   subEl.textContent = 'Téléchargement des données IRVE…';
   const response = await fetch(PARQUET_URL);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -633,7 +667,9 @@ async function initApp() {
     chunks.push(value);
     received += value.length;
     if (total) {
-      subEl.textContent = `Téléchargement IRVE… ${Math.round(received / total * 100)} %`;
+      const dlPct = Math.round(received / total * 100);
+      subEl.textContent = `Téléchargement IRVE… ${dlPct} %`;
+      _setLoading(`Téléchargement (${(received / 1e6).toFixed(1)} / ${(total / 1e6).toFixed(1)} Mo)...`, 20 + dlPct * 0.5);
     }
   }
 
@@ -643,6 +679,7 @@ async function initApp() {
   for (const chunk of chunks) { buf.set(chunk, pos); pos += chunk.length; }
 
   // 4. Register parquet in DuckDB virtual FS and run the filter query
+  _setLoading('Filtrage des stations rapides...', 75);
   subEl.textContent = 'Filtrage des stations…';
   await db.registerFileBuffer('irve_raw.parquet', buf);
 
@@ -683,12 +720,15 @@ async function initApp() {
   } catch (_) {}
 
   // 7. Build markers and refresh map
+  _setLoading('Construction des marqueurs...', 90);
   markers.length = 0;
   const src = map.getSource('stations');
   if (src) src.setData({ type: 'FeatureCollection', features: [] });
   buildMarkers(rows.filter(r => !r.cheap));
   buildCheapMarkers(rows.filter(r => r.cheap));
   updateVisibility();
+  _setLoading(`${markers.length} stations affichées`, 100);
+  _hideLoading();
 }
 
 // ── Initialisation après chargement de la carte ──────────────────────────
@@ -702,6 +742,9 @@ map.on('load', () => {
   map.addSource('stations', {
     type: 'geojson',
     data: { type: 'FeatureCollection', features: [] },
+    cluster: true,
+    clusterMaxZoom: 11,
+    clusterRadius: 50,
   });
 
   // ── Route line layer (below station dots) ────────────────────────────────
@@ -718,13 +761,57 @@ map.on('load', () => {
     id:     'stations-layer',
     type:   'circle',
     source: 'stations',
+    filter: ['!', ['has', 'point_count']],
     paint: {
-      'circle-radius':         ['get', 'radius'],
+      'circle-radius': [
+        'interpolate', ['linear'], ['zoom'],
+        6,  ['*', ['get', 'radius'], 0.4],
+        10, ['*', ['get', 'radius'], 0.7],
+        13, ['get', 'radius'],
+      ],
       'circle-color':          ['get', 'color'],
       'circle-stroke-color':   ['get', 'strokeColor'],
       'circle-stroke-width':   ['get', 'strokeWidth'],
       'circle-opacity':        0.9,
       'circle-stroke-opacity': 1,
+    },
+  });
+
+  // ── R5 — Cluster circle layer ─────────────────────────────────────────────
+  map.addLayer({
+    id:     'clusters',
+    type:   'circle',
+    source: 'stations',
+    filter: ['has', 'point_count'],
+    paint: {
+      'circle-color': [
+        'step', ['get', 'point_count'],
+        '#51bbd6', 10,
+        '#f1f075', 30,
+        '#f28cb1',
+      ],
+      'circle-radius': [
+        'step', ['get', 'point_count'],
+        15, 10, 20, 30, 25,
+      ],
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff',
+    },
+  });
+
+  // ── R5 — Cluster count label ──────────────────────────────────────────────
+  map.addLayer({
+    id:     'cluster-count',
+    type:   'symbol',
+    source: 'stations',
+    filter: ['has', 'point_count'],
+    layout: {
+      'text-field':  '{point_count_abbreviated}',
+      'text-font':   ['Open Sans Regular'],
+      'text-size':   12,
+    },
+    paint: {
+      'text-color': '#1e293b',
     },
   });
 
@@ -743,6 +830,18 @@ map.on('load', () => {
     map.getCanvas().style.cursor = '';
     if (_hoverPopup) { _hoverPopup.remove(); _hoverPopup = null; }
   });
+
+  // ── R5 — Cluster click: zoom into cluster ────────────────────────────────
+  map.on('click', 'clusters', e => {
+    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+    const clusterId = features[0].properties.cluster_id;
+    map.getSource('stations').getClusterExpansionZoom(clusterId, (err, zoom) => {
+      if (err) return;
+      map.easeTo({ center: features[0].geometry.coordinates, zoom });
+    });
+  });
+  map.on('mouseenter', 'clusters', () => { map.getCanvas().style.cursor = 'pointer'; });
+  map.on('mouseleave', 'clusters', () => { map.getCanvas().style.cursor = ''; });
 
   // ── Click → popup ─────────────────────────────────────────────────────────
   map.on('click', 'stations-layer', e => {
@@ -770,6 +869,10 @@ map.on('load', () => {
     _currentPopup = popup;
   });
 
+  // ── R4 — Re-apply theme after style fully loaded ────────────────────────
+  const savedTheme = localStorage.getItem('irve-theme');
+  if (savedTheme === 'dark') applyTheme('dark');
+
   // ── Lancer l'app ─────────────────────────────────────────────────────────
   initApp().then(() => {
     _markersReady = true;
@@ -777,6 +880,8 @@ map.on('load', () => {
   }).catch(err => {
     console.error('initApp:', err);
     subEl.textContent = '⚠ Erreur de chargement';
+    const _ov = document.getElementById('loading-overlay');
+    if (_ov) { _ov.classList.add('fade-out'); setTimeout(() => _ov.remove(), 600); }
   });
 });
 
@@ -784,40 +889,27 @@ map.on('load', () => {
 
 function buildPopup(p, op) {
   const hours = p.horaires || '—';
-  const shortHours = hours.length > 50 ? hours.slice(0, 50) + '…' : hours;
+  const shortHours = hours.length > 30 ? hours.slice(0, 30) + '…' : hours;
   const addr = p.adresse || '—';
   const shortAddr = addr.length > 60 ? addr.slice(0, 60) + '…' : addr;
-  const typeLabel = p.station_type === 'parking' ? 'Parking privé' : 'Aire dédiée';
 
   return `
-    <div>
-      <div class="popup-station">${p.nom_station || '—'}</div>
-      <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
-      ${op.price ? `<span class="popup-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> <small>${op.price.range}</small>${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</span>` : ''}
-      <div class="popup-grid">
-        <span class="popup-label">Type</span>
-        <span>${typeLabel}</span>
-
-        <span class="popup-label">Puissance max</span>
-        <span class="popup-power">${p.max_power_kw} kW</span>
-
-        <span class="popup-label">Bornes CCS ≥ 150 kW</span>
-        <span>${p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : '—'}</span>
-
-        <span class="popup-label">Nb. de bornes total</span>
-        <span>${p.nbre_pdc || '—'}</span>
-
-        <span class="popup-label">Horaires</span>
-        <span>${shortHours}</span>
-
-        <span class="popup-label">Adresse</span>
-        <span>${shortAddr}</span>
-
-        <span class="popup-label">Disponibilité CCS2</span>
-        <span class="popup-avail-cell">
-          <span class="popup-avail">${AVAIL_SPINNER}</span>
-          <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
-        </span>
+    <div class="popup-card">
+      <div class="popup-card-header">
+        <span class="popup-operator-badge" style="background:${op.color}">${op.name}</span>
+        <div class="popup-card-badges">
+          ${p.max_power_kw ? `<span class="popup-badge">${Math.round(p.max_power_kw)} kW</span>` : ''}
+          ${p.nbre_ccs_fast > 0 ? `<span class="popup-badge">${p.nbre_ccs_fast} CCS</span>` : ''}
+          ${p.nbre_pdc ? `<span class="popup-badge">${p.nbre_pdc} PDC</span>` : ''}
+          <span class="popup-badge">${shortHours}</span>
+        </div>
+      </div>
+      <div class="popup-card-name">${p.nom_station || '—'}</div>
+      <div class="popup-card-addr">${shortAddr}</div>
+      ${op.price ? `<div class="popup-card-price"><span class="price-tier price-tier-${op.price.tier}">${'€'.repeat(op.price.tier)}</span> ${op.price.range}${op.price.note ? ` <small class="price-note">(${op.price.note})</small>` : ''}</div>` : ''}
+      <div class="popup-card-avail">
+        <span class="popup-avail">${AVAIL_SPINNER}</span>
+        <button class="popup-avail-refresh" title="Rafraîchir">↺</button>
       </div>
       ${op.alerts ? op.alerts.map(a => `<span class="alert-badge">${a.icon} ${a.text}</span>`).join('') : ''}
       <a href="${navUrl(p.lat, p.lon)}" class="nav-btn" target="_blank" rel="noopener">Y aller</a>
@@ -1313,6 +1405,10 @@ function enterEmergencyMode() {
   if (!geoState.available || !markers.length) return;
   if (driveModeActive) exitDriveMode();
   emergencyModeActive = true;
+  // R1 — mobile: full-screen emergency overlay
+  if (window.matchMedia('(max-width: 640px)').matches) {
+    document.body.classList.add('emergency-mobile');
+  }
   // Precompute markers within 15 km — bbox pre-filter then haversine
   // 15 km ≈ 0.135° lat, 0.18° lon at France latitudes
   const LAT_DELTA = 0.135, LON_DELTA = 0.18;
@@ -1351,7 +1447,7 @@ function exitEmergencyMode() {
   _emergencyAhead     = [];
   _lastEmergencyFp    = '';
   document.getElementById('drive-panel').style.display = 'none';
-  document.body.classList.remove('drive-mode-active');
+  document.body.classList.remove('drive-mode-active', 'emergency-mobile');
   const titleEl = document.querySelector('#drive-panel .dm-title');
   if (titleEl) titleEl.textContent = 'Mode conduite';
   updateVisibility();
@@ -1717,10 +1813,11 @@ async function calculateRoute() {
       history.replaceState(null, '', url.toString());
     }());
 
-    // Mobile: collapse panel to corridor + parkings only
+      // Mobile: collapse panel / bottom sheet
     if (window.matchMedia('(max-width: 640px)').matches) {
       document.getElementById('panel').classList.add('route-calculated');
       document.getElementById('panel').classList.remove('panel-expanded');
+      if (window._bsSetState) window._bsSetState(0); // collapse bottom sheet
     }
   } catch (e) {
     info.className = 'route-error';
@@ -2094,6 +2191,8 @@ function applyPreferredStyling() {
 
   document.addEventListener('click', () => {
     menu.style.display = 'none';
+    const backdrop = document.querySelector('.settings-backdrop');
+    if (backdrop) backdrop.style.display = 'none';
   });
 
   menu.addEventListener('click', e => e.stopPropagation());
@@ -2105,6 +2204,17 @@ function applyPreferredStyling() {
     TOMTOM_API_KEY = keyInput.value.trim();
     localStorage.setItem('irve-tomtom-key', TOMTOM_API_KEY);
   });
+
+  // R4 — Dark mode toggle
+  const darkToggle = document.getElementById('dark-mode-toggle');
+  if (darkToggle) {
+    darkToggle.checked = document.documentElement.dataset.theme === 'dark';
+    darkToggle.addEventListener('change', () => {
+      const theme = darkToggle.checked ? 'dark' : 'light';
+      localStorage.setItem('irve-theme-manual', theme);
+      applyTheme(theme);
+    });
+  }
 
   bustBtn.addEventListener('click', () => {
     const req = indexedDB.deleteDatabase('irve-v1');
@@ -2386,3 +2496,119 @@ function _startWatch() {
 
 // Start watching — triggers the browser's permission prompt at page load
 if (navigator.geolocation) _startWatch();
+
+// ── R4 — Dark mode ──────────────────────────────────────────────────────────
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem('irve-theme', theme);
+  try {
+    map.setLayoutProperty('carto-light', 'visibility', theme === 'dark' ? 'none' : 'visible');
+    map.setLayoutProperty('carto-dark', 'visibility', theme === 'dark' ? 'visible' : 'none');
+  } catch (_) {
+    // Style not loaded yet — will be applied in map.on('load')
+  }
+}
+
+const _prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+_prefersDark.addEventListener('change', () => {
+  const saved = localStorage.getItem('irve-theme-manual');
+  if (saved) return; // manual override active — don't auto-switch
+  applyTheme(_prefersDark.matches ? 'dark' : 'light');
+});
+
+// Apply initial theme (auto from system, or manual from localStorage)
+(function initTheme() {
+  const manual = localStorage.getItem('irve-theme-manual');
+  if (manual === 'dark' || manual === 'light') {
+    applyTheme(manual);
+  } else {
+    applyTheme(_prefersDark.matches ? 'dark' : 'light');
+  }
+})();
+
+// ── R3 — Bottom sheet (mobile) ──────────────────────────────────────────────
+
+(function setupBottomSheet() {
+  const panel  = document.getElementById('panel');
+  const handle = document.querySelector('.bs-handle');
+  if (!handle) return;
+
+  const STATES = ['bs-collapsed', 'bs-half', 'bs-full'];
+  let currentState = 1; // start at half
+  let startY = 0;
+  let isDragging = false;
+
+  function isMobile() { return window.matchMedia('(max-width: 640px)').matches; }
+
+  function setState(idx) {
+    STATES.forEach(cls => panel.classList.remove(cls));
+    currentState = Math.max(0, Math.min(2, idx));
+    panel.classList.add(STATES[currentState]);
+  }
+
+  // Initialize mobile state
+  if (isMobile()) setState(1);
+
+  handle.addEventListener('touchstart', e => {
+    if (!isMobile()) return;
+    isDragging = true;
+    startY = e.touches[0].clientY;
+    panel.style.transition = 'none';
+  }, { passive: true });
+
+  handle.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    const dy = e.touches[0].clientY - startY;
+    panel.style.transform = `translateY(${Math.max(-50, dy)}px)`;
+  }, { passive: true });
+
+  handle.addEventListener('touchend', e => {
+    if (!isDragging) return;
+    isDragging = false;
+    panel.style.transition = '';
+    panel.style.transform = '';
+    const dy = e.changedTouches[0].clientY - startY;
+    if (dy > 60) {
+      setState(Math.max(0, currentState - 1));
+    } else if (dy < -60) {
+      setState(Math.min(2, currentState + 1));
+    }
+  });
+
+  // Expose for other code to collapse after route calculation
+  window._bsSetState = setState;
+})();
+
+// ── R9 — Adaptive settings ──────────────────────────────────────────────────
+
+(function setupAdaptiveSettings() {
+  const menu = document.getElementById('settings-menu');
+  const btn  = document.getElementById('settings-btn');
+
+  // Mobile: settings close button + backdrop
+  const closeBtn = document.querySelector('.settings-close-mobile');
+  const backdrop = document.querySelector('.settings-backdrop');
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => { menu.style.display = 'none'; });
+  }
+  if (backdrop) {
+    backdrop.addEventListener('click', () => { menu.style.display = 'none'; });
+  }
+
+  // Show backdrop on mobile when settings open
+  const origClick = btn.onclick;
+  btn.addEventListener('click', () => {
+    if (window.matchMedia('(max-width: 640px)').matches && backdrop) {
+      backdrop.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+  });
+
+  // Tesla viewport: simplify settings
+  if (window.innerWidth >= 1800 && window.innerHeight >= 1100) {
+    menu.querySelectorAll('.settings-tesla-hide').forEach(el => {
+      el.style.display = 'none';
+    });
+  }
+})();
