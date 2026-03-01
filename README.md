@@ -8,8 +8,6 @@ Filtrage par itinéraire, recommandations d'abonnements réseau, mode conduite a
 
 **[Ouvrir l'application](https://thomasleveil.github.io/stations-de-recharge/)**
 
-![Itinéraire Paris-Lyon avec stations filtrées](qa-screenshots/05-route-paris-lyon.png)
-
 ---
 
 ## Fonctionnalités

@@ -53,6 +53,11 @@ Static frontend — no backend, no build step. Three files:
 - **Entry**: `{ ts: Date.now(), rows: [...] }` — plain JS objects
 - **TTL**: 24 hours
 
+## Documentation
+
+- **`README.md`** — orienté **utilisateurs** : présentation des fonctionnalités, cas d'usage, configuration TomTom. Ne pas y mettre de détails techniques d'implémentation.
+- **`CLAUDE.md`** (ce fichier) — orienté **développeurs et IA** : architecture, stack, patterns de code, backlog.
+
 ## Backlog
 
 `BACKLOG.md` recense toutes les idées, améliorations et bugs connus, classés par thème (Performance, Fonctionnalités, Qualité des données, UX/Interface, Technique).
