@@ -18,7 +18,7 @@ Les stations des réseaux à tarif réduit (B&B Hotels / ENGIE Vianeo, McDonald'
 
 ## Prochaines stations sur mon itinéraire
 
-En route, le **mode conduite** (bouton ⬆ après calcul d'itinéraire, GPS requis) affiche en bas de l'écran les prochaines stations sur votre trajet, triées par proximité, avec pour chacune :
+En route, le **mode conduite** (bouton ⬆ après calcul d'itinéraire, GPS requis) affiche dans un panneau à gauche de l'écran les prochaines stations sur votre trajet, triées par proximité, avec pour chacune :
 
 - la distance restante
 - l'opérateur et la puissance maximale
