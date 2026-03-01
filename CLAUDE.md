@@ -25,12 +25,12 @@ Static frontend — no backend, no build step. Three files:
 
 | File | Role |
 |------|------|
-| `index.html` | Shell — loads Leaflet CDN, turf.js, `app.js`, `style.css` |
+| `index.html` | Shell — loads MapLibre GL JS CDN, turf.js, `app.js`, `style.css` |
 | `app.js` | Map init, DuckDB WASM filter, IndexedDB cache, markers, route filtering |
 | `style.css` | Panel, legend, popup, marker styles |
 | `filter-worker.js` | Web Worker for off-thread route corridor filtering |
 
-**Stack:** Leaflet 1.9.4 + CartoDB Positron tiles + DuckDB WASM (CDN) + turf.js
+**Stack:** MapLibre GL JS (CDN) + CartoDB Positron raster tiles + DuckDB WASM (CDN) + turf.js
 
 ### Data Flow
 
