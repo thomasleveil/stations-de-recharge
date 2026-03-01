@@ -324,7 +324,7 @@ html, body {
 }
 .popup-avail-refresh:hover { color: #3b82f6; }
 
-.leaflet-popup-close-button {
+.maplibregl-popup-close-button {
   width: 36px !important;
   height: 36px !important;
   font-size: 24px !important;
@@ -411,7 +411,7 @@ html, body {
 
 /* ── Zoom control (below settings button) ─────────────────── */
 
-.leaflet-top.leaflet-right {
+.maplibregl-ctrl-top-right {
   top: 64px; /* settings btn: 10px top + 44px height + 10px gap */
 }
 
@@ -733,12 +733,12 @@ html, body {
 
 /* ── Locate control button ─────────────────────────────────── */
 
-.leaflet-control-locate {
+.maplibregl-ctrl-locate {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 29px;
+  height: 29px;
   background: white;
   border: none;
   border-radius: 4px;
@@ -748,16 +748,16 @@ html, body {
   font-family: inherit;
 }
 
-.leaflet-control-locate:hover:not(:disabled) {
+.maplibregl-ctrl-locate:hover:not(:disabled) {
   background: #f4f4f4;
 }
 
-.leaflet-control-locate:disabled {
+.maplibregl-ctrl-locate:disabled {
   color: #bbb;
   cursor: default;
 }
 
-.leaflet-control-locate.geoloc-retry {
+.maplibregl-ctrl-locate.geoloc-retry {
   color: #f59e0b;
 }
 
@@ -1037,10 +1037,10 @@ html, body {
 
 .nav-btn:hover { opacity: 0.85; }
 
-/* Override Leaflet's .leaflet-popup a { color: #0078a8 } which beats .nav-btn alone */
-.leaflet-popup-content .nav-btn,
-.leaflet-popup-content .nav-btn:visited,
-.leaflet-popup-content .nav-btn:hover {
+/* Override MapLibre popup link color which can override .nav-btn color */
+.maplibregl-popup-content .nav-btn,
+.maplibregl-popup-content .nav-btn:visited,
+.maplibregl-popup-content .nav-btn:hover {
   color: white;
   text-decoration: none;
 }
