@@ -496,7 +496,7 @@ function buildCheapMarkers(rows) {
     el.addEventListener('click', (ev) => {
       ev.stopPropagation();
       const popup = new maplibregl.Popup({ maxWidth: '300px', offset: 10 })
-        .setLngLat([p.lon, p.lat]).setHTML(buildCheapPopup(p, op)).addTo(map);
+        .setLngLat([p.lon, p.lat]).setHTML(buildCheapPopup(p, op));
       popup.on('open', () => {
         const popupEl = popup.getElement();
         const avail      = popupEl?.querySelector('.popup-avail');
@@ -510,6 +510,7 @@ function buildCheapMarkers(rows) {
           };
         }
       });
+      popup.addTo(map);
     });
 
     // Do NOT addTo(map) here — visibility managed by updateVisibility()
@@ -747,8 +748,7 @@ map.on('load', () => {
     if (!m) return;
     const popup = new maplibregl.Popup({ maxWidth: '300px', offset: 10 })
       .setLngLat(e.lngLat)
-      .setHTML(buildPopup(m._p, m._op))
-      .addTo(map);
+      .setHTML(buildPopup(m._p, m._op));
     popup.on('open', () => {
       const popupEl = popup.getElement();
       const avail = popupEl.querySelector('.popup-avail');
@@ -760,6 +760,7 @@ map.on('load', () => {
         fetchAvailability(m).then(html => { if (avail) avail.innerHTML = html; });
       };
     });
+    popup.addTo(map);
   });
 
   // ── Lancer l'app ─────────────────────────────────────────────────────────
