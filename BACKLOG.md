@@ -19,7 +19,7 @@ Idées, améliorations et bugs connus, classés par thème.
 |---|:------:|------|:---:|:---:|---|
 | P-1 | 💡 | **Service Worker / offline cache** — mettre en cache le Parquet IndexedDB + assets pour un accès hors-ligne | ★★★ | M | TTL 24 h déjà en place, logique SW naturelle |
 | P-2 | 💡 | **Web Worker DuckDB** — déplacer l'init DuckDB + parsing Parquet dans un Worker dédié pour ne pas bloquer le main thread au 1er chargement | ★★★ | L | WASM cross-worker nécessite SharedArrayBuffer ou postMessage sérialisé |
-| P-3 | 💡 | **Clustering des markers en mode sans itinéraire** — quand aucun itinéraire n'est calculé, regrouper les 5 500+ markers en clusters pour alléger la page ; revenir aux markers individuels dès qu'une route est active | ★★★ | M | `markerClusterGroup` incompatible avec canvas renderer → nécessite de basculer sur SVG ou réécrire le clustering. Alternative : désactiver les markers individuels et afficher uniquement des compteurs par département en mode global |
+| P-3 | 💡 | **Clustering des markers en mode sans itinéraire** — quand aucun itinéraire n'est calculé, regrouper les 5 500+ markers en clusters pour alléger la page ; revenir aux markers individuels dès qu'une route est active | ★★★ | M | MapLibre GL JS supporte le clustering natif via `cluster: true` sur la source GeoJSON (`cluster_radius`, `cluster_max_zoom`). Alternative : désactiver les markers individuels et afficher uniquement des compteurs par département en mode global |
 | P-4 | 💡 | **Décimation progressive du corridor** — augmenter `DEC_TARGET` dynamiquement selon la longueur de la route (< 500 km → 500 pts, > 500 km → 1 000 pts) | ★ | S | Gain marginal, à valider avec benchmark |
 
 ---
@@ -34,7 +34,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | F-4 | 💡 | **Affichage disponibilité temps réel** — indicateur de disponibilité des connecteurs (OCPI / opérateurs qui exposent l'API) | Complexité API variable selon opérateur |
 | F-5 | ✅ | ~~**Partage de trajet**~~ | ✅ commit `e7b7fce` |
 | F-6 | ✅ | ~~**Historique des trajets récents**~~ | ✅ |
-| F-7 | 💡 | **Mode sombre** — thème sombre pour la carte et le panel | Leaflet : tiles CartoDB Dark + CSS variables |
+| F-7 | 💡 | **Mode sombre** — thème sombre pour la carte et le panel | MapLibre : swapper le style raster (`CARTO_STYLE`) vers tiles CartoDB Dark + CSS variables pour le panel |
 | F-8 | ✅ | ~~**Détection auto départ = position GPS**~~ | ✅ |
 | F-9a | ✅ | **Recommandation réseau pré-trajet** — après calcul d'itinéraire, suggérer 1-2 réseaux auprès desquels souscrire un abonnement mensuel sans engagement pour ce trajet. | ✅ Encart `#network-recommendation` sous `#route-info` ; algorithme `computeNetworkRecommendation()` : zone utile = `min(150 km, routeKm×40%)`, tronçons 80 km, score = tronçons couverts / total, Alliance virtuelle {Electra+IONITY+Fastned+Atlante} |
 | F-9b | ✅ | **Réseau préféré en route** — l'utilisateur configure manuellement les réseaux pour lesquels il dispose d'un avantage tarifaire (persisté en localStorage) ; quand un itinéraire est actif, les stations de ces réseaux ont une bordure or. Pas un filtre exclusif. | ✅ Checkboxes par opérateur dans les Paramètres (⚙), `preferredNetworks` Set persisté (`irve-preferred-networks`), `applyPreferredStyling()` applique bordure or (`#F59E0B`, weight 3) dans `updateVisibility()` |
@@ -87,3 +87,4 @@ Idées, améliorations et bugs connus, classés par thème.
 | T-1 | 💡 | **Séparation `app.js` en modules ES** — le fichier fait ~1 200 lignes ; découper en `map.js`, `route.js`, `markers.js`, `worker-bridge.js` | Nécessite un bundler ou `<script type="module">` + import maps |
 | T-2 | 💡 | **Tests automatisés** — Playwright end-to-end : chargement, route Paris→Lyon, non-régression 47 CCS + 66 budget | `/tmp/perf-measure.ts` est une bonne base |
 | T-3 | ✅ | ~~**Mise à jour automatique Parquet**~~ | ✅ |
+| T-4 | ✅ | ~~**Migration MapLibre GL JS**~~ — remplacer Leaflet 1.9.4 par MapLibre GL JS (rendu WebGL) | ✅ PR #14 — source GeoJSON + layer `circle` WebGL pour les markers principaux, `maplibregl.Marker` DOM pour les réseaux abordables, `IControl` plain object pour le bouton géoloc, `map.jumpTo()` / `map.resize()` / `map.fitBounds()` |

@@ -22,7 +22,7 @@ Application 100 % statique — aucun backend, aucune étape de build.
 | Fichier | Rôle |
 |---|---|
 | `index.html` | Shell HTML |
-| `app.js` | Carte Leaflet, fetch IRVE, filtrage DuckDB WASM, cache IndexedDB, itinéraire |
+| `app.js` | Carte MapLibre GL JS, fetch IRVE, filtrage DuckDB WASM, cache IndexedDB, itinéraire |
 | `filter-worker.js` | Web Worker pour le filtrage de corridor (off-thread) |
 | `style.css` | Styles |
 
