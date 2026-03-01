@@ -1289,7 +1289,12 @@ html, body {
   gap: 6px;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-color: var(--color-border) transparent;
+  scrollbar-width: thin;
 }
+#dm-cards::-webkit-scrollbar { width: 6px; }
+#dm-cards::-webkit-scrollbar-track { background: transparent; }
+#dm-cards::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-full); }
 
 .dm-card {
   background: var(--color-bg-hover);
