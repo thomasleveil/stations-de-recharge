@@ -1321,7 +1321,9 @@ function enterEmergencyMode() {
       _emergencyMarkers.add(m);
     }
   }
-  document.getElementById('drive-panel').style.display = 'flex';
+  const dp = document.getElementById('drive-panel');
+  dp.style.display = 'flex';
+  dp.classList.remove('dm-collapsed');
   document.body.classList.add('drive-mode-active');
   const titleEl = document.querySelector('#drive-panel .dm-title');
   if (titleEl) titleEl.textContent = 'Bornes proches — 15 km';
@@ -1419,7 +1421,9 @@ async function _fetchEmergencyAvailability() {
 function enterDriveMode() {
   if (emergencyModeActive) exitEmergencyMode();
   driveModeActive = true;
-  document.getElementById('drive-panel').style.display = 'flex';
+  const dp = document.getElementById('drive-panel');
+  dp.style.display = 'flex';
+  dp.classList.remove('dm-collapsed');
   document.body.classList.add('drive-mode-active');
   const titleEl = document.querySelector('#drive-panel .dm-title');
   if (titleEl) titleEl.textContent = 'Mode conduite';
@@ -1508,6 +1512,51 @@ document.getElementById('dm-exit').addEventListener('click', () => {
   else exitDriveMode();
 });
 document.getElementById('dm-refresh').addEventListener('click', () => _fetchDriveAvailability(true));
+
+// ── Drive panel handle — toggle collapsed/expanded on mobile ──────────
+(function initDmHandle() {
+  const panel = document.getElementById('drive-panel');
+  const handle = panel.querySelector('.dm-handle');
+  const header = panel.querySelector('.dm-header');
+  if (!handle) return;
+  let startY = 0, startTranslate = 0;
+
+  function getTranslateY() {
+    const m = getComputedStyle(panel).transform.match(/matrix.*,\s*([-\d.]+)\)$/);
+    return m ? parseFloat(m[1]) : 0;
+  }
+
+  [handle, header].forEach(el => {
+    if (!el) return;
+    el.addEventListener('touchstart', e => {
+      startY = e.touches[0].clientY;
+      startTranslate = getTranslateY();
+      panel.style.transition = 'none';
+    }, { passive: true });
+
+    el.addEventListener('touchmove', e => {
+      const dy = e.touches[0].clientY - startY;
+      const ty = Math.max(0, startTranslate + dy); // can't drag above 0
+      panel.style.transform = `translateY(${ty}px)`;
+    }, { passive: true });
+
+    el.addEventListener('touchend', e => {
+      panel.style.transition = '';
+      const dy = e.changedTouches[0].clientY - startY;
+      if (dy > 60) {
+        panel.classList.add('dm-collapsed');
+      } else if (dy < -40) {
+        panel.classList.remove('dm-collapsed');
+      }
+      panel.style.transform = '';
+    });
+  });
+
+  // Tap on handle toggles collapsed
+  handle.addEventListener('click', () => {
+    panel.classList.toggle('dm-collapsed');
+  });
+}());
 
 // U-7b — fetch TomTom availability for all drive cards sequentially.
 // Called automatically on panel refresh (uses cache) and on manual tap (force-refreshes).
