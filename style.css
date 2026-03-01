@@ -280,6 +280,23 @@ html, body {
 .route-error    { font-size: var(--font-size-md); color: var(--color-error); }
 .route-progress { font-size: var(--font-size-sm); color: var(--color-text-secondary); }
 
+/* Route calculation progress bar */
+.route-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  margin-top: var(--space-xs);
+  overflow: hidden;
+}
+.route-progress-bar-fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: var(--radius-full);
+  transition: width 0.15s ease-out;
+  width: 0%;
+}
+
 /* F-9a — network recommendation */
 #network-recommendation {
   margin-top: 6px;
@@ -868,39 +885,11 @@ html, body {
   display: none;
 }
 
-/* ── Mobile: legend collapsible ────────────────────────────── */
+/* ── Mobile: hide legend entirely ──────────────────────────── */
 
 @media (max-width: 640px) {
-  .legend-title {
-    cursor: pointer;
-    user-select: none;
-    margin-bottom: 0;
-  }
-
-  .legend-chevron {
-    display: inline;
-  }
-
-  #legend-items,
-  .legend-hint {
+  #legend {
     display: none;
-  }
-
-  #legend.open #legend-items,
-  #legend.open .legend-hint {
-    display: block;
-  }
-
-  #legend.open {
-    bottom: 28px;
-  }
-
-  #legend.open .legend-title {
-    margin-bottom: var(--space-sm);
-  }
-
-  #legend.open .legend-chevron {
-    transform: rotate(180deg);
   }
 }
 
@@ -1054,11 +1043,6 @@ html, body {
     font-family: inherit;
   }
   .settings-close-mobile:hover { background: var(--color-bg-hover); }
-
-  /* Legend placement on mobile */
-  #legend {
-    bottom: 72px; /* above bottom sheet collapsed */
-  }
 }
 
 /* Settings close button and backdrop hidden on non-mobile */
