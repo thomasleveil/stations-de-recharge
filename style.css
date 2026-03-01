@@ -932,10 +932,12 @@ html, body {
   .bs-handle {
     display: block;
     width: 40px;
-    height: 4px;
+    height: 5px;
     background: var(--color-border);
+    background-clip: content-box;
     border-radius: var(--radius-full);
     margin: 0 auto var(--space-sm);
+    padding: 20px 40px;
     cursor: grab;
   }
   .bs-handle:active { cursor: grabbing; }

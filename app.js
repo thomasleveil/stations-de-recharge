@@ -141,7 +141,6 @@ let _currentPopup  = null;    // last opened station popup (auto-close on new cl
 // ── Draw markers (populated asynchronously by initApp) ────────────────────
 
 const markers = [];
-const cheapMarkers = [];
 
 // ── Visibility + legend (reactive) ───────────────────────────────────────
 
@@ -151,30 +150,32 @@ const legendEl = document.getElementById('legend-items');
 // Piste 2.2 — delta-updates state: Sets of currently visible markers.
 // null = uninitialised (first call applies to all; subsequent calls diff).
 let _prevVisMain  = null;
-let _prevVisCheap = null;
-
 function isVisible(m) {
+  if (m._cheap) {
+    // Cheap markers: no power filter, wider corridor when route active
+    if (emergencyModeActive && _emergencyMarkers.has(m)) return true;
+    return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= CHEAP_CORRIDOR_KM);
+  }
   // F-3 — minimum power filter
   if (m._maxPowerKw !== undefined && m._maxPowerKw < MIN_POWER_KW) return false;
   if (emergencyModeActive && _emergencyMarkers.has(m)) return true;
   return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
 }
 
-function isCheapVisible(m) {
-  return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= CHEAP_CORRIDOR_KM);
-}
-
 function updateVisibility() {
-  // Compute visible sets
+  // Compute visible set (unified: both main and cheap markers)
   const nextVisMain  = new Set();
-  const nextVisCheap = new Set();
-  let count = 0;
-  for (const m of markers)      { if (isVisible(m))      { nextVisMain.add(m);  count++; } }
-  for (const m of cheapMarkers) { if (isCheapVisible(m)) { nextVisCheap.add(m); } }
+  let countMain = 0;
+  for (const m of markers) {
+    if (isVisible(m)) {
+      nextVisMain.add(m);
+      if (!m._cheap) countMain++;
+    }
+  }
 
   const _hasPref = preferredNetworks.size > 0 && routeActive;
 
-  // Build GeoJSON features for visible main markers
+  // Build GeoJSON features for all visible markers (main + cheap)
   const features = [];
   for (const m of nextVisMain) {
     const pref = _hasPref && preferredNetworks.has(m._op.name);
@@ -193,57 +194,44 @@ function updateVisibility() {
   const src = map.getSource('stations');
   if (src) src.setData({ type: 'FeatureCollection', features });
 
-  // Cheap markers: show/hide via addTo/remove
-  for (const m of cheapMarkers) {
-    const vis    = nextVisCheap.has(m);
-    const wasVis = _prevVisCheap !== null && _prevVisCheap.has(m);
-    if (vis && !wasVis) m.addTo(map);
-    else if (!vis && wasVis) m.remove();
-  }
-
-  _prevVisMain  = nextVisMain;
-  _prevVisCheap = nextVisCheap;
+  _prevVisMain = nextVisMain;
 
   if (routeActive) {
-    subEl.textContent = `${count} station${count !== 1 ? 's' : ''} sur le trajet`;
+    subEl.textContent = `${countMain} station${countMain !== 1 ? 's' : ''} sur le trajet`;
   } else {
-    subEl.textContent = `${count} station${count !== 1 ? 's' : ''} · CCS ≥ ${MIN_POWER_KW} kW`;
+    subEl.textContent = `${countMain} station${countMain !== 1 ? 's' : ''} · CCS ≥ ${MIN_POWER_KW} kW`;
   }
 
-  updateLegend(_prevVisMain, _prevVisCheap);
+  updateLegend(_prevVisMain);
 }
 
 // Piste 3.2 — legend hash cache: avoid DOM rebuild when nothing changed.
 let _lastLegendKey = '';
 
-function updateLegend(visMain, visCheap) {
-  // Count visible stations per operator (main CCS markers)
-  // When called with pre-computed sets from updateVisibility(), use them directly
-  // instead of re-iterating all markers with isVisible().
+function updateLegend(visSet) {
+  // Count visible stations per operator, split by cheap flag.
+  // When called with a pre-computed set from updateVisibility(), use it directly.
   const opCounts = new Map();
-  let autreCount = 0;
-  const mainSource = visMain || markers;
-  for (const m of mainSource) {
-    if (!visMain && !isVisible(m)) continue;
-    const isKnown = OPERATORS.some(op => op.name === m._op.name);
-    if (isKnown) {
-      const key = m._op.name;
-      if (!opCounts.has(key)) opCounts.set(key, { op: m._op, count: 0 });
-      opCounts.get(key).count++;
-    } else {
-      autreCount++;
-    }
-  }
-
-  // Build cheap counts (always, even when not route active — needed for fingerprint)
   const cheapOpCounts = new Map();
-  if (routeActive) {
-    const cheapSource = visCheap || cheapMarkers;
-    for (const m of cheapSource) {
-      if (!visCheap && !isCheapVisible(m)) continue;
-      const key = m._op.name;
-      if (!cheapOpCounts.has(key)) cheapOpCounts.set(key, { op: m._op, count: 0 });
-      cheapOpCounts.get(key).count++;
+  let autreCount = 0;
+  const source = visSet || markers;
+  for (const m of source) {
+    if (!visSet && !isVisible(m)) continue;
+    if (m._cheap) {
+      if (routeActive) {
+        const key = m._op.name;
+        if (!cheapOpCounts.has(key)) cheapOpCounts.set(key, { op: m._op, count: 0 });
+        cheapOpCounts.get(key).count++;
+      }
+    } else {
+      const isKnown = OPERATORS.some(op => op.name === m._op.name);
+      if (isKnown) {
+        const key = m._op.name;
+        if (!opCounts.has(key)) opCounts.set(key, { op: m._op, count: 0 });
+        opCounts.get(key).count++;
+      } else {
+        autreCount++;
+      }
     }
   }
 
@@ -439,7 +427,13 @@ function buildMarkers(rows) {
     if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
   }
   for (const p of _locSeen.values()) {
-    const op = getOperator(p);
+    let op = getOperator(p);
+    const cheap = Boolean(p.cheap);
+    // Override operator names for cheap network brands
+    if (cheap) {
+      if (op.name === 'ENGIE Vianeo') op = { ...op, name: 'ENGIE Vianeo - B&B HOTELS' };
+      if (op.name === 'IZIVIA Fast')  op = { ...op, name: "IZIVIA Fast - McDonald's" };
+    }
     const displayCount = p.nbre_ccs_fast > 0 ? p.nbre_ccs_fast : (parseInt(p.nbre_pdc) || 1);
     const m = {
       _p:          p,           // raw row data (for popup building)
@@ -451,6 +445,7 @@ function buildMarkers(rows) {
       _nbrePdc:    parseInt(p.nbre_pdc) || 0,
       _radius:     countRadius(displayCount),
       _idx:        markers.length,  // stable index for GeoJSON feature lookup
+      _cheap:      cheap,           // budget-network marker (wider corridor, € Abordable popup)
     };
     markers.push(m);
   }
@@ -473,72 +468,7 @@ const BRAND_MARKER_HTML = {
     "<div style='width:18px;height:18px;background:#081C19;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center'><span style='color:#B1D600;font-weight:900;font-size:11px;font-family:Arial,sans-serif;line-height:1'>B</span></div>",
 };
 
-function buildCheapMarkers(rows) {
-  _prevVisCheap = null; // reset delta-update state on marker rebuild
-  cheapMarkers.forEach(m => m.remove());
-  cheapMarkers.length = 0;
-  // D-3 — same dedup as buildMarkers
-  const _locSeen = new Map();
-  for (const r of rows) {
-    const key = `${r.operateur}|${Math.round(r.lat * 1e4)}|${Math.round(r.lon * 1e4)}`;
-    const ex = _locSeen.get(key);
-    if (!ex || r.max_power_kw > ex.max_power_kw) _locSeen.set(key, r);
-  }
-  for (const p of _locSeen.values()) {
-    let op = getOperator(p);
-    if (op.name === 'ENGIE Vianeo') op = { ...op, name: 'ENGIE Vianeo - B&B HOTELS' };
-    if (op.name === 'IZIVIA Fast')  op = { ...op, name: "IZIVIA Fast - McDonald's" };
 
-    const brandHtml = BRAND_MARKER_HTML[op.name];
-    const el = document.createElement('div');
-    if (brandHtml) {
-      el.innerHTML = brandHtml;
-      el.className = 'cheap-brand-marker';
-    } else {
-      // Dashed circle SVG (replaces L.circleMarker with dashArray)
-      el.innerHTML = `<svg width="18" height="18" viewBox="0 0 18 18">` +
-        `<circle cx="9" cy="9" r="6" fill="${op.color}" fill-opacity="0.75" ` +
-        `stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/></svg>`;
-      el.className = 'cheap-brand-marker';
-    }
-    el.style.cursor = 'pointer';
-
-    const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
-      .setLngLat([p.lon, p.lat]);
-
-    marker._p    = p;
-    marker._op   = op;
-    marker._lon  = p.lon;
-    marker._lat  = p.lat;
-    marker._name = p.nom_station;
-
-    el.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      if (_currentPopup) { _currentPopup.remove(); _currentPopup = null; }
-      const popup = new maplibregl.Popup({ maxWidth: '300px', offset: 10 })
-        .setLngLat([p.lon, p.lat]).setHTML(buildCheapPopup(p, op));
-      popup.on('close', () => { if (_currentPopup === popup) _currentPopup = null; });
-      popup.on('open', () => {
-        const popupEl = popup.getElement();
-        const avail      = popupEl?.querySelector('.popup-avail');
-        const refreshBtn = popupEl?.querySelector('.popup-avail-refresh');
-        fetchAvailability(marker).then(html => { if (avail) avail.innerHTML = html; });
-        if (refreshBtn) {
-          refreshBtn.onclick = () => {
-            delete marker._availCache;
-            if (avail) avail.innerHTML = AVAIL_SPINNER;
-            fetchAvailability(marker).then(html => { if (avail) avail.innerHTML = html; });
-          };
-        }
-      });
-      popup.addTo(map);
-      _currentPopup = popup;
-    });
-
-    // Do NOT addTo(map) here — visibility managed by updateVisibility()
-    cheapMarkers.push(marker);
-  }
-}
 
 function buildCheapPopup(p, op) {
   const hours = p.horaires || '—';
@@ -626,8 +556,7 @@ async function initApp() {
     markers.length = 0;
     const src = map.getSource('stations');
     if (src) src.setData({ type: 'FeatureCollection', features: [] });
-    buildMarkers(cached.rows.filter(r => !r.cheap));
-    buildCheapMarkers(cached.rows.filter(r => r.cheap));
+    buildMarkers(cached.rows);
     updateVisibility();
     _setLoading(`${markers.length} stations affichées`, 100);
     _hideLoading();
@@ -724,8 +653,7 @@ async function initApp() {
   markers.length = 0;
   const src = map.getSource('stations');
   if (src) src.setData({ type: 'FeatureCollection', features: [] });
-  buildMarkers(rows.filter(r => !r.cheap));
-  buildCheapMarkers(rows.filter(r => r.cheap));
+  buildMarkers(rows);
   updateVisibility();
   _setLoading(`${markers.length} stations affichées`, 100);
   _hideLoading();
@@ -835,10 +763,9 @@ map.on('load', () => {
   map.on('click', 'clusters', e => {
     const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
     const clusterId = features[0].properties.cluster_id;
-    map.getSource('stations').getClusterExpansionZoom(clusterId, (err, zoom) => {
-      if (err) return;
-      map.easeTo({ center: features[0].geometry.coordinates, zoom });
-    });
+    map.getSource('stations').getClusterExpansionZoom(clusterId)
+      .then(zoom => { map.easeTo({ center: features[0].geometry.coordinates, zoom }); })
+      .catch(() => {});
   });
   map.on('mouseenter', 'clusters', () => { map.getCanvas().style.cursor = 'pointer'; });
   map.on('mouseleave', 'clusters', () => { map.getCanvas().style.cursor = ''; });
@@ -852,7 +779,7 @@ map.on('load', () => {
     if (!m) return;
     const popup = new maplibregl.Popup({ maxWidth: '300px', offset: 10 })
       .setLngLat(e.lngLat)
-      .setHTML(buildPopup(m._p, m._op));
+      .setHTML(m._cheap ? buildCheapPopup(m._p, m._op) : buildPopup(m._p, m._op));
     popup.on('close', () => { if (_currentPopup === popup) _currentPopup = null; });
     popup.on('open', () => {
       const popupEl = popup.getElement();
@@ -1103,15 +1030,9 @@ async function applyRouteFilter(routeLine, onProgress) {
     markers[i]._distFromRoute   = Infinity;
     markers[i]._progressOnRoute = 0;
   }
-  for (let i = 0; i < cheapMarkers.length; i++) {
-    cheapMarkers[i]._distFromRoute = Infinity;
-  }
 
-  // Filter to bbox — typical Paris→Lyon keeps ~400/5535 main + ~150/925 cheap
+  // Filter to bbox — typical Paris→Lyon keeps ~400-600 markers
   const nearbyMarkers = markers.filter(
-    m => m._lon >= minLon && m._lon <= maxLon && m._lat >= minLat && m._lat <= maxLat
-  );
-  const nearbyCheap = cheapMarkers.filter(
     m => m._lon >= minLon && m._lon <= maxLon && m._lat >= minLat && m._lat <= maxLat
   );
   // Pack only bbox-filtered markers into transferable arrays
@@ -1120,11 +1041,9 @@ async function applyRouteFilter(routeLine, onProgress) {
     stationsFlat[i * 2]     = nearbyMarkers[i]._lon;
     stationsFlat[i * 2 + 1] = nearbyMarkers[i]._lat;
   }
-  const cheapStationsFlat = new Float64Array(nearbyCheap.length * 2);
-  for (let i = 0; i < nearbyCheap.length; i++) {
-    cheapStationsFlat[i * 2]     = nearbyCheap[i]._lon;
-    cheapStationsFlat[i * 2 + 1] = nearbyCheap[i]._lat;
-  }
+
+  // Use the wider corridor (cheap markers need CHEAP_CORRIDOR_KM) for worker prefilter
+  const workerBuffer = Math.max(ROUTE_BUFFER_KM, CHEAP_CORRIDOR_KM);
 
   return new Promise(resolve => {
     const worker = getFilterWorker();
@@ -1142,25 +1061,14 @@ async function applyRouteFilter(routeLine, onProgress) {
           nearbyMarkers[i]._progressOnRoute = progressFlat[i]; // 0–1 along route
         }
 
-        // Apply cheap distances + progress — also mapped to filtered subset
-        if (data.cheapResults) {
-          const cheapResults      = new Float32Array(data.cheapResults);
-          const cheapProgressFlat = data.cheapProgressFlat
-            ? new Float32Array(data.cheapProgressFlat) : null;
-          for (let i = 0; i < nearbyCheap.length; i++) {
-            nearbyCheap[i]._distFromRoute   = cheapResults[i];
-            if (cheapProgressFlat) nearbyCheap[i]._progressOnRoute = cheapProgressFlat[i];
-          }
-        }
-
         updateVisibility();
         staggeredFadeIn();   // piste 4.2
         resolve();
       }
     };
-    const transfers = [routeFlat.buffer, stationsFlat.buffer, cheapStationsFlat.buffer];
+    const transfers = [routeFlat.buffer, stationsFlat.buffer];
     worker.postMessage(
-      { routeFlat, stationsFlat, cheapStationsFlat, bufferKm: ROUTE_BUFFER_KM },
+      { routeFlat, stationsFlat, bufferKm: workerBuffer },
       transfers,
     );
   });
@@ -1172,21 +1080,17 @@ async function applyRouteFilter(routeLine, onProgress) {
 function staggeredFadeIn() {
   if (!routeActive) return;
 
-  const visible = [
-    ...markers.filter(m => isVisible(m)).map(m => ({ m, isMain: true })),
-    ...cheapMarkers.filter(m => isCheapVisible(m)).map(m => ({ m, isMain: false })),
-  ].sort((a, b) => (a.m._progressOnRoute ?? 0) - (b.m._progressOnRoute ?? 0));
+  const visible = markers.filter(m => isVisible(m))
+    .sort((a, b) => (a._progressOnRoute ?? 0) - (b._progressOnRoute ?? 0));
 
   if (visible.length === 0) return;
 
   // Invalidate delta-update state: next updateVisibility() must do a full pass.
-  _prevVisMain  = null;
-  _prevVisCheap = null;
+  _prevVisMain = null;
 
   // Hide everything at the start — rebuild progressively via setData
   const srcSta = map.getSource('stations');
   if (srcSta) srcSta.setData({ type: 'FeatureCollection', features: [] });
-  cheapMarkers.forEach(m => m.remove());
 
   const _hasPref = preferredNetworks.size > 0 && routeActive;
   const STEP_MS = 22;
@@ -1200,26 +1104,22 @@ function staggeredFadeIn() {
     );
     if (showUpTo <= lastShownIdx) { requestAnimationFrame(frame); return; }
 
-    // Rebuild GeoJSON features for all main markers shown so far
+    // Rebuild GeoJSON features for all markers shown so far
     const feats = [];
     for (let i = 0; i <= showUpTo; i++) {
-      const { m, isMain } = visible[i];
-      if (isMain) {
-        const pref = _hasPref && preferredNetworks.has(m._op.name);
-        feats.push({
-          type: 'Feature',
-          geometry: { type: 'Point', coordinates: [m._lon, m._lat] },
-          properties: {
-            idx:         m._idx,
-            radius:      m._radius,
-            color:       m._op.color,
-            strokeColor: pref ? '#F59E0B' : '#ffffff',
-            strokeWidth: pref ? 3 : 2,
-          },
-        });
-      } else if (i > lastShownIdx) {
-        m.addTo(map);
-      }
+      const m = visible[i];
+      const pref = _hasPref && preferredNetworks.has(m._op.name);
+      feats.push({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [m._lon, m._lat] },
+        properties: {
+          idx:         m._idx,
+          radius:      m._radius,
+          color:       m._op.color,
+          strokeColor: pref ? '#F59E0B' : '#ffffff',
+          strokeWidth: pref ? 3 : 2,
+        },
+      });
     }
     const srcSta2 = map.getSource('stations');
     if (srcSta2) srcSta2.setData({ type: 'FeatureCollection', features: feats });
@@ -1275,9 +1175,9 @@ function computeNetworkRecommendation(routeKm) {
   }
 
   // Tesla is classified as a cheap network (FRTSL*) but is relevant for route planning.
-  // Its cheap markers have _progressOnRoute set by the worker — include them here.
-  for (const m of cheapMarkers) {
-    if (m._op.name !== 'Tesla' || !isCheapVisible(m)) continue;
+  // Its markers (now unified with _cheap flag) have _progressOnRoute set by the worker.
+  for (const m of markers) {
+    if (!m._cheap || m._op.name !== 'Tesla' || !isVisible(m)) continue;
     const km = (m._progressOnRoute ?? 0) * routeKm;
     if (km < zoneStart) continue;
     const seg = Math.min(Math.floor((km - zoneStart) / 80), nSegs - 1);
@@ -1663,7 +1563,6 @@ function clearRoute() {
   map.getSource('route')?.setData({ type: 'FeatureCollection', features: [] });
   markers.forEach(m => { delete m._distFromRoute; });
   document.getElementById('network-recommendation').style.display = 'none';
-  cheapMarkers.forEach(m => { delete m._distFromRoute; });
   updateVisibility();
   document.getElementById('route-info').textContent = '';
   document.getElementById('route-clear').style.display = 'none';
@@ -2502,6 +2401,8 @@ if (navigator.geolocation) _startWatch();
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   localStorage.setItem('irve-theme', theme);
+  const toggle = document.getElementById('dark-mode-toggle');
+  if (toggle) toggle.checked = (theme === 'dark');
   try {
     map.setLayoutProperty('carto-light', 'visibility', theme === 'dark' ? 'none' : 'visible');
     map.setLayoutProperty('carto-dark', 'visibility', theme === 'dark' ? 'visible' : 'none');
@@ -2532,6 +2433,7 @@ _prefersDark.addEventListener('change', () => {
 (function setupBottomSheet() {
   const panel  = document.getElementById('panel');
   const handle = document.querySelector('.bs-handle');
+  const title  = document.getElementById('panel-title');
   if (!handle) return;
 
   const STATES = ['bs-collapsed', 'bs-half', 'bs-full'];
@@ -2550,30 +2452,34 @@ _prefersDark.addEventListener('change', () => {
   // Initialize mobile state
   if (isMobile()) setState(1);
 
-  handle.addEventListener('touchstart', e => {
-    if (!isMobile()) return;
-    isDragging = true;
-    startY = e.touches[0].clientY;
-    panel.style.transition = 'none';
-  }, { passive: true });
+  // Attach touch handlers to both handle AND panel title for larger thumb target
+  [handle, title].forEach(el => {
+    if (!el) return;
+    el.addEventListener('touchstart', e => {
+      if (!isMobile()) return;
+      isDragging = true;
+      startY = e.touches[0].clientY;
+      panel.style.transition = 'none';
+    }, { passive: true });
 
-  handle.addEventListener('touchmove', e => {
-    if (!isDragging) return;
-    const dy = e.touches[0].clientY - startY;
-    panel.style.transform = `translateY(${Math.max(-50, dy)}px)`;
-  }, { passive: true });
+    el.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      const dy = e.touches[0].clientY - startY;
+      panel.style.transform = `translateY(${Math.max(-50, dy)}px)`;
+    }, { passive: true });
 
-  handle.addEventListener('touchend', e => {
-    if (!isDragging) return;
-    isDragging = false;
-    panel.style.transition = '';
-    panel.style.transform = '';
-    const dy = e.changedTouches[0].clientY - startY;
-    if (dy > 60) {
-      setState(Math.max(0, currentState - 1));
-    } else if (dy < -60) {
-      setState(Math.min(2, currentState + 1));
-    }
+    el.addEventListener('touchend', e => {
+      if (!isDragging) return;
+      isDragging = false;
+      panel.style.transition = '';
+      panel.style.transform = '';
+      const dy = e.changedTouches[0].clientY - startY;
+      if (dy > 60) {
+        setState(Math.max(0, currentState - 1));
+      } else if (dy < -60) {
+        setState(Math.min(2, currentState + 1));
+      }
+    });
   });
 
   // Expose for other code to collapse after route calculation
