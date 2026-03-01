@@ -1631,20 +1631,30 @@ async function calculateRoute() {
   btn.textContent = '…';
   info.className = 'route-progress';
 
+  // Progress bar for visual feedback during calculation
+  const _progBar = document.createElement('div');
+  _progBar.className = 'route-progress-bar';
+  _progBar.innerHTML = '<div class="route-progress-bar-fill"></div>';
+  const _progFill = _progBar.firstChild;
+
   // Yield to browser so each step label actually renders before the next await
-  const step = msg => new Promise(r => {
+  const step = (msg, pct) => new Promise(r => {
     info.textContent = msg;
+    if (pct !== undefined) {
+      if (!_progBar.parentNode) info.after(_progBar);
+      _progFill.style.width = pct + '%';
+    }
     requestAnimationFrame(() => requestAnimationFrame(r));
   });
 
   try {
     const useGeoStart = !startVal && geoState.available;
-    await step(useGeoStart ? '📍 Position GPS du départ…' : '📍 Géocodage du départ…');
+    await step(useGeoStart ? '📍 Position GPS du départ…' : '📍 Géocodage du départ…', 10);
     const from = useGeoStart ? [geoState.lng, geoState.lat] : (startInput._coords || await geocode(startVal));
-    await step('📍 Géocodage de l\'arrivée…');
+    await step('📍 Géocodage de l\'arrivée…', 25);
     const to = endInput._coords || await geocode(endVal);
 
-    await step('🗺 Calcul d\'itinéraire…');
+    await step('🗺 Calcul d\'itinéraire…', 40);
     const route = await fetchRoute(from, to);
 
     // Simplify display geometry only — corridor filtering uses full-precision route.geometry.coordinates
@@ -1663,15 +1673,18 @@ async function calculateRoute() {
       : { top: 40, right: 40, bottom: 40, left: _panel.offsetWidth + 20 };
     map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], { padding: _paddingObj });
 
-    info.className = 'route-progress';
-    info.textContent = `⚡ Filtrage 0/${markers.length}…`;
-    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    await step('⚡ Filtrage des stations…', 55);
     routeActive = true;
     await applyRouteFilter(
       turf.lineString(route.geometry.coordinates),
-      (done, total) => { info.textContent = `⚡ Filtrage ${done}/${total}…`; }
+      (done, total) => {
+        const pct = 55 + Math.round((done / total) * 40);
+        info.textContent = `⚡ Filtrage ${done}/${total}…`;
+        _progFill.style.width = pct + '%';
+      }
     );
 
+    if (_progBar.parentNode) _progBar.remove();
     currentRouteKm = Math.round(route.legs.reduce((s, l) => s + l.distance, 0) / 1000);
     info.className = 'route-stat';
     info.textContent = `${currentRouteKm} km`;
@@ -1719,6 +1732,7 @@ async function calculateRoute() {
       if (window._bsSetState) window._bsSetState(0); // collapse bottom sheet
     }
   } catch (e) {
+    if (_progBar.parentNode) _progBar.remove();
     info.className = 'route-error';
     info.textContent = '⚠ ' + e.message;
     btn.disabled = false;
