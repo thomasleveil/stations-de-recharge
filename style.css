@@ -671,6 +671,32 @@ html, body {
   color: var(--color-text-primary);
 }
 
+/* R4 — Theme toggle button (top-right, next to settings) */
+
+#theme-toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 60px;
+  z-index: 1000;
+  width: 44px;
+  height: 44px;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--color-text-secondary);
+  transition: background 0.15s, color 0.15s;
+}
+#theme-toggle-btn:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
 #settings-menu {
   position: absolute;
   top: 60px;
@@ -742,25 +768,6 @@ html, body {
   border-radius: 50%;
   flex-shrink: 0;
   display: inline-block;
-}
-
-/* R4 — Dark mode toggle in settings */
-.settings-theme-toggle {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 10px var(--space-md);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
-  color: var(--color-text-body);
-  cursor: pointer;
-  transition: background 0.12s;
-}
-.settings-theme-toggle:hover { background: var(--color-bg-hover); }
-.settings-theme-toggle input[type="checkbox"] {
-  accent-color: var(--color-accent);
-  cursor: pointer;
-  flex-shrink: 0;
 }
 
 .settings-item {
@@ -1215,9 +1222,9 @@ html, body {
   width: 25vw;
   min-width: 240px;
   z-index: 2000;
-  background: #1e293b;
+  background: var(--color-bg-surface);
   padding: 10px var(--space-md);
-  box-shadow: 4px 0 20px rgba(0,0,0,0.4);
+  box-shadow: var(--shadow-md);
   border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
   flex-direction: column;
   gap: var(--space-sm);
@@ -1233,7 +1240,7 @@ html, body {
 .dm-title {
   font-size: var(--font-size-md);
   font-weight: 700;
-  color: #64748b;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -1241,7 +1248,7 @@ html, body {
 .dm-exit {
   background: none;
   border: none;
-  color: #64748b;
+  color: var(--color-text-secondary);
   font-size: 24px;
   cursor: pointer;
   padding: 6px var(--space-sm);
@@ -1254,12 +1261,12 @@ html, body {
   align-items: center;
   justify-content: center;
 }
-.dm-exit:hover { color: #f8fafc; background: rgba(255,255,255,0.1); }
+.dm-exit:hover { color: var(--color-text-primary); background: var(--color-bg-hover); }
 
 .dm-refresh {
   background: none;
   border: none;
-  color: #64748b;
+  color: var(--color-text-secondary);
   font-size: 20px;
   cursor: pointer;
   padding: 6px var(--space-sm);
@@ -1272,7 +1279,7 @@ html, body {
   align-items: center;
   justify-content: center;
 }
-.dm-refresh:hover { color: #f8fafc; background: rgba(255,255,255,0.1); }
+.dm-refresh:hover { color: var(--color-text-primary); background: var(--color-bg-hover); }
 
 #dm-cards {
   display: flex;
@@ -1282,10 +1289,15 @@ html, body {
   gap: 6px;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-color: var(--color-border) transparent;
+  scrollbar-width: thin;
 }
+#dm-cards::-webkit-scrollbar { width: 6px; }
+#dm-cards::-webkit-scrollbar-track { background: transparent; }
+#dm-cards::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-full); }
 
 .dm-card {
-  background: #293548;
+  background: var(--color-bg-hover);
   border-radius: var(--radius-lg);
   padding: 10px var(--space-md);
   display: flex;
@@ -1311,7 +1323,7 @@ html, body {
 .dm-card--next { border-color: #0ea5e9; }
 .dm-card--preferred { border-left: 3px solid #f59e0b; }
 .dm-card--error, .dm-card--done {
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   font-size: var(--font-size-base);
   align-items: center;
   justify-content: center;
@@ -1321,14 +1333,14 @@ html, body {
 .dm-distance {
   font-size: 26px;
   font-weight: 800;
-  color: #f8fafc;
+  color: var(--color-text-primary);
   line-height: 1;
 }
 .dm-unit { font-size: var(--font-size-md); font-weight: 400; }
 
 .dm-operator {
   font-size: var(--font-size-md);
-  color: #cbd5e1;
+  color: var(--color-text-body);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -1344,8 +1356,8 @@ html, body {
   flex-shrink: 0;
 }
 
-.dm-name  { font-size: var(--font-size-base); color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dm-power { font-size: var(--font-size-md); color: #64748b; }
+.dm-name  { font-size: var(--font-size-base); color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dm-power { font-size: var(--font-size-md); color: var(--color-text-muted); }
 
 .dm-avail { font-size: var(--font-size-sm); min-height: 14px; }
 
@@ -1368,7 +1380,7 @@ html, body {
     min-width: unset;
     max-height: 50vh;
     border-radius: var(--space-lg) var(--space-lg) 0 0;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+    box-shadow: var(--shadow-lg);
   }
 
   /* Don't shift panel when drive mode active on mobile */
@@ -1483,7 +1495,7 @@ html, body {
 
 .dm-planb {
   font-size: var(--font-size-sm);
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   margin-top: 2px;
 }
 
@@ -1501,7 +1513,7 @@ html, body {
 
 .dm-planb-last {
   font-style: italic;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 /* ── Emergency mode — bornes à proximité ─────────────────────── */
@@ -1513,6 +1525,10 @@ html, body {
   font-size: 12px;
   color: #991b1b;
   font-weight: 600;
+}
+[data-theme="dark"] .emergency-header {
+  background: #450a0a;
+  color: #fca5a5;
 }
 
 
@@ -1581,7 +1597,7 @@ html, body {
 /* ── Print ──────────────────────────────────────────────────── */
 @page { margin: 0; }
 @media print {
-  #panel, #legend, #settings-btn, #settings-menu, #loading-overlay { display: none !important; }
+  #panel, #legend, #settings-btn, #theme-toggle-btn, #settings-menu, #loading-overlay { display: none !important; }
 }
 
 /* ── Drive/emergency panel handle (hidden on desktop) ──────── */

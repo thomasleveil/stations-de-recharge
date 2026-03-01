@@ -2167,17 +2167,6 @@ function applyPreferredStyling() {
     localStorage.setItem('irve-tomtom-key', TOMTOM_API_KEY);
   });
 
-  // R4 — Dark mode toggle
-  const darkToggle = document.getElementById('dark-mode-toggle');
-  if (darkToggle) {
-    darkToggle.checked = document.documentElement.dataset.theme === 'dark';
-    darkToggle.addEventListener('change', () => {
-      const theme = darkToggle.checked ? 'dark' : 'light';
-      localStorage.setItem('irve-theme-manual', theme);
-      applyTheme(theme);
-    });
-  }
-
   bustBtn.addEventListener('click', () => {
     const req = indexedDB.deleteDatabase('irve-v1');
     req.onsuccess = () => window.location.reload();
@@ -2438,6 +2427,7 @@ function _onGeoSuccess(pos) {
   _syncGoBtn();
   _syncDriveModeBtn();
   _syncEmergencyBtn();
+  _checkSunCalcTheme();
 
   // FIX 4 — throttle refreshDrivePanel: skip if < 3s since last refresh AND moved < 100m
   const _driveNow = Date.now();
@@ -2519,13 +2509,17 @@ function _startWatch() {
 // Start watching — triggers the browser's permission prompt at page load
 if (navigator.geolocation) _startWatch();
 
-// ── R4 — Dark mode ──────────────────────────────────────────────────────────
+// ── R4 — Dark mode (SunCalc auto + manual toggle) ──────────────────────────
+
+let _themeManualThisSession = false; // session-only: reset on each page load
+let _lastSunCalcCheck = 0;
+const _SUNCALC_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   localStorage.setItem('irve-theme', theme);
-  const toggle = document.getElementById('dark-mode-toggle');
-  if (toggle) toggle.checked = (theme === 'dark');
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.textContent = theme === 'dark' ? '☽' : '☀';
   try {
     map.setLayoutProperty('carto-light', 'visibility', theme === 'dark' ? 'none' : 'visible');
     map.setLayoutProperty('carto-dark', 'visibility', theme === 'dark' ? 'visible' : 'none');
@@ -2534,22 +2528,45 @@ function applyTheme(theme) {
   }
 }
 
+function _checkSunCalcTheme() {
+  if (_themeManualThisSession) return;
+  if (!geoState.available) return;
+  if (typeof SunCalc === 'undefined') return;
+  const now = Date.now();
+  if (now - _lastSunCalcCheck < _SUNCALC_INTERVAL) return;
+  _lastSunCalcCheck = now;
+  const times = SunCalc.getTimes(new Date(), geoState.lat, geoState.lng);
+  const isDark = now < times.dawn.getTime() || now > times.dusk.getTime();
+  applyTheme(isDark ? 'dark' : 'light');
+}
+
+// Theme toggle button — manual override for this session only
+const _themeBtn = document.getElementById('theme-toggle-btn');
+if (_themeBtn) {
+  _themeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    _themeManualThisSession = true;
+    const current = document.documentElement.dataset.theme;
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  });
+}
+
+// prefers-color-scheme fallback (before GPS is available)
 const _prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 _prefersDark.addEventListener('change', () => {
-  const saved = localStorage.getItem('irve-theme-manual');
-  if (saved) return; // manual override active — don't auto-switch
+  if (_themeManualThisSession) return;
+  if (geoState.available) return; // SunCalc handles it
   applyTheme(_prefersDark.matches ? 'dark' : 'light');
 });
 
-// Apply initial theme (auto from system, or manual from localStorage)
+// Initial theme: system preference until SunCalc takes over
 (function initTheme() {
-  const manual = localStorage.getItem('irve-theme-manual');
-  if (manual === 'dark' || manual === 'light') {
-    applyTheme(manual);
-  } else {
-    applyTheme(_prefersDark.matches ? 'dark' : 'light');
-  }
+  localStorage.removeItem('irve-theme-manual'); // clean up old key
+  applyTheme(_prefersDark.matches ? 'dark' : 'light');
 })();
+
+// Periodic SunCalc check (covers cases where GPS updates stop)
+setInterval(_checkSunCalcTheme, _SUNCALC_INTERVAL);
 
 // ── R3 — Bottom sheet (mobile) ──────────────────────────────────────────────
 
