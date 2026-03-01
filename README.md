@@ -1,8 +1,8 @@
-# Bornes de recharge rapides — Autoroutes France
+# Bornes de recharge rapides — France
 
 **https://thomasleveil.github.io/stations-de-recharge/**
 
-Carte interactive des bornes de recharge rapide (≥ 150 kW, CCS Combo) sur les principales autoroutes françaises, conçue pour répondre aux trois questions pratiques du conducteur de véhicule électrique.
+Carte interactive des bornes de recharge rapide (≥ 150 kW, CCS Combo) en France métropolitaine et en Corse, conçue pour répondre aux trois questions pratiques du conducteur de véhicule électrique.
 
 ---
 
