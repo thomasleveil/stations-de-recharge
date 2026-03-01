@@ -1,88 +1,59 @@
-# Stations de recharge
+# Bornes de recharge rapides — Autoroutes France
 
 **https://thomasleveil.github.io/stations-de-recharge/**
 
-## Problématique
+Carte interactive des bornes de recharge rapide (≥ 150 kW, CCS Combo) sur les principales autoroutes françaises, conçue pour répondre aux trois questions pratiques du conducteur de véhicule électrique.
 
-Pour planifier un voyage en voiture électrique, il est utile de connaître à l'avance les réseaux d'opérateurs de stations de recharge afin de décider auprès desquels prendre un abonnement pour bénéficier de tarifs réduits.
+---
 
-## Ce que fait l'application
+## Quel opérateur choisir pour mon abonnement ?
 
-Carte interactive des bornes de recharge rapide (≥ 150 kW, CCS Combo) sur les principales autoroutes françaises. Permet de :
+Avant un long voyage, il est utile de savoir auprès de quels réseaux souscrire un abonnement mensuel sans engagement pour bénéficier de tarifs réduits.
 
-- visualiser toutes les stations par opérateur (TotalEnergies, IONITY, Allego/Electra, Fastned, ENGIE Vianeo, IZIVIA Fast, Zunder, Tesla…)
-- afficher aussi les stations de réseaux abordables (€) : B&B Hotels, IECharge, McDonald's/IZIVIA Fast, Tesla Supercharger
-- calculer un itinéraire et n'afficher que les stations dans un corridor ajustable (200 m à 3 km) autour du trajet
-- utiliser sa position GPS comme point de départ d'itinéraire
+L'application **calcule un itinéraire** et affiche uniquement les stations situées dans un corridor ajustable autour du trajet. Elle identifie automatiquement les **réseaux les plus présents sur votre route** et suggère les abonnements les plus pertinents.
 
-## Architecture
+Les stations des réseaux à tarif réduit (B&B Hotels / ENGIE Vianeo, McDonald's / IZIVIA Fast, IECharge, Tesla Supercharger) sont affichées dans une couleur distincte. Vous pouvez aussi **marquer vos réseaux préférés** (⚙ Paramètres) pour les mettre en avant sur la carte avec une bordure dorée.
 
-Application 100 % statique — aucun backend, aucune étape de build.
+---
 
-| Fichier | Rôle |
-|---|---|
-| `index.html` | Shell HTML |
-| `app.js` | Carte MapLibre GL JS, fetch IRVE, filtrage DuckDB WASM, cache IndexedDB, itinéraire |
-| `filter-worker.js` | Web Worker pour le filtrage de corridor (off-thread) |
-| `style.css` | Styles |
+## Prochaines stations sur mon itinéraire
+
+En route, le **mode conduite** (bouton ⬆ après calcul d'itinéraire, GPS requis) affiche en bas de l'écran les prochaines stations sur votre trajet, triées par proximité, avec pour chacune :
+
+- la distance restante
+- l'opérateur et la puissance maximale
+- le nombre de prises disponibles en temps réel (si clé TomTom configurée)
+- un lien de navigation directe
+
+---
+
+## Urgence autonomie : bornes à proximité immédiate
+
+Le bouton **⚡** (visible quand le GPS est actif) bascule en mode urgence : la carte recentre sur votre position et liste toutes les bornes de recharge rapide dans un rayon de quelques kilomètres, quelle que soit la route calculée.
+
+---
+
+## Disponibilité en temps réel (optionnel)
+
+L'application peut afficher le nombre de prises CCS disponibles en temps réel au clic sur une station, en mode conduite et en mode urgence. Cette fonctionnalité utilise l'**API TomTom EV Charging Stations Availability** (gratuite, 2 500 requêtes/jour).
+
+### Configurer une clé TomTom gratuite
+
+1. Créer un compte sur [developer.tomtom.com](https://developer.tomtom.com) (aucune carte bancaire requise)
+2. Dans le tableau de bord : **Keys** → **Create a new key**
+3. Activer les deux produits :
+   - **Search API**
+   - **EV Charging Stations Availability**
+4. Coller la clé dans l'icône ⚙ en haut à droite de la carte
+
+La clé est enregistrée localement dans votre navigateur et n'est jamais envoyée à un serveur tiers.
+
+---
 
 ## Données
 
-Source : **Base nationale des IRVE** publiée sur [data.gouv.fr](https://www.data.gouv.fr/datasets/base-nationale-des-irve-infrastructures-de-recharge-pour-vehicules-electriques), mise à jour quotidienne (~6 MB, 188 000 lignes, une par connecteur).
+Les stations proviennent de la **Base nationale des IRVE** publiée sur [data.gouv.fr](https://www.data.gouv.fr/datasets/base-nationale-des-irve-infrastructures-de-recharge-pour-vehicules-electriques), mise à jour quotidiennement. L'application télécharge et filtre les données directement dans votre navigateur — aucun serveur intermédiaire.
 
-Schémas de référence :
-- [Schéma IRVE statique](https://schema.data.gouv.fr/etalab/schema-irve-statique/latest/documentation.html)
-- [Schéma IRVE dynamique](https://schema.data.gouv.fr/etalab/schema-irve-dynamique/)
+---
 
-L'application télécharge le fichier Parquet directement depuis data.gouv.fr au premier chargement, exécute le filtrage en SQL via **DuckDB WASM** dans le navigateur, puis met le résultat en cache dans **IndexedDB** pour 24 heures.
-
-```
-Premier chargement  →  fetch data.gouv.fr (~6 MB)  →  DuckDB WASM filter  →  IndexedDB
-Chargements suivants  →  IndexedDB (instantané, sans réseau)
-```
-
-### Critères de filtrage — stations rapides
-
-- `implantation_station` = "Station dédiée à la recharge rapide" ou "Parking privé à usage public"
-- Puissance maximale ≥ 150 kW (au moins un connecteur CCS Combo)
-- Accès 24h/24 7j/7
-- Au moins 4 points de charge par station
-- Exclusion des stations camions/poids lourds
-- Exclusion des stations Tesla (classées en catégorie abordable avec corridor ±10 km)
-
-### Critères de filtrage — stations abordables (€)
-
-Stations de réseaux à tarifs réduits avec abonnement, affichées dans un corridor de ±10 km autour de l'itinéraire :
-
-- **ENGIE Vianeo — B&B Hotels** (préfixe `FRVIA*`, nom contenant "B&B HOTEL")
-- **IECharge** (préfixe `FRIEN*`)
-- **IZIVIA Fast / McDonald's** (préfixe `FRIZF*`)
-- **Tesla Supercharger** (préfixe `FRTSL*`, ouvert à tous les VE)
-
-Si une station appartient aux deux catégories, elle est classée "rapide" (priorité à la catégorie fast).
-
-## Disponibilité temps réel (optionnel)
-
-L'application peut afficher le nombre de prises CCS disponibles en temps réel au clic sur une station. Cette fonctionnalité utilise l'**API TomTom EV Charging Stations Availability** (gratuite, 2 500 requêtes/jour).
-
-### Créer une clé TomTom gratuite
-
-1. Créer un compte sur [developer.tomtom.com](https://developer.tomtom.com) (aucune carte bancaire requise)
-2. Dans le tableau de bord, aller dans **Keys** → **Create a new key**
-3. Donner un nom à la clé, puis activer les deux produits suivants :
-   - **Search API** — nécessaire pour rechercher une station par coordonnées GPS
-   - **EV Charging Stations Availability** — nécessaire pour récupérer l'état des connecteurs
-4. Sauvegarder
-
-> Sans ces deux produits cochés, les requêtes retournent une erreur 403 "Not authorized".
-
-### Saisir la clé dans l'application
-
-Cliquer sur l'icône ⚙ en haut à droite de la carte, puis coller la clé dans le champ **Clé API TomTom**. La clé est enregistrée localement dans `localStorage` et n'est jamais envoyée à un serveur tiers.
-
-## Lancement en local
-
-```bash
-python3 -m http.server 8765
-# ouvrir http://localhost:8765
-```
+*Pour la documentation technique, voir [CLAUDE.md](CLAUDE.md).*
