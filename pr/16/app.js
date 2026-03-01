@@ -2249,6 +2249,66 @@ function applyPreferredStyling() {
   });
 }());
 
+// ── Bottom sheet drag for main panel (mobile) ────────────────────────────
+(function initBsHandle() {
+  const panel = document.getElementById('panel');
+  const handle = panel.querySelector('.bs-handle');
+  const title  = document.getElementById('panel-title');
+  if (!handle) return;
+
+  let startY = 0, startTranslate = 0;
+
+  function getTranslateY() {
+    const m = getComputedStyle(panel).transform.match(/matrix.*,\s*([-\d.]+)\)$/);
+    return m ? parseFloat(m[1]) : 0;
+  }
+
+  function snapPanel(dy) {
+    panel.style.transition = '';
+    panel.style.transform = '';
+    if (dy > 80) {
+      panel.classList.add('bs-collapsed');
+      panel.classList.remove('bs-full', 'panel-expanded');
+    } else if (dy < -60) {
+      panel.classList.remove('bs-collapsed');
+      panel.classList.add('panel-expanded');
+    }
+  }
+
+  window._bsSetState = function (state) {
+    panel.classList.remove('bs-collapsed', 'bs-full', 'panel-expanded');
+    if (state === 0) panel.classList.add('bs-collapsed');
+    else if (state === 2) panel.classList.add('bs-full');
+  };
+
+  [handle, title].forEach(el => {
+    if (!el) return;
+    el.addEventListener('touchstart', e => {
+      if (!window.matchMedia('(max-width: 640px)').matches) return;
+      startY = e.touches[0].clientY;
+      startTranslate = getTranslateY();
+      panel.style.transition = 'none';
+    }, { passive: true });
+
+    el.addEventListener('touchmove', e => {
+      if (!window.matchMedia('(max-width: 640px)').matches) return;
+      const dy = e.touches[0].clientY - startY;
+      const ty = Math.max(0, startTranslate + dy);
+      panel.style.transform = `translateY(${ty}px)`;
+    }, { passive: true });
+
+    el.addEventListener('touchend', e => {
+      if (!window.matchMedia('(max-width: 640px)').matches) return;
+      snapPanel(e.changedTouches[0].clientY - startY);
+    });
+  });
+
+  handle.addEventListener('click', () => {
+    if (!window.matchMedia('(max-width: 640px)').matches) return;
+    panel.classList.toggle('bs-collapsed');
+  });
+}());
+
 // ── Legend toggle (mobile only) ───────────────────────────────────────────
 (function () {
   const legend = document.getElementById('legend');
