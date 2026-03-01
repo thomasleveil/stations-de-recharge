@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bornes de recharge rapides — France</title>
+  <meta name="description" content="Carte interactive des bornes de recharge rapides (≥ 150 kW, CCS) en France. Planifiez votre trajet électrique." />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bornes de recharge rapides — France" />
+  <meta property="og:description" content="Carte interactive des bornes de recharge rapides (≥ 150 kW, CCS) en France. Planifiez votre trajet électrique." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thomasleveil.github.io/stations-de-recharge/" />
+  <meta property="og:image" content="https://thomasleveil.github.io/stations-de-recharge/og-preview.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="fr_FR" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Bornes de recharge rapides — France" />
+  <meta name="twitter:description" content="Carte interactive des bornes de recharge rapides (≥ 150 kW, CCS) en France." />
+  <meta name="twitter:image" content="https://thomasleveil.github.io/stations-de-recharge/og-preview.png" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Top-left control panel -->
+  <div id="panel">
+    <div class="panel-title" id="panel-title"><span id="panel-title-kw">Bornes rapides ≥ 150 kW</span><span class="panel-chevron">▸</span></div>
+    <div class="panel-sub"></div>
+    <div id="data-freshness"></div>
+
+    <!-- Route planning -->
+    <div id="route-section">
+      <div class="route-label">Itinéraire</div>
+      <div class="autocomplete-wrap">
+        <input id="route-start" class="route-input" type="text" placeholder="Départ" autocomplete="off" />
+      </div>
+      <div class="autocomplete-wrap">
+        <input id="route-end" class="route-input" type="text" placeholder="Arrivée" autocomplete="off" />
+      </div>
+      <div class="route-actions">
+        <button id="route-go"       class="route-btn">Calculer →</button>
+        <button id="route-clear"    class="route-btn route-btn-clear" style="display:none">✕ Effacer</button>
+        <button id="route-share"    class="route-btn route-btn-share" style="display:none" title="Copier le lien de partage">⎘</button>
+        <button id="drive-mode-btn" class="route-btn route-btn-drive" style="display:none" title="Mode conduite">⬆</button>
+        <button id="emergency-btn" class="route-btn route-btn-emergency" style="display:none" title="Bornes à proximité (urgence)">⚡</button>
+      </div>
+      <div id="corridor-row">
+        <span id="corridor-label">Corridor : <strong id="corridor-value">200 m</strong></span>
+        <input type="range" id="corridor-slider" min="2" max="30" step="1" value="2" style="display:none" />
+      </div>
+      <div id="route-info"></div>
+      <div id="network-recommendation" style="display:none"></div>
+      <div id="route-results" style="display:none">
+        <div class="route-results-header" id="route-results-toggle">
+          <span id="route-results-title">Stations</span>
+          <span class="route-results-chevron">▸</span>
+        </div>
+        <div id="route-results-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drive mode bottom panel (U-7) -->
+  <div id="drive-panel" style="display:none">
+    <div class="dm-header">
+      <button class="dm-refresh" id="dm-refresh" title="Actualiser">↺</button>
+      <span class="dm-title">Mode conduite</span>
+      <button class="dm-exit" id="dm-exit">✕</button>
+    </div>
+    <div id="dm-cards"></div>
+  </div>
+
+  <!-- Top-right settings -->
+  <div id="settings-btn" title="Paramètres">⚙</div>
+  <div id="settings-menu" style="display:none">
+    <div class="settings-section-label">
+      Disponibilité temps réel
+      <a href="https://developer.tomtom.com" target="_blank" rel="noopener" class="settings-api-help" title="Obtenir une clé gratuite TomTom">?</a>
+    </div>
+    <div class="settings-api-row">
+      <input type="password" id="tomtom-key-input" class="settings-api-input"
+             placeholder="Clé API TomTom" autocomplete="new-password" spellcheck="false" />
+    </div>
+    <hr class="settings-divider" />
+    <!-- F-3 — Minimum power filter -->
+    <div class="settings-section-label">Puissance minimale des stations</div>
+    <div class="settings-radio-group">
+      <label class="settings-radio-item">
+        <input type="radio" name="min-power" value="150" checked />
+        <span>≥ 150 kW <span class="settings-hint">(tout afficher)</span></span>
+      </label>
+      <label class="settings-radio-item">
+        <input type="radio" name="min-power" value="250" />
+        <span>≥ 250 kW</span>
+      </label>
+      <label class="settings-radio-item">
+        <input type="radio" name="min-power" value="350" />
+        <span>≥ 350 kW</span>
+      </label>
+    </div>
+    <hr class="settings-divider" />
+    <!-- U-10 — CHEAP corridor width -->
+    <div class="settings-section-label">Corridor réseaux abordables</div>
+    <div class="settings-api-row">
+      <input type="number" id="cheap-corridor-input" class="settings-api-input"
+             min="1" max="50" step="1" value="10"
+             placeholder="km" style="width:60px" />
+      <span class="settings-hint" style="margin-left:6px">km de part et d'autre</span>
+    </div>
+    <hr class="settings-divider" />
+    <!-- F-9b — Preferred networks -->
+    <div class="settings-section-label">
+      Mes réseaux préférés
+      <span class="settings-api-help" title="Les stations de ces réseaux seront mises en avant (bordure or) quand un itinéraire est actif">?</span>
+    </div>
+    <div id="preferred-networks-list"></div>
+    <hr class="settings-divider" />
+    <button id="cache-bust-btn" class="settings-item">🗑 Vider le cache</button>
+  </div>
+
+  <!-- Bottom-right legend -->
+  <div id="legend">
+    <div class="legend-title" id="legend-toggle">Opérateurs <span class="legend-chevron">▾</span></div>
+    <div id="legend-items"></div>
+    <div class="legend-hint">Taille du cercle = nb bornes CCS rapides</div>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+  <script defer src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
