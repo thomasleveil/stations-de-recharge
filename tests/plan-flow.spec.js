@@ -97,12 +97,10 @@ for (const vp of ['desktop', 'mobile']) {
       const idx = Number(await row.getAttribute('data-idx'));
       const expected = await page.evaluate(i => UI.stationNavUrl(markers[i]), idx);
       await expect(nav).toHaveAttribute('href', expected);
-      await mapIdle(page);
-      const off = await page.evaluate(i => {
+      await expect.poll(() => page.evaluate(i => {
         const c = /** @type {any} */ (window)._map.getCenter();
         return Math.hypot(c.lng - markers[i]._lon, c.lat - markers[i]._lat);
-      }, idx);
-      expect(off).toBeLessThan(0.05);
+      }, idx), { timeout: 5000 }).toBeLessThan(0.05);
 
       const other = await page.locator('#stop-list .stop').nth(5).getAttribute('data-idx');
       await page.evaluate(i => UI.onStationClick(markers[i]), Number(other));

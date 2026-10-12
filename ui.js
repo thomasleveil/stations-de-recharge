@@ -131,8 +131,12 @@
   }
 
   function flyTo(m, zoom = 12) {
-    const opts = { center: [m._lon, m._lat], zoom: Math.max(map.getZoom(), zoom) };
-    if (reduceMotion()) map.jumpTo(opts); else map.easeTo({ ...opts, duration: 600 });
+    // After the sheet resize (queued in the same frame), or resize() cuts the ease short.
+    requestAnimationFrame(() => {
+      map.resize();
+      const opts = { center: [m._lon, m._lat], zoom: Math.max(map.getZoom(), zoom) };
+      if (reduceMotion()) map.jumpTo(opts); else map.easeTo({ ...opts, duration: 600 });
+    });
   }
 
   function fitRoute() {
