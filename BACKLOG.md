@@ -77,6 +77,8 @@ Idées, améliorations et bugs connus, classés par thème.
 | B-2 | ✅ | ~~**Titre du panneau figé à "≥ 150 kW" après changement de filtre puissance**~~ | `subEl.textContent` utilisait `150` en dur | ✅ |
 | B-3 | ✅ | ~~**Recommandation réseau non recalculée après changement de filtre ou de corridor**~~ | Handlers power/corridor/cheap appelaient `updateVisibility()` sans `showNetworkRecommendation()` | ✅ |
 | B-4 | ✅ | ~~**Markers standards absents intermittents au premier calcul**~~ | Appels concurrents à `calculateRoute()` possibles via Enter ou `_autoCalcOnReady` | `_calcInProgress` guard + `try/finally` |
+| B-5 | ✅ | ~~**Données IRVE jamais chargées — `ReferenceError: maplibregl is not defined`**~~ | `index.html` chargeait `maplibre-gl@latest` ; la v6 est ESM-only (`dist/maplibre-gl.js` n'existe plus → 404 bloqué par ORB), l'app plantait avant le fetch du Parquet | Version épinglée `maplibre-gl@5.24.0` (CSS + JS) + `tests/maplibre-load.spec.js` |
+| B-6 | 📋 | **Fond de carte vide — tuiles CARTO « API KEY REQUIRED »** | `basemaps.cartocdn.com` sert désormais une tuile filigranée sans clé API | À arbitrer : clé CARTO ou autre fournisseur (OpenFreeMap, tuiles OSM) |
 
 ---
 
@@ -88,3 +90,5 @@ Idées, améliorations et bugs connus, classés par thème.
 | T-2 | 💡 | **Tests automatisés (couverture fonctionnelle)** — tests Playwright partiels en place (`tests/geoloc.spec.js`, `tests/qa-fixes.spec.js`, `tests/suncalc-dark-mode.spec.js`) ; manque : route Paris→Lyon, non-régression comptage stations, drive/emergency mode | Socle existant à compléter |
 | T-3 | ✅ | ~~**Mise à jour automatique Parquet**~~ | ✅ |
 | T-4 | ✅ | ~~**Migration MapLibre GL JS**~~ — remplacer Leaflet 1.9.4 par MapLibre GL JS (rendu WebGL) | ✅ PR #14 — source GeoJSON + layer `circle` WebGL pour les markers principaux, `maplibregl.Marker` DOM pour les réseaux abordables, `IControl` plain object pour le bouton géoloc, `map.jumpTo()` / `map.resize()` / `map.fitBounds()` |
+| T-5 | 📋 | **Épingler DuckDB WASM** — `app.js` importe `@duckdb/duckdb-wasm@latest` | Même risque que B-5 : une version majeure cassante casserait le chargement sans aucun changement de code |
+| T-6 | 📋 | **Tests en échec : clic `#route-go` intercepté par l'autocomplétion** — `network-recommendation.spec.js` (« appears after route calculation ») et `photon-geocoder.spec.js` (« fallback uses Photon ») | Le mock Photon renvoie une suggestion qui laisse `.autocomplete-item` ouvert par-dessus le bouton ; fermer la liste (Escape) avant le clic |
