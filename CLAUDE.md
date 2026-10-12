@@ -32,6 +32,8 @@ Static frontend — no backend, no build step. Three files:
 
 **Stack:** MapLibre GL JS (CDN) + CartoDB Positron raster tiles + DuckDB WASM (CDN) + turf.js
 
+**MapLibre is pinned to an exact 5.x version** in `index.html`. Never use `@latest`: v6 is ESM-only and ships no `dist/maplibre-gl.js`, so a floating URL 404s and the whole app dies before loading data (B-5).
+
 ### Data Flow
 
 1. **Cache hit** (< 24h): reads filtered rows from IndexedDB, builds markers immediately — no network call to data.gouv.fr.
