@@ -66,6 +66,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | U-8 | ✅ | ~~**Focus initial sur le champ "Arrivée"** — au chargement de la page, le focus clavier doit être positionné dans le champ Arrivée pour permettre une saisie immédiate~~ | ✅ commit `e7b7fce` |
 | U-9 | ✅ | ~~**Double affichage de la taille de corridor** — après calcul d'itinéraire, l'indication du corridor apparaît deux fois dans le bloc formulaire~~ | ✅ commit `e7b7fce` — `route-info` n'affiche plus que la distance (ex. `460 km`), le corridor reste uniquement dans `#corridor-label` |
 | U-10 | ✅ | ~~**Taille du corridor CHEAP paramétrable**~~ | ✅ |
+| U-12 | ✅ | ~~**Refonte de l'interface depuis zéro**~~ — trois tâches (préparer un trajet, conduire, trouver une borne maintenant) en moins d'étapes ; carte et panneau en zones fixes, plus rien de flottant sur la carte (légende, menu réglages, encadré recommandation, popups supprimés ou déplacés dans le panneau) | ✅ branche `redesign/ux-from-scratch`, commits `8e18970` `3fe1778` `589a19a` — `ui.js` (interface) séparé du moteur `app.js` ; un champ « Où allez-vous ? », une sélection = trajet calculé ; une liste d'arrêts par km avec zones blanches en ligne et réseau écrit en texte ; écran conduite à une carte (« Naviguer » 72 px, commandes ≥ 64 px) ; « Bornes proches » en un tap depuis tous les états ; réglages dans le panneau ; axe-core 0 violation (24 états) ; specs `plan-flow`, `drive-flow`, `nearby-flow`, `layout` ; abandons et limites listés dans les notes de revue |
 
 ---
 

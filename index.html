@@ -51,7 +51,7 @@
         </div>
 
         <!-- ── Home ──────────────────────────────────────────────── -->
-        <section class="view" data-for="home" aria-label="Planifier un trajet">
+        <div class="view" data-for="home">
           <form id="trip-form" class="trip-form" autocomplete="off" novalidate>
             <label class="field-label" for="dest-input">Où allez-vous ?</label>
             <div class="combo">
@@ -84,10 +84,10 @@
           </div>
 
           <p class="home-foot"><span id="station-count"></span> <span id="data-freshness"></span></p>
-        </section>
+        </div>
 
         <!-- ── Trip ──────────────────────────────────────────────── -->
-        <section class="view" data-for="trip" aria-label="Trajet">
+        <div class="view" data-for="trip">
           <p id="trip-summary" class="trip-summary" aria-live="polite"></p>
           <div class="trip-actions" role="group" aria-label="Actions du trajet">
             <button id="drive-btn" class="btn btn-primary" type="button">▶ Démarrer</button>
@@ -120,21 +120,21 @@
             </details>
             <p class="fine">Prix indicatifs — fév. 2026</p>
           </div>
-        </section>
+        </div>
 
         <!-- ── Station (no route active) ─────────────────────────── -->
-        <section class="view" data-for="station" aria-label="Station">
+        <div class="view" data-for="station">
           <div id="station-card"></div>
-        </section>
+        </div>
 
         <!-- ── Nearby ────────────────────────────────────────────── -->
-        <section class="view" data-for="nearby" aria-label="Bornes proches">
+        <div class="view" data-for="nearby">
           <p id="nearby-summary" class="trip-summary" aria-live="polite"></p>
           <ol id="nearby-list" class="stop-list" aria-label="Bornes les plus proches"></ol>
-        </section>
+        </div>
 
         <!-- ── Settings ──────────────────────────────────────────── -->
-        <section class="view" data-for="settings" aria-label="Réglages">
+        <div class="view" data-for="settings">
           <fieldset class="setting">
             <legend>Thème</legend>
             <div class="seg-row">
@@ -171,14 +171,14 @@
           <div class="setting">
             <button id="cache-bust-btn" class="btn btn-secondary" type="button">Vider le cache des données</button>
           </div>
-        </section>
+        </div>
       </div>
     </section>
 
     <!-- ── Drive screen ─────────────────────────────────────────── -->
     <section id="drive" aria-labelledby="drive-title" hidden>
       <div class="drive-info" aria-live="polite">
-        <h2 id="drive-title" class="drive-label">Prochaine borne</h2>
+        <h1 id="drive-title" class="drive-label">Prochaine borne</h1>
         <p class="drive-km" id="drive-km"></p>
         <p class="drive-name" id="drive-name"></p>
         <p class="drive-meta" id="drive-meta"></p>

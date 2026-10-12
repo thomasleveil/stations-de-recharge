@@ -110,7 +110,7 @@ body.driving #drive { grid-area: drive; display: flex; }
     border-top: 1px solid var(--divider);
     max-height: 56dvh;
   }
-  body[data-sheet="expanded"] #sheet { height: 64dvh; max-height: 64dvh; }
+  body[data-sheet="expanded"] #sheet { height: 70dvh; max-height: 70dvh; }
   body.driving #app {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr) auto;
@@ -147,6 +147,15 @@ body.driving #drive { grid-area: drive; display: flex; }
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .sheet-title:focus { outline: none; }
+/* Phones: the header row keeps its buttons; the title stays for screen readers
+   (each view opens with its own visible heading or summary). */
+@media (max-width: 899px) and (orientation: portrait) {
+  .sheet-header .sheet-title {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .sheet-header #nearby-btn { margin-left: auto; }
+}
 .sheet-title:focus-visible { outline: 3px solid var(--focus); }
 
 .sheet-scroll {

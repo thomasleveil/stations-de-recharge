@@ -71,10 +71,9 @@
   }
 
   function syncHandleLabel() {
-    const n = state.view === 'trip' ? tripStops().length : 0;
+    // No count here: the trip summary carries the only one.
     $('sheet-handle-label').textContent = body.dataset.sheet === 'expanded'
-      ? 'Réduire la liste'
-      : `Afficher la liste${n ? ` (${plural(n, 'borne')})` : ''}`;
+      ? 'Réduire la liste' : 'Afficher la liste';
   }
 
   function setView(view, { backTo } = {}) {
@@ -489,7 +488,7 @@
       const km = currentRouteKm * (m._progressOnRoute ?? 0);
       if (!m._cheap) {
         if (lastFastKm !== null && km - lastFastKm > 80) {
-          html += `<li class="gap-row" role="note">⚠ ${Math.round(km - lastFastKm)} km sans borne rapide</li>`;
+          html += `<li class="gap-row">⚠ Zone blanche : ${Math.round(km - lastFastKm)} km sans borne rapide</li>`;
         }
         lastFastKm = km;
       }
@@ -582,6 +581,7 @@
     $('sheet-title').textContent = m._name || m._op.name;
     wireAvailability(card, m);
     setRing(m);
+    flyTo(m, 12);
   }
 
   // ── Nearby (« Bornes proches ») ──────────────────────────────────────────
