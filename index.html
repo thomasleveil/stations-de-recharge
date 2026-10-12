@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Bornes de recharge rapides — France</title>
   <meta name="description" content="Carte interactive des bornes de recharge rapides (≥ 150 kW, CCS) en France. Planifiez votre trajet électrique." />
   <!-- Open Graph -->
@@ -23,133 +23,181 @@
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div id="map"></div>
+<body data-view="home" data-sheet="collapsed">
+  <!-- Layout rule: fixed zones (map + sheet, or map + drive card), never stacked overlays. -->
+  <main id="app">
+    <div id="map" role="region" aria-label="Carte des bornes de recharge"></div>
 
-  <!-- R2 — Loading overlay -->
-  <div id="loading-overlay">
-    <div class="loading-content">
-      <div class="loading-icon">⚡</div>
-      <div class="loading-title">Bornes de recharge rapides</div>
-      <div id="loading-step" class="loading-step">Connexion aux données IRVE...</div>
-      <div class="loading-bar-track">
-        <div id="loading-bar" class="loading-bar-fill"></div>
-      </div>
-    </div>
-  </div>
+    <section id="sheet" aria-labelledby="sheet-title">
+      <button id="sheet-handle" class="sheet-handle" type="button" aria-controls="sheet-scroll" aria-expanded="false">
+        <span class="sheet-handle-bar" aria-hidden="true"></span>
+        <span id="sheet-handle-label">Afficher la liste</span>
+      </button>
 
-  <!-- Top-left control panel -->
-  <div id="panel">
-    <!-- R3 — Bottom sheet drag handle (mobile) -->
-    <div class="bs-handle"></div>
-    <div class="panel-title" id="panel-title"><span id="panel-title-kw">Bornes rapides ≥ 150 kW</span><span class="panel-chevron">▸</span></div>
-    <div class="panel-sub"></div>
-    <div id="data-freshness"></div>
+      <header class="sheet-header">
+        <button id="back-btn" class="btn btn-ghost btn-back" type="button" hidden>‹ Retour</button>
+        <h1 id="sheet-title" class="sheet-title" tabindex="-1">Bornes rapides</h1>
+        <button id="nearby-btn" class="btn btn-nearby" type="button">⚡ Bornes proches</button>
+        <button id="settings-btn" class="btn btn-icon" type="button" aria-label="Réglages">
+          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.9a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L5.4 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.9a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5L19.4 13ZM12.5 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"/></svg>
+        </button>
+      </header>
 
-    <!-- Route planning -->
-    <div id="route-section">
-      <div class="route-label">Itinéraire</div>
-      <div class="autocomplete-wrap">
-        <input id="route-start" class="route-input" type="text" placeholder="Départ" autocomplete="off" />
-      </div>
-      <div class="autocomplete-wrap">
-        <input id="route-end" class="route-input" type="text" placeholder="Arrivée" autocomplete="off" />
-      </div>
-      <div class="route-actions">
-        <button id="route-go"       class="route-btn">Calculer →</button>
-        <button id="route-clear"    class="route-btn route-btn-clear" style="display:none">✕ Effacer</button>
-        <button id="route-share"    class="route-btn route-btn-share" style="display:none" title="Copier le lien de partage">⎘</button>
-        <button id="drive-mode-btn" class="route-btn route-btn-drive" style="display:none" title="Mode conduite">⬆</button>
-        <button id="emergency-btn" class="route-btn route-btn-emergency" style="display:none" title="Bornes à proximité (urgence)">⚡</button>
-      </div>
-      <div id="corridor-row">
-        <span id="corridor-label">Corridor : <strong id="corridor-value">200 m</strong></span>
-        <input type="range" id="corridor-slider" min="2" max="30" step="1" value="2" style="display:none" />
-      </div>
-      <div id="route-info"></div>
-      <div id="network-recommendation" style="display:none"></div>
-      <div id="route-results" style="display:none">
-        <div class="route-results-header" id="route-results-toggle">
-          <span id="route-results-title">Stations</span>
-          <span class="route-results-chevron">▸</span>
+      <div id="sheet-scroll" class="sheet-scroll">
+        <!-- Data loading: initApp() writes into these ids, then removes the block. -->
+        <div id="loading-overlay" class="loading" role="status">
+          <span id="loading-step">Connexion aux données IRVE…</span>
+          <span class="loading-track" aria-hidden="true"><span id="loading-bar" class="loading-fill"></span></span>
         </div>
-        <div id="route-results-list"></div>
+
+        <!-- ── Home ──────────────────────────────────────────────── -->
+        <section class="view" data-for="home" aria-label="Planifier un trajet">
+          <form id="trip-form" class="trip-form" autocomplete="off" novalidate>
+            <label class="field-label" for="dest-input">Où allez-vous ?</label>
+            <div class="combo">
+              <input id="dest-input" class="field" type="text" inputmode="search" enterkeyhint="go"
+                     role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="dest-list"
+                     placeholder="Ville, adresse, lieu…" spellcheck="false" />
+              <ul id="dest-list" class="suggestions" role="listbox" aria-label="Suggestions de destination" hidden></ul>
+            </div>
+
+            <p class="from-line">
+              <span>Depuis : <strong id="from-label">ma position</strong></span>
+              <button id="from-edit" class="btn-link" type="button" aria-expanded="false" aria-controls="from-wrap">Modifier</button>
+            </p>
+            <div id="from-wrap" class="from-wrap" hidden>
+              <label class="field-label" for="from-input">Départ</label>
+              <div class="combo">
+                <input id="from-input" class="field" type="text" inputmode="search"
+                       role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="from-list"
+                       placeholder="Ville, adresse…" spellcheck="false" />
+                <ul id="from-list" class="suggestions" role="listbox" aria-label="Suggestions de départ" hidden></ul>
+              </div>
+              <button id="from-gps" class="btn btn-secondary" type="button">Partir de ma position</button>
+            </div>
+            <p id="plan-msg" class="msg" role="status" aria-live="polite"></p>
+          </form>
+
+          <div id="recent-block" class="block" hidden>
+            <h2 class="block-title">Trajets récents</h2>
+            <ul id="recent-list" class="recent-list"></ul>
+          </div>
+
+          <p class="home-foot"><span id="station-count"></span> <span id="data-freshness"></span></p>
+        </section>
+
+        <!-- ── Trip ──────────────────────────────────────────────── -->
+        <section class="view" data-for="trip" aria-label="Trajet">
+          <p id="trip-summary" class="trip-summary" aria-live="polite"></p>
+          <div class="trip-actions" role="group" aria-label="Actions du trajet">
+            <button id="drive-btn" class="btn btn-primary" type="button">▶ Démarrer</button>
+            <button id="share-btn" class="btn btn-secondary" type="button">Partager</button>
+            <button id="edit-btn" class="btn btn-secondary" type="button">Modifier</button>
+          </div>
+          <div class="trip-more">
+            <div class="filters">
+              <fieldset class="seg">
+                <legend>Puissance min. (kW)</legend>
+                <div class="seg-row">
+                  <input type="radio" id="pw-150" name="min-power" value="150" /><label for="pw-150">150</label>
+                  <input type="radio" id="pw-250" name="min-power" value="250" /><label for="pw-250">250</label>
+                  <input type="radio" id="pw-350" name="min-power" value="350" /><label for="pw-350">350</label>
+                </div>
+              </fieldset>
+              <fieldset class="seg">
+                <legend>Écart max. à la route (km)</legend>
+                <div class="seg-row">
+                  <input type="radio" id="cor-2" name="corridor" value="2" /><label for="cor-2">0,2</label>
+                  <input type="radio" id="cor-10" name="corridor" value="10" /><label for="cor-10">1</label>
+                  <input type="radio" id="cor-30" name="corridor" value="30" /><label for="cor-30">3</label>
+                </div>
+              </fieldset>
+            </div>
+            <ol id="stop-list" class="stop-list" aria-label="Arrêts possibles, dans l'ordre du trajet"></ol>
+            <details id="net-advice" class="net-advice" hidden>
+              <summary id="net-advice-summary"></summary>
+              <div id="net-advice-body"></div>
+            </details>
+            <p class="fine">Prix indicatifs — fév. 2026</p>
+          </div>
+        </section>
+
+        <!-- ── Station (no route active) ─────────────────────────── -->
+        <section class="view" data-for="station" aria-label="Station">
+          <div id="station-card"></div>
+        </section>
+
+        <!-- ── Nearby ────────────────────────────────────────────── -->
+        <section class="view" data-for="nearby" aria-label="Bornes proches">
+          <p id="nearby-summary" class="trip-summary" aria-live="polite"></p>
+          <ol id="nearby-list" class="stop-list" aria-label="Bornes les plus proches"></ol>
+        </section>
+
+        <!-- ── Settings ──────────────────────────────────────────── -->
+        <section class="view" data-for="settings" aria-label="Réglages">
+          <fieldset class="setting">
+            <legend>Thème</legend>
+            <div class="seg-row">
+              <input type="radio" id="th-auto" name="theme" value="auto" /><label for="th-auto">Auto</label>
+              <input type="radio" id="th-light" name="theme" value="light" /><label for="th-light">Clair</label>
+              <input type="radio" id="th-dark" name="theme" value="dark" /><label for="th-dark">Sombre</label>
+            </div>
+            <p class="hint">Auto : sombre entre le crépuscule et l'aube à votre position.</p>
+          </fieldset>
+
+          <fieldset class="setting">
+            <legend>Application de navigation</legend>
+            <div class="radio-list" id="nav-app-list"></div>
+          </fieldset>
+
+          <fieldset class="setting">
+            <legend>Mes réseaux préférés</legend>
+            <p class="hint">Mis en avant (★ et bordure or sur la carte) quand un trajet est affiché.</p>
+            <div class="check-list" id="pref-list"></div>
+          </fieldset>
+
+          <div class="setting">
+            <label class="field-label" for="tomtom-key-input">Clé API TomTom (disponibilité en temps réel)</label>
+            <input type="password" id="tomtom-key-input" class="field" autocomplete="off" spellcheck="false" aria-describedby="tomtom-help" />
+            <p class="hint" id="tomtom-help">Clé gratuite sur <a href="https://developer.tomtom.com" target="_blank" rel="noopener">developer.tomtom.com</a>.</p>
+          </div>
+
+          <div class="setting">
+            <label class="field-label" for="cheap-corridor-input">Réseaux abordables : écart max. à la route (km)</label>
+            <input type="number" id="cheap-corridor-input" class="field field-num" min="1" max="50" step="1" inputmode="numeric" aria-describedby="cheap-help" />
+            <p class="hint" id="cheap-help">B&amp;B Hotels, IECharge, McDonald's (IZIVIA), Tesla.</p>
+          </div>
+
+          <div class="setting">
+            <button id="cache-bust-btn" class="btn btn-secondary" type="button">Vider le cache des données</button>
+          </div>
+        </section>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Drive mode bottom panel (U-7) -->
-  <div id="drive-panel" style="display:none">
-    <div class="dm-handle"></div>
-    <div class="dm-header">
-      <button class="dm-refresh" id="dm-refresh" title="Actualiser">↺</button>
-      <span class="dm-title">Mode conduite</span>
-      <button class="dm-exit" id="dm-exit">✕</button>
-    </div>
-    <div id="dm-cards"></div>
-  </div>
-
-  <!-- Top-right controls -->
-  <div id="theme-toggle-btn" title="Basculer clair / sombre">☀</div>
-  <div id="settings-btn" title="Paramètres">⚙</div>
-  <div class="settings-backdrop" style="display:none"></div>
-  <div id="settings-menu" style="display:none">
-    <button class="settings-close-mobile">✕</button>
-    <div class="settings-section-label">
-      Disponibilité temps réel
-      <a href="https://developer.tomtom.com" target="_blank" rel="noopener" class="settings-api-help" title="Obtenir une clé gratuite TomTom">?</a>
-    </div>
-    <div class="settings-api-row">
-      <input type="password" id="tomtom-key-input" class="settings-api-input"
-             placeholder="Clé API TomTom" autocomplete="new-password" spellcheck="false" />
-    </div>
-    <hr class="settings-divider" />
-    <!-- F-3 — Minimum power filter -->
-    <div class="settings-section-label">Puissance minimale des stations</div>
-    <div class="settings-radio-group">
-      <label class="settings-radio-item">
-        <input type="radio" name="min-power" value="150" checked />
-        <span>≥ 150 kW <span class="settings-hint">(tout afficher)</span></span>
-      </label>
-      <label class="settings-radio-item">
-        <input type="radio" name="min-power" value="250" />
-        <span>≥ 250 kW</span>
-      </label>
-      <label class="settings-radio-item">
-        <input type="radio" name="min-power" value="350" />
-        <span>≥ 350 kW</span>
-      </label>
-    </div>
-    <hr class="settings-divider" />
-    <!-- U-10 — CHEAP corridor width -->
-    <div class="settings-section-label settings-tesla-hide">Corridor réseaux abordables</div>
-    <div class="settings-api-row settings-tesla-hide">
-      <input type="number" id="cheap-corridor-input" class="settings-api-input"
-             min="1" max="50" step="1" value="10"
-             placeholder="km" style="width:60px" />
-      <span class="settings-hint" style="margin-left:6px">km de part et d'autre</span>
-    </div>
-    <hr class="settings-divider settings-tesla-hide" />
-    <!-- F-9b — Preferred networks -->
-    <div class="settings-section-label settings-tesla-hide">
-      Mes réseaux préférés
-      <span class="settings-api-help" title="Les stations de ces réseaux seront mises en avant (bordure or) quand un itinéraire est actif">?</span>
-    </div>
-    <div id="preferred-networks-list" class="settings-tesla-hide"></div>
-    <hr class="settings-divider" />
-    <button id="cache-bust-btn" class="settings-item">🗑 Vider le cache</button>
-  </div>
-
-  <!-- Bottom-right legend -->
-  <div id="legend">
-    <div class="legend-title" id="legend-toggle">Opérateurs <span class="legend-chevron">▾</span></div>
-    <div id="legend-items"></div>
-    <div class="legend-hint">Taille du cercle = nb bornes CCS rapides</div>
-  </div>
+    <!-- ── Drive screen ─────────────────────────────────────────── -->
+    <section id="drive" aria-labelledby="drive-title" hidden>
+      <div class="drive-info" aria-live="polite">
+        <h2 id="drive-title" class="drive-label">Prochaine borne</h2>
+        <p class="drive-km" id="drive-km"></p>
+        <p class="drive-name" id="drive-name"></p>
+        <p class="drive-meta" id="drive-meta"></p>
+        <p class="drive-avail" id="drive-avail"></p>
+      </div>
+      <div class="drive-controls">
+        <a id="drive-nav" class="btn btn-primary btn-drive btn-drive-nav" target="_blank" rel="noopener">Naviguer</a>
+        <button id="drive-next" class="btn btn-secondary btn-drive" type="button">Suivante ›</button>
+        <button id="drive-nearby" class="btn btn-secondary btn-drive" type="button">⚡ Proches</button>
+        <button id="drive-end" class="btn btn-secondary btn-drive" type="button">Terminer</button>
+      </div>
+    </section>
+  </main>
 
   <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
   <script defer src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.js"></script>
+  <script src="nav-links.js"></script>
   <script src="app.js"></script>
+  <script src="ui.js"></script>
 </body>
 </html>
