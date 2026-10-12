@@ -974,6 +974,54 @@ function getFilterWorker() {
   return _filterWorker;
 }
 
+// B-8 — main-thread copy of the route, kept to project the GPS position in
+// drive mode (routeFlat itself is transferred to the worker). Set by
+// applyRouteFilter(), cleared by clearRoute().
+let _routeGeom = null; // { flat: Float64Array, cumKm: Float64Array }
+
+/** Cumulative km at each vertex — same formula as cumulativeKm() in filter-worker.js. */
+function _routeCumKm(flat) {
+  const K = 111.32;
+  const n = flat.length >>> 1;
+  const cum = new Float64Array(n);
+  for (let k = 1; k < n; k++) {
+    const ax = flat[2 * k - 2], ay = flat[2 * k - 1];
+    const bx = flat[2 * k],     by = flat[2 * k + 1];
+    const ex = (bx - ax) * Math.cos((ay + by) * Math.PI / 360) * K;
+    const ey = (by - ay) * K;
+    cum[k] = cum[k - 1] + Math.sqrt(ex * ex + ey * ey);
+  }
+  return cum;
+}
+
+/**
+ * Progress (0–1, by distance) of the nearest projection of (lon, lat) on the
+ * current route — same scale as m._progressOnRoute, so
+ * (m._progressOnRoute − _routeProgressAt(…)) × currentRouteKm is the distance
+ * along the route. Mirrors nearestDistAndProgress() in filter-worker.js.
+ */
+function _routeProgressAt(lon, lat) {
+  if (!_routeGeom) return 0;
+  const { flat, cumKm } = _routeGeom;
+  const cosLat = Math.cos(lat * Math.PI / 180);
+  let minD2 = Infinity, bestI = 0, bestT = 0;
+  for (let i = 0; i < flat.length - 2; i += 2) {
+    const ax = flat[i],     ay = flat[i + 1];
+    const dx = (flat[i + 2] - ax) * cosLat, dy = flat[i + 3] - ay;
+    const len2 = dx * dx + dy * dy;
+    const t = len2 > 0
+      ? Math.max(0, Math.min(1, ((lon - ax) * cosLat * dx + (lat - ay) * dy) / len2))
+      : 0;
+    const ex = (ax - lon) * cosLat + t * dx, ey = ay - lat + t * dy;
+    const d2 = ex * ex + ey * ey;
+    if (d2 < minD2) { minD2 = d2; bestI = i >>> 1; bestT = t; }
+  }
+  const totalKm = cumKm[cumKm.length - 1];
+  return totalKm > 0
+    ? (cumKm[bestI] + bestT * (cumKm[bestI + 1] - cumKm[bestI])) / totalKm
+    : 0;
+}
+
 async function applyRouteFilter(routeLine, onProgress) {
   const coords = routeLine.geometry.coordinates;
 
@@ -983,6 +1031,7 @@ async function applyRouteFilter(routeLine, onProgress) {
     routeFlat[i * 2]     = coords[i][0];
     routeFlat[i * 2 + 1] = coords[i][1];
   }
+  _routeGeom = { flat: routeFlat.slice(), cumKm: _routeCumKm(routeFlat) };
 
   // ── Piste 3.4 : spatial bbox pre-filter ──────────────────────────────────
   // Compute bounding box of route + generous corridor (~15 km ≈ 0.15°).
@@ -1426,14 +1475,17 @@ function refreshDrivePanel() {
     _lastDriveFingerprint = '';
     return;
   }
+  // B-8 — project the GPS position on the route: keep only the stations ahead
+  // of it, nearest first, with the distance measured along the route.
+  const userProgress = _routeProgressAt(geoState.lng, geoState.lat);
   const sorted = [];
   for (const m of markers) {
     if (!isVisible(m) || m._progressOnRoute === undefined) continue;
-    const dist = _geoHaversineM(geoState.lat, geoState.lng, m._lat, m._lon) / 1000;
+    const dist = (m._progressOnRoute - userProgress) * currentRouteKm;
     if (dist <= 0.5) continue;
     sorted.push({ m, dist });
   }
-  sorted.sort((a, b) => a.m._progressOnRoute - b.m._progressOnRoute);
+  sorted.sort((a, b) => a.dist - b.dist);
   const ahead = sorted.slice(0, 10);
   if (!ahead.length) {
     cards.innerHTML = '<div class="dm-card dm-card--done">✓ Destination proche</div>';
@@ -1441,9 +1493,17 @@ function refreshDrivePanel() {
     _lastDriveFingerprint = '';
     return;
   }
-  // Skip DOM rebuild if the same stations are still shown — avoids flicker on GPS updates
+  const fmtDist = dist => dist < 10 ? dist.toFixed(1) : String(Math.round(dist));
+  // Skip DOM rebuild if the same stations are still shown — avoids flicker on GPS updates.
+  // Distances still change as the user moves: update them in place.
   const fingerprint = ahead.map(({ m }) => `${m._lat},${m._lon}`).join('|');
   if (fingerprint === _lastDriveFingerprint) {
+    ahead.forEach(({ dist }, i) => {
+      const el = cards.querySelector(`.dm-card[data-drive-idx="${i}"] .dm-distance`);
+      if (el) el.firstChild.textContent = fmtDist(dist);
+    });
+    _driveAhead.length = 0;
+    ahead.forEach(item => _driveAhead.push(item));
     _fetchDriveAvailability(false);
     return;
   }
@@ -1457,7 +1517,7 @@ function refreshDrivePanel() {
     let cls = 'dm-card';
     if (i === 0)   cls += ' dm-card--next';
     else if (isPref) cls += ' dm-card--preferred';
-    const distStr = dist < 10 ? dist.toFixed(1) : String(Math.round(dist));
+    const distStr = fmtDist(dist);
     const power   = m._maxPowerKw ? `${Math.round(m._maxPowerKw)} kW` : '';
     const star    = isPref ? '<span class="dm-preferred-star">★</span>' : '';
     html += `<div class="${cls}" data-drive-idx="${i}">
@@ -1583,6 +1643,7 @@ document.getElementById('dm-cards').addEventListener('click', e => {
 function clearRoute() {
   if (driveModeActive) exitDriveMode();
   routeActive = false;
+  _routeGeom = null;
   map.getSource('route')?.setData({ type: 'FeatureCollection', features: [] });
   markers.forEach(m => { delete m._distFromRoute; });
   document.getElementById('network-recommendation').style.display = 'none';
