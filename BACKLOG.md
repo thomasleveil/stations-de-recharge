@@ -78,7 +78,7 @@ Idées, améliorations et bugs connus, classés par thème.
 | B-3 | ✅ | ~~**Recommandation réseau non recalculée après changement de filtre ou de corridor**~~ | Handlers power/corridor/cheap appelaient `updateVisibility()` sans `showNetworkRecommendation()` | ✅ |
 | B-4 | ✅ | ~~**Markers standards absents intermittents au premier calcul**~~ | Appels concurrents à `calculateRoute()` possibles via Enter ou `_autoCalcOnReady` | `_calcInProgress` guard + `try/finally` |
 | B-5 | ✅ | ~~**Données IRVE jamais chargées — `ReferenceError: maplibregl is not defined`**~~ | `index.html` chargeait `maplibre-gl@latest` ; la v6 est ESM-only (`dist/maplibre-gl.js` n'existe plus → 404 bloqué par ORB), l'app plantait avant le fetch du Parquet | Version épinglée `maplibre-gl@5.24.0` (CSS + JS) + `tests/maplibre-load.spec.js` |
-| B-6 | 📋 | **Fond de carte vide — tuiles CARTO « API KEY REQUIRED »** | `basemaps.cartocdn.com` sert désormais une tuile filigranée sans clé API | À arbitrer : clé CARTO ou autre fournisseur (OpenFreeMap, tuiles OSM) |
+| B-6 | ✅ | ~~**Fond de carte vide — tuiles CARTO « API KEY REQUIRED »**~~ | `basemaps.cartocdn.com` sert désormais une tuile filigranée sans clé API | OpenFreeMap vectoriel (styles Positron + Dark, sans clé) ; couches sombres préfixées `dark:` ajoutées masquées, le thème bascule la visibilité ; repli sur le clair si le style sombre est injoignable. `tests/basemap.spec.js` |
 
 ---
 

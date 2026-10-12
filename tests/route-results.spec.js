@@ -6,7 +6,7 @@ const BASE = 'http://localhost:8765';
 test.describe('U-2 — Route results panel', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');  // not networkidle: map tiles stream continuously
   });
 
   test('route-results masqué au chargement', async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe('U-2 — Route results panel', () => {
 test.describe('U-7 — Drive mode panel', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');  // not networkidle: map tiles stream continuously
   });
 
   test('drive-panel masqué au chargement', async ({ page }) => {

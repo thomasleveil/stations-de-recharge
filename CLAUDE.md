@@ -30,7 +30,9 @@ Static frontend — no backend, no build step. Three files:
 | `style.css` | Panel, legend, popup, marker styles |
 | `filter-worker.js` | Web Worker for off-thread route corridor filtering |
 
-**Stack:** MapLibre GL JS (CDN) + CartoDB Positron raster tiles + DuckDB WASM (CDN) + turf.js
+**Stack:** MapLibre GL JS (CDN) + OpenFreeMap vector tiles (Positron / Dark styles, no API key) + DuckDB WASM (CDN) + turf.js
+
+**Basemap theming:** the map starts on the Positron style; on `load`, `_addDarkBasemap()` fetches the Dark style and adds its layers hidden, prefixed `dark:`, below our own layers. `applyTheme()` only flips visibility between the two groups. Never use `map.setStyle()` for the theme: it would drop the `stations` / `route` sources and our layers. Custom symbol layers must use a font OpenFreeMap serves (`Noto Sans Regular`; `Open Sans` 404s).
 
 **MapLibre is pinned to an exact 5.x version** in `index.html`. Never use `@latest`: v6 is ESM-only and ships no `dist/maplibre-gl.js`, so a floating URL 404s and the whole app dies before loading data (B-5).
 
