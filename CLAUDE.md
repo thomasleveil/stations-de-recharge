@@ -21,14 +21,18 @@ No pre-processing step is required. The filter logic runs in DuckDB WASM in the 
 
 ## Architecture
 
-Static frontend — no backend, no build step. Three files:
+Static frontend — no backend, no build step:
 
 | File | Role |
 |------|------|
-| `index.html` | Shell — loads MapLibre GL JS CDN, turf.js, `app.js`, `style.css` |
-| `app.js` | Map init, DuckDB WASM filter, IndexedDB cache, markers, route filtering |
-| `style.css` | Panel, legend, popup, marker styles |
+| `index.html` | Shell — map + sheet (+ drive card); loads MapLibre GL JS CDN, turf.js, SunCalc, `nav-links.js`, `app.js`, `ui.js`, `style.css` |
+| `app.js` | Engine — map init, DuckDB WASM filter, IndexedDB cache, markers, route filtering, TomTom, geolocation, theme. Reports to the UI only through `window.UI.on…` hooks |
+| `ui.js` | Interface — the sheet views (home, trip, station, nearby, settings) and the drive screen |
+| `nav-links.js` | Builds the « Naviguer » URL (Apple Plans / Google Maps / Waze) |
+| `style.css` | Layout (fixed zones: sheet column or bottom sheet + map, never overlays), sheet, rows, drive card |
 | `filter-worker.js` | Web Worker for off-thread route corridor filtering |
+
+Every local file loaded by `index.html` or `new Worker()` must be on both `cp … dist/` lines of `.github/workflows/deploy.yml` and `pr-preview.yml` (`tests/deploy-files.spec.js` enforces it).
 
 **Stack:** MapLibre GL JS (CDN) + OpenFreeMap vector tiles (Positron / Dark styles, no API key) + DuckDB WASM (CDN) + turf.js
 
