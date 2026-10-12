@@ -68,48 +68,18 @@ const _savedLat  = parseFloat(localStorage.getItem('irve-map-lat'))  || 45.1;
 const _savedLon  = parseFloat(localStorage.getItem('irve-map-lon'))  || 4.8;
 const _savedZoom = parseInt(localStorage.getItem('irve-map-zoom'), 10) || 7;
 
-const CARTO_STYLE = {
-  version: 8,
-  glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
-  sources: {
-    'carto-light': {
-      type: 'raster',
-      tiles: [
-        'https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
-        'https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
-        'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
-        'https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
-      ],
-      tileSize: 256,
-      attribution:
-        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-        '© <a href="https://carto.com/attributions">CARTO</a>',
-      maxzoom: 19,
-    },
-    'carto-dark': {
-      type: 'raster',
-      tiles: [
-        'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-        'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-        'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-        'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-      ],
-      tileSize: 256,
-      attribution:
-        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-        '© <a href="https://carto.com/attributions">CARTO</a>',
-      maxzoom: 19,
-    },
-  },
-  layers: [
-    { id: 'carto-light', type: 'raster', source: 'carto-light' },
-    { id: 'carto-dark', type: 'raster', source: 'carto-dark', layout: { visibility: 'none' } },
-  ],
-};
+// OpenFreeMap vector basemaps: free, no API key (CARTO raster tiles now
+// require one — B-6). Positron and Dark share the same sources, sprite and
+// glyphs, so the dark layers are added next to the light ones and the theme
+// toggle only flips visibility. map.setStyle() would drop our own layers.
+const BASEMAP_LIGHT_URL = 'https://tiles.openfreemap.org/styles/positron';
+const BASEMAP_DARK_URL  = 'https://tiles.openfreemap.org/styles/dark';
+let _basemapLightIds = [];
+let _basemapDarkIds  = [];
 
 const map = new maplibregl.Map({
   container: 'map',
-  style: CARTO_STYLE,
+  style: BASEMAP_LIGHT_URL,
   center: [_savedLon, _savedLat],  // MapLibre uses [lng, lat]
   zoom: _savedZoom,
 });
@@ -662,6 +632,8 @@ async function initApp() {
 // ── Initialisation après chargement de la carte ──────────────────────────
 
 map.on('load', () => {
+  _basemapLightIds = map.getStyle().layers.map(l => l.id);
+
   // ── GeoJSON sources ──────────────────────────────────────────────────────
   map.addSource('route', {
     type: 'geojson',
@@ -735,7 +707,7 @@ map.on('load', () => {
     filter: ['has', 'point_count'],
     layout: {
       'text-field':  '{point_count_abbreviated}',
-      'text-font':   ['Open Sans Regular'],
+      'text-font':   ['Noto Sans Regular'],
       'text-size':   12,
     },
     paint: {
@@ -795,6 +767,8 @@ map.on('load', () => {
     popup.addTo(map);
     _currentPopup = popup;
   });
+
+  _addDarkBasemap();
 
   // ── R4 — Re-apply theme after style fully loaded ────────────────────────
   const savedTheme = localStorage.getItem('irve-theme');
@@ -2520,12 +2494,36 @@ function applyTheme(theme) {
   localStorage.setItem('irve-theme', theme);
   const btn = document.getElementById('theme-toggle-btn');
   if (btn) btn.textContent = theme === 'dark' ? '☽' : '☀';
+  const darkReady = _basemapDarkIds.length > 0;
+  const show = (ids, on) => ids.forEach(id => map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none'));
   try {
-    map.setLayoutProperty('carto-light', 'visibility', theme === 'dark' ? 'none' : 'visible');
-    map.setLayoutProperty('carto-dark', 'visibility', theme === 'dark' ? 'visible' : 'none');
+    show(_basemapLightIds, theme !== 'dark' || !darkReady);  // light stays up until dark is loaded
+    show(_basemapDarkIds, theme === 'dark');
   } catch (_) {
     // Style not loaded yet — will be applied in map.on('load')
   }
+}
+
+// Dark basemap layers, added hidden below our own layers once the light style
+// has loaded. If the fetch fails the map simply stays on the light basemap.
+async function _addDarkBasemap() {
+  try {
+    const style = await (await fetch(BASEMAP_DARK_URL)).json();
+    for (const [id, src] of Object.entries(style.sources)) {
+      if (!map.getSource(id)) map.addSource(id, src);
+    }
+    for (const layer of style.layers) {
+      const id = 'dark:' + layer.id;
+      map.addLayer({ ...layer, id, layout: { ...layer.layout, visibility: 'none' } }, 'route-layer');
+      _basemapDarkIds.push(id);
+    }
+  } catch (e) {
+    console.warn('Dark basemap unavailable, keeping the light one:', e);
+    _basemapDarkIds.forEach(id => { if (map.getLayer(id)) map.removeLayer(id); });
+    _basemapDarkIds = [];
+    return;
+  }
+  applyTheme(document.documentElement.dataset.theme || 'light');
 }
 
 function _checkSunCalcTheme() {
