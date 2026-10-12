@@ -908,6 +908,12 @@
 
   // ── Start ────────────────────────────────────────────────────────────────
 
+  // Compact attribution starts unfolded; fold it so it does not cover the route.
+  map.once('load', () => {
+    document.querySelector('.maplibregl-ctrl-attrib.maplibregl-compact-show')
+      ?.classList.remove('maplibregl-compact-show');
+  });
+
   if (typeof _markersReady !== 'undefined' && _markersReady) _readyResolve();
   syncFilters();
   syncFromLabel();

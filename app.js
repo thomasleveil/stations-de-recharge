@@ -73,6 +73,7 @@ const map = new maplibregl.Map({
   style: BASEMAP_LIGHT_URL,
   center: [_savedLon, _savedLat],  // MapLibre uses [lng, lat]
   zoom: _savedZoom,
+  attributionControl: { compact: true },
 });
 window._map = map;  // exposed for Playwright tests
 map.addControl(new maplibregl.NavigationControl(), 'top-right');

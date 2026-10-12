@@ -1,5 +1,7 @@
 // @ts-check
-// B-7 / B-8 — km along the route and drive-mode "ahead" list.
+// B-7 / B-8 — km along the route and drive-mode "ahead" list, asserted on
+// engine state (m._progressOnRoute, currentRouteKm, _driveAheadList()); the
+// UI is only checked to show those same numbers.
 //
 // The mocked OSRM polyline is deliberately uneven: a first leg split into
 // thousands of tiny segments, then two legs of a single long segment each.
@@ -104,13 +106,12 @@ async function setupRoute(browser) {
     }),
   }));
 
-  await page.fill('#route-start', 'Rennes');
-  await page.fill('#route-end', 'Lyon');
-  await page.keyboard.press('Escape');
-  await page.evaluate(() => calculateRoute());
+  // Plan through the UI: one field, Enter picks the first suggestion.
+  await page.fill('#dest-input', 'Lyon');
+  await page.locator('#dest-list [role="option"]').first().waitFor();
+  await page.press('#dest-input', 'Enter');
   await page.waitForFunction(
-    () => routeActive && currentRouteKm > 0
-      && document.querySelectorAll('#route-results-list .route-result-item').length > 0,
+    () => routeActive && currentRouteKm > 0 && document.querySelectorAll('#stop-list .stop').length > 0,
     null, { timeout: 30_000 },
   );
   return { context, page, stations, coords, along };
@@ -119,31 +120,35 @@ async function setupRoute(browser) {
 test.describe('B-7 / B-8 — distances along the route', () => {
   test.setTimeout(150_000);
 
-  test('route results show km proportional to distance, not segment index', async ({ browser }) => {
+  test('km along the route is proportional to distance, not segment index', async ({ browser }) => {
     const { context, page, stations, along } = await setupRoute(browser);
 
-    // Zip the DOM items with the markers in the same order showRouteResults() uses.
-    const items = await page.evaluate(() => {
-      const vis = markers.filter(m => isVisible(m))
-        .sort((a, b) => (a._progressOnRoute ?? 0) - (b._progressOnRoute ?? 0));
-      return [...document.querySelectorAll('#route-results-list .route-result-item')].map((el, i) => ({
-        name: el.querySelector('.route-result-name')?.textContent,
-        shownKm: parseInt(el.querySelector('.route-result-meta')?.textContent ?? '', 10),
-        lon: vis[i]._lon, lat: vis[i]._lat,
-      }));
-    });
+    // Engine: every corridor station, in route order, with its km from the start.
+    const items = await page.evaluate(() => markers.filter(m => isVisible(m))
+      .sort((a, b) => (a._progressOnRoute ?? 0) - (b._progressOnRoute ?? 0))
+      .map(m => ({
+        idx: m._idx, name: m._name || m._op.name, lon: m._lon, lat: m._lat,
+        km: Math.round(currentRouteKm * m._progressOnRoute),
+      })));
     expect(items.length).toBeGreaterThan(3);
 
     const bad = items
-      .map(it => ({ name: it.name, shownKm: it.shownKm, expectedKm: Math.round(along([it.lon, it.lat])) }))
-      .filter(it => !(Math.abs(it.shownKm - it.expectedKm) <= 2));
+      .map(it => ({ name: it.name, km: it.km, expectedKm: Math.round(along([it.lon, it.lat])) }))
+      .filter(it => !(Math.abs(it.km - it.expectedKm) <= 2));
     expect(bad.slice(0, 5), `${bad.length}/${items.length} stations with a wrong km`).toEqual([]);
 
     // End of the dense leg: about 150 km along a ~560 km route.
     const [, B] = stations;
     const itemB = items.find(it => it.lon === B[0] && it.lat === B[1]);
     expect(itemB).toBeTruthy();
-    expect(Math.abs(/** @type {any} */ (itemB).shownKm - along(B))).toBeLessThanOrEqual(2);
+    expect(Math.abs(/** @type {any} */ (itemB).km - along(B))).toBeLessThanOrEqual(2);
+
+    // The list shows the same stations, in the same order, with the same km.
+    const rows = await page.evaluate(() => [...document.querySelectorAll('#stop-list .stop')].map(li => ({
+      idx: Number(/** @type {HTMLElement} */ (li).dataset.idx),
+      km: parseInt(li.querySelector('.stop-km')?.textContent ?? '', 10),
+    })));
+    expect(rows).toEqual(items.map(({ idx, km }) => ({ idx, km })));
 
     await context.close();
   });
@@ -151,12 +156,6 @@ test.describe('B-7 / B-8 — distances along the route', () => {
   test('drive mode lists only stations ahead, with along-route distance', async ({ browser }) => {
     const { context, page, stations, along } = await setupRoute(browser);
     const [, B, C] = stations;
-
-    const readCards = () => page.evaluate(() => _driveAhead.map(({ m }, i) => ({
-      name: m._name || m._op.name, lon: m._lon, lat: m._lat,
-      shown: parseFloat(document.querySelector(`#dm-cards .dm-card[data-drive-idx="${i}"] .dm-distance`)
-        ?.textContent ?? ''),
-    })));
 
     async function checkAt(t) {
       // GPS in the middle of the single long segment B→C.
@@ -166,22 +165,29 @@ test.describe('B-7 / B-8 — distances along the route', () => {
         ([lo, la]) => Math.abs(geoState.lat - la) < 1e-6 && Math.abs(geoState.lng - lo) < 1e-6,
         [lon, lat],
       );
-      await page.evaluate(() => { if (!driveModeActive) enterDriveMode(); else refreshDrivePanel(); });
-      await expect(page.locator('#dm-cards .dm-card[data-drive-idx]').first()).toBeVisible();
+      await page.evaluate(() => { if (!driveModeActive) UI.enterDrive(); });
 
       const userKm = along([lon, lat]);
-      const cards = await readCards();
-      expect(cards.length).toBeGreaterThan(0);
-      const rows = cards.map(c => {
+      const ahead = await page.evaluate(() => _driveAheadList().map(({ m, dist }) => ({
+        name: m._name || m._op.name, lon: m._lon, lat: m._lat, dist,
+      })));
+      expect(ahead.length).toBeGreaterThan(0);
+      const rows = ahead.map(c => {
         const aheadKm = along([c.lon, c.lat]) - userKm;
-        return { name: c.name, aheadKm: Math.round(aheadKm * 10) / 10, shown: c.shown };
+        return { name: c.name, aheadKm: Math.round(aheadKm * 10) / 10, dist: Math.round(c.dist * 10) / 10 };
       });
       const behind = rows.filter(r => r.aheadKm <= 0);
       expect(behind, `user at km ${userKm.toFixed(1)}: stations listed behind`).toEqual([]);
-      const wrongDist = rows.filter(r => !(Math.abs(r.shown - r.aheadKm) <= 2));
+      const wrongDist = rows.filter(r => !(Math.abs(r.dist - r.aheadKm) <= 2));
       expect(wrongDist, 'drive distance must be measured along the route').toEqual([]);
-      const shown = rows.map(r => r.shown);
-      expect(shown).toEqual([...shown].sort((a, b) => a - b));
+      const dists = rows.map(r => r.dist);
+      expect(dists).toEqual([...dists].sort((a, b) => a - b));
+
+      // The drive card shows the nearest one ahead.
+      await page.evaluate(() => { UI.state.driveSel = null; });
+      await page.evaluate(() => UI.enterDrive());
+      const shown = parseFloat((await page.textContent('#drive-km') ?? '').replace(',', '.'));
+      expect(Math.abs(shown - rows[0].dist)).toBeLessThanOrEqual(1);
     }
 
     await checkAt(0.5);

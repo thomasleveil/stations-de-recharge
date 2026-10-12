@@ -57,7 +57,9 @@ test.describe('B-6 — OpenFreeMap basemap', () => {
     expect(light.darkVisible).toBe(0);
     expect(light.topLayers).toEqual(OWN_LAYERS);
 
-    await page.click('#theme-toggle-btn');
+    // The manual toggle lives in the settings view of the sheet.
+    await page.click('#settings-btn');
+    await page.click('label[for="th-dark"]');
     const dark = await basemapState(page);
     expect(dark.theme).toBe('dark');
     expect(dark.lightVisible).toBe(0);

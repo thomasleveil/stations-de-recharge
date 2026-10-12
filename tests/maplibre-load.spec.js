@@ -21,10 +21,10 @@ test.describe('MapLibre load', () => {
     page.on('pageerror', e => errors.push(String(e)));
 
     await page.goto(BASE);
-    await expect(page.locator('.panel-sub')).toHaveText(/^\d+ stations? · CCS ≥ \d+ kW$/, { timeout: 45000 });
+    await expect(page.locator('#station-count')).toHaveText(/^\d+ bornes rapides \(≥ \d+ kW\)/, { timeout: 45000 });
 
     expect(await page.evaluate(() => typeof (/** @type {any} */ (window)).maplibregl)).toBe('object');
-    const count = Number((await page.locator('.panel-sub').textContent())?.match(/^\d+/)?.[0]);
+    const count = Number((await page.locator('#station-count').textContent())?.match(/^\d+/)?.[0]);
     expect(count).toBeGreaterThan(1000);
     expect(errors).toEqual([]);
   });
