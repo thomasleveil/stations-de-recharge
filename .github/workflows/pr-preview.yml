@@ -39,11 +39,11 @@ jobs:
             const sha = context.sha.slice(0, 7);
             const url = `https://thomasleveil.github.io/stations-de-recharge/pr/${prNumber}/`;
             const body = [
-              '## 🔍 Prévisualisation disponible',
+              '## 🔍 Preview available',
               '',
-              `**URL :** ${url}`,
+              `**URL:** ${url}`,
               '',
-              `> Déployé depuis \`${sha}\` — se met à jour à chaque push sur cette PR.`,
+              `> Deployed from \`${sha}\`, updated on every push to this PR.`,
             ].join('\n');
 
             const { data: comments } = await github.rest.issues.listComments({
@@ -52,8 +52,10 @@ jobs:
               issue_number: prNumber,
             });
 
+            // The French marker matches comments posted before the switch to English
             const existing = comments.find(c =>
-              c.user.type === 'Bot' && c.body.includes('Prévisualisation disponible')
+              c.user.type === 'Bot' &&
+              (c.body.includes('Preview available') || c.body.includes('Prévisualisation disponible'))
             );
 
             if (existing) {
