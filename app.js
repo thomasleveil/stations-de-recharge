@@ -368,7 +368,7 @@ async function initApp() {
     }
   }
 
-  _setLoading('Connexion aux données IRVE...', 5);
+  _setLoading('Chargement des bornes…', 5);
 
   // T-3 — HEAD request to detect if the Parquet has been updated server-side.
   // Compares ETag or Last-Modified with the value stored at last fetch.
@@ -384,21 +384,21 @@ async function initApp() {
   const storedEtag = localStorage.getItem(PARQUET_ETAG_KEY);
   const etagChanged = serverEtag && storedEtag && serverEtag !== storedEtag;
   if (cached && Date.now() - cached.ts < CACHE_TTL && !etagChanged) {
-    _setLoading('Chargement depuis le cache...', 80);
+    _setLoading('Chargement des bornes…', 80);
     showDataFreshness(cached.ts);
     markers.length = 0;
     const src = map.getSource('stations');
     if (src) src.setData({ type: 'FeatureCollection', features: [] });
     buildMarkers(cached.rows);
     updateVisibility();
-    _setLoading(`${markers.length} stations affichées`, 100);
+    _setLoading(`${markers.length} bornes chargées`, 100);
     _hideLoading();
     return;
   }
 
   // 2. Initialize DuckDB WASM
-  _setLoading('Initialisation DuckDB...', 10);
-  _setStatus('Chargement DuckDB…');
+  _setLoading('Chargement des bornes…', 10);
+  _setStatus('Chargement des bornes…');
   const duckdb = await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@latest/+esm');
   const bundle = await duckdb.selectBundle(duckdb.getJsDelivrBundles());
   const workerUrl = URL.createObjectURL(
@@ -412,8 +412,8 @@ async function initApp() {
   URL.revokeObjectURL(workerUrl);
 
   // 3. Fetch raw IRVE parquet from data.gouv.fr with progress indication
-  _setLoading('Téléchargement des données IRVE...', 20);
-  _setStatus('Téléchargement des données IRVE…');
+  _setLoading('Téléchargement des bornes…', 20);
+  _setStatus('Téléchargement des bornes…');
   const response = await fetch(PARQUET_URL);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
@@ -430,8 +430,8 @@ async function initApp() {
     received += value.length;
     if (total) {
       const dlPct = Math.round(received / total * 100);
-      _setStatus(`Téléchargement IRVE… ${dlPct} %`);
-      _setLoading(`Téléchargement (${(received / 1e6).toFixed(1)} / ${(total / 1e6).toFixed(1)} Mo)...`, 20 + dlPct * 0.5);
+      _setStatus(`Téléchargement des bornes… ${dlPct} %`);
+      _setLoading(`Téléchargement des bornes… ${dlPct} %`, 20 + dlPct * 0.5);
     }
   }
 
@@ -441,8 +441,8 @@ async function initApp() {
   for (const chunk of chunks) { buf.set(chunk, pos); pos += chunk.length; }
 
   // 4. Register parquet in DuckDB virtual FS and run the filter query
-  _setLoading('Filtrage des stations rapides...', 75);
-  _setStatus('Filtrage des stations…');
+  _setLoading('Préparation de la carte…', 75);
+  _setStatus('Préparation de la carte…');
   await db.registerFileBuffer('irve_raw.parquet', buf);
 
   const conn  = await db.connect();
@@ -482,13 +482,13 @@ async function initApp() {
   } catch (_) {}
 
   // 7. Build markers and refresh map
-  _setLoading('Construction des marqueurs...', 90);
+  _setLoading('Préparation de la carte…', 90);
   markers.length = 0;
   const src = map.getSource('stations');
   if (src) src.setData({ type: 'FeatureCollection', features: [] });
   buildMarkers(rows);
   updateVisibility();
-  _setLoading(`${markers.length} stations affichées`, 100);
+  _setLoading(`${markers.length} bornes chargées`, 100);
   _hideLoading();
 }
 

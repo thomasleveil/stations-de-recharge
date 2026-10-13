@@ -50,6 +50,7 @@
     driveSel: null,    // marker shown on the drive card
     pins: [],          // start / end map markers
     ring: null,        // selection ring map marker
+    foldOpen: false,   // « first km » group of the trip list unfolded
   };
   let _readyResolve;
   const ready = new Promise(r => { _readyResolve = r; });
@@ -128,6 +129,13 @@
     el.className = 'selected-ring';
     el.setAttribute('aria-hidden', 'true');
     state.ring = new maplibregl.Marker({ element: el }).setLngLat([m._lon, m._lat]).addTo(map);
+  }
+
+  // A trip shows each stop; clusters only make sense for the whole-France map.
+  function setClustering(on) {
+    map.getSource('stations')?.setClusterOptions(on
+      ? { cluster: true, clusterMaxZoom: 11, clusterRadius: 50 }
+      : { cluster: false });
   }
 
   function flyTo(m, zoom = 12) {
@@ -336,6 +344,7 @@
       fitRoute();
 
       routeActive = true;
+      setClustering(false);
       await applyRouteFilter(turf.lineString(coords), (done, total) => {
         $('trip-summary').querySelector('.sub').textContent =
           `Recherche des bornes sur le trajet… ${Math.round(done / total * 100)} %`;
@@ -356,6 +365,7 @@
   function clearTrip({ keepView = false } = {}) {
     if (driveModeActive) exitDrive();
     clearRouteState();
+    setClustering(true);
     setPins(null);
     setRing(null);
     state.trip = null;
@@ -486,21 +496,37 @@
     syncFilters();
 
     // One list, by km from the start; white zones inline between fast stops.
-    let html = '';
+    // Stops in the first km are folded: you leave charged, and « Bornes
+    // proches » covers an urgent need at the start.
+    const foldKm = Math.min(30, currentRouteKm * 0.15);
+    const kmOf = m => currentRouteKm * (m._progressOnRoute ?? 0);
+    let early = stops.filter(m => kmOf(m) < foldKm);
+    if (early.length === stops.length) early = [];
+    if (state.selected && early.includes(state.selected)) state.foldOpen = true;
+    let html = '', earlyHtml = '';
     let lastFastKm = null;
     for (const m of stops) {
-      const km = currentRouteKm * (m._progressOnRoute ?? 0);
+      const km = kmOf(m);
+      let gap = '';
       if (!m._cheap) {
         if (lastFastKm !== null && km - lastFastKm > 80) {
-          html += `<li class="gap-row">⚠ Zone blanche : ${Math.round(km - lastFastKm)} km sans borne rapide</li>`;
+          gap = `<li class="gap-row">⚠ Zone blanche : ${Math.round(km - lastFastKm)} km sans borne rapide</li>`;
         }
         lastFastKm = km;
       }
-      html += rowHtml(m, `${Math.round(km)}<small> km</small>`,
+      const row = gap + rowHtml(m, `${Math.round(km)}<small> km</small>`,
         [m._cheap ? 'abordable' : '', detourText(m)].filter(Boolean).join(' · '));
+      if (early.includes(m)) earlyHtml += row; else html += row;
+    }
+    if (early.length) {
+      html = `<li class="fold"><details id="fold-early"${state.foldOpen ? ' open' : ''}>
+          <summary>Les ${Math.round(foldKm)} premiers km (${early.length} arrêt${early.length > 1 ? 's' : ''})</summary>
+          <ol class="fold-list">${earlyHtml}</ol>
+        </details></li>` + html;
     }
     if (!stops.length) html = '<li class="empty">Aucune borne avec ces filtres. Élargissez l\'écart à la route ou baissez la puissance.</li>';
     $('stop-list').innerHTML = html;
+    $('fold-early')?.addEventListener('toggle', e => { state.foldOpen = e.target.open; });
     if (state.selected && stops.includes(state.selected)) fillDetail($('stop-list'), state.selected);
     else { state.selected = null; setRing(null); }
 
@@ -830,7 +856,18 @@
   $('back-btn').addEventListener('click', goBack);
   $('sheet-handle').addEventListener('click', () => {
     setSheet(body.dataset.sheet === 'expanded' ? 'collapsed' : 'expanded');
-    if (body.dataset.sheet === 'collapsed' && !state.selected) fitRoute();
+    if (body.dataset.sheet === 'collapsed') {
+      $('sheet-scroll').scrollTop = 0;
+      if (!state.selected) fitRoute();
+    } else if (state.view === 'trip') {
+      // Summary, actions and filters scroll away (one swipe up brings them
+      // back); the list fills the sheet.
+      requestAnimationFrame(() => {
+        const sc = $('sheet-scroll');
+        const f = document.querySelector('#stop-list > li:not(.fold)') || $('stop-list');
+        sc.scrollTop += f.getBoundingClientRect().top - sc.getBoundingClientRect().top - 4;
+      });
+    }
   });
   $('edit-btn').addEventListener('click', () => {
     clearTrip();

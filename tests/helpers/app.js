@@ -98,8 +98,16 @@ export function overMap(page) {
       if (map.contains(el) || el.contains(map)) continue;
       const cs = getComputedStyle(el);
       if (cs.display === 'none' || cs.visibility === 'hidden') continue;
-      const r = el.getBoundingClientRect();
-      if (r.width < 2 || r.height < 2) continue;
+      // Clip to scrolling ancestors: content scrolled out of the sheet is not drawn.
+      const r0 = el.getBoundingClientRect();
+      const r = { left: r0.left, top: r0.top, right: r0.right, bottom: r0.bottom };
+      for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+        if (getComputedStyle(p).overflowY === 'visible') continue;
+        const c = p.getBoundingClientRect();
+        r.left = Math.max(r.left, c.left); r.top = Math.max(r.top, c.top);
+        r.right = Math.min(r.right, c.right); r.bottom = Math.min(r.bottom, c.bottom);
+      }
+      if (r.right - r.left < 2 || r.bottom - r.top < 2) continue;
       const ix = Math.min(r.right, mr.right) - Math.max(r.left, mr.left);
       const iy = Math.min(r.bottom, mr.bottom) - Math.max(r.top, mr.top);
       if (ix > 1 && iy > 1) bad.push(el.id ? `#${el.id}` : `${el.tagName}.${el.className}`);

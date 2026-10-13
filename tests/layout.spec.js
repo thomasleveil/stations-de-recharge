@@ -17,8 +17,17 @@ for (const vp of ['desktop', 'mobile', 'landscape']) {
     if (vp === 'mobile') {
       await page.click('#sheet-handle');
       expect(await overMap(page), 'trip expanded').toEqual([]);
+      await page.waitForTimeout(300);
+      const rows = await page.evaluate(() => {
+        const sc = document.getElementById('sheet-scroll').getBoundingClientRect();
+        return [...document.querySelectorAll('#stop-list li.stop')].filter(li => {
+          const r = li.getBoundingClientRect();
+          return r.height > 0 && !li.closest('details:not([open])') && r.top >= sc.top - 1 && r.bottom <= sc.bottom + 1;
+        }).length;
+      });
+      expect(rows, 'rows fully visible in the expanded sheet').toBeGreaterThanOrEqual(5);
     }
-    await page.locator('#stop-list .stop-main').first().click();
+    await page.locator('#stop-list > li.stop .stop-main').first().click();
     expect(await overMap(page), 'trip, row selected').toEqual([]);
     await page.click('#drive-btn');
     expect(await overMap(page), 'drive').toEqual([]);

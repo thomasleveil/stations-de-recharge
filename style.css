@@ -110,7 +110,13 @@ body.driving #drive { grid-area: drive; display: flex; }
     border-top: 1px solid var(--divider);
     max-height: 56dvh;
   }
-  body[data-sheet="expanded"] #sheet { height: 70dvh; max-height: 70dvh; }
+  body[data-sheet="expanded"] #sheet { height: 78dvh; max-height: 78dvh; }
+  /* Denser rows on phones so the expanded list shows at least five. */
+  .stop-main { min-height: 56px; padding: 6px 2px; gap: 8px; grid-template-columns: 3rem 1fr; }
+  .stop-km { font-size: 1.25rem; }
+  .stop-km small { display: block; }
+  .stop-name { line-height: 1.3; }
+  .stop-meta { font-size: 0.875rem; line-height: 1.35; }
   body.driving #app {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr) auto;
@@ -146,7 +152,8 @@ body.driving #drive { grid-area: drive; display: flex; }
   font-size: 1.125rem; font-weight: 700; line-height: 1.3;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.sheet-title:focus { outline: none; }
+/* Programmatic focus target only (tabindex=-1): never paint a ring on it. */
+.sheet-title:focus, .sheet-title:focus-visible { outline: none; }
 /* Phones: the header row keeps its buttons; the title stays for screen readers
    (each view opens with its own visible heading or summary). */
 @media (max-width: 899px) and (orientation: portrait) {
@@ -154,9 +161,9 @@ body.driving #drive { grid-area: drive; display: flex; }
     position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip: rect(0 0 0 0); white-space: nowrap;
   }
-  .sheet-header #nearby-btn { margin-left: auto; }
+  /* Balanced row: « Bornes proches » takes the free width between Retour and ⚙. */
+  .sheet-header #nearby-btn { flex: 1 1 auto; }
 }
-.sheet-title:focus-visible { outline: 3px solid var(--focus); }
 
 .sheet-scroll {
   flex: 1 1 auto; min-height: 0;
@@ -317,6 +324,11 @@ legend { padding: 0; font-weight: 700; font-size: 0.875rem; margin-bottom: 4px; 
 .stop-detail .btn-primary { min-height: 52px; }
 .stop-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .stop-actions .btn-primary { flex: 1 1 12rem; }
+.fold > details > summary {
+  min-height: 48px; padding: 12px 6px; cursor: pointer;
+  color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--divider);
+}
+.fold-list { list-style: none; margin: 0; padding: 0; }
 .gap-row {
   margin: 6px 0; padding: 8px 12px; border-radius: var(--r);
   background: var(--warn-bg); color: var(--warn-text); font-weight: 600;

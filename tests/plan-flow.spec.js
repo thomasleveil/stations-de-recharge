@@ -29,11 +29,25 @@ for (const vp of ['desktop', 'mobile']) {
       await expect(page.locator('body')).toHaveAttribute('data-view', 'trip');
       await expect(page.locator('#trip-summary')).toContainText('Ma position → Lyon');
       // The stops are on screen: list rows on desktop, markers on the map on phones.
-      if (vp === 'desktop') await expect(page.locator('#stop-list .stop').first()).toBeInViewport();
+      if (vp === 'desktop') await expect(page.locator('#stop-list > li.stop').first()).toBeInViewport();
       // Corridor stations are drawn on the map (after the staggered fade-in).
       await page.waitForFunction(() => /** @type {any} */ (window)._map.querySourceFeatures('stations').length > 0,
         null, { timeout: 15_000 });
       expect(errors).toEqual([]);
+    });
+
+    test('a trip shows individual stops (no clusters) and folds the first km', async () => {
+      // Rendered features: stops only, no cluster bubbles.
+      await expect.poll(() => page.evaluate(() => {
+        const f = /** @type {any} */ (window)._map.querySourceFeatures('stations');
+        return f.length > 0 && !f.some(x => x.properties.point_count);
+      }), { timeout: 10_000 }).toBe(true);
+      await expect(page.locator('#fold-early')).not.toHaveAttribute('open', '');
+      const firstKm = await page.evaluate(() => {
+        const first = document.querySelector('#stop-list > li.stop .stop-km');
+        return parseInt(first?.textContent || '', 10);
+      });
+      expect(firstKm).toBeGreaterThanOrEqual(30);
     });
 
     test('C2 — both route ends lie in uncovered map area', async () => {
@@ -48,13 +62,13 @@ for (const vp of ['desktop', 'mobile']) {
         await page.click('#sheet-handle');
         await expect(page.locator('#sheet-handle')).toHaveAttribute('aria-expanded', 'true');
       }
-      await expect(page.locator('#stop-list .stop').first()).toBeVisible();
+      await expect(page.locator('#stop-list > li.stop').first()).toBeVisible();
       const r = await page.evaluate(() => {
         const counts = [...document.querySelectorAll('#sheet *')]
           .filter(e => e.children.length === 0 && /\d+ bornes?\b/.test(e.textContent || '') && /** @type {HTMLElement} */ (e).offsetParent)
           .map(e => e.textContent);
         const lists = [...document.querySelectorAll('#sheet .stop-list')].filter(e => /** @type {HTMLElement} */ (e).offsetParent).length;
-        const items = [...document.querySelectorAll('#stop-list > li')].map(li => li.classList.contains('gap-row')
+        const items = [...document.querySelectorAll('#stop-list li.stop, #stop-list li.gap-row')].map(li => li.classList.contains('gap-row')
           ? { gap: parseInt(li.textContent || '', 10) }
           : {
             km: parseInt(li.querySelector('.stop-km')?.textContent || '', 10),
@@ -88,7 +102,7 @@ for (const vp of ['desktop', 'mobile']) {
     });
 
     test('selecting a row flies to the station and shows Naviguer; a map selection selects the row', async () => {
-      const row = page.locator('#stop-list .stop').nth(2);
+      const row = page.locator('#stop-list > li.stop').nth(2);
       await row.locator('.stop-main').click();
       await expect(row).toHaveClass(/is-selected/);
       await expect(row.locator('.stop-main')).toHaveAttribute('aria-expanded', 'true');
@@ -102,10 +116,19 @@ for (const vp of ['desktop', 'mobile']) {
         return Math.hypot(c.lng - markers[i]._lon, c.lat - markers[i]._lat);
       }, idx), { timeout: 5000 }).toBeLessThan(0.05);
 
-      const other = await page.locator('#stop-list .stop').nth(5).getAttribute('data-idx');
+      const other = await page.locator('#stop-list > li.stop').nth(5).getAttribute('data-idx');
       await page.evaluate(i => UI.onStationClick(markers[i]), Number(other));
       await expect(page.locator(`#stop-list .stop[data-idx="${other}"]`)).toHaveClass(/is-selected/);
       await expect(row).not.toHaveClass(/is-selected/);
+    });
+
+    test('clearing the trip brings the clusters back', async () => {
+      if (vp === 'mobile') await page.click('#sheet-handle');
+      await page.click('#edit-btn');
+      await expect(page.locator('body')).toHaveAttribute('data-view', 'home');
+      await page.evaluate(() => /** @type {any} */ (window)._map.jumpTo({ center: [2.5, 46.6], zoom: 6 }));
+      await expect.poll(() => page.evaluate(() => /** @type {any} */ (window)._map.querySourceFeatures('stations')
+        .some(x => x.properties.point_count)), { timeout: 10_000 }).toBe(true);
     });
   });
 }
