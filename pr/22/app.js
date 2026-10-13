@@ -68,6 +68,15 @@ const BASEMAP_DARK_URL  = 'https://tiles.openfreemap.org/styles/dark';
 let _basemapLightIds = [];
 let _basemapDarkIds  = [];
 
+// Route line per basemap. The light-theme blue measures about 2:1 on the dark
+// basemap; this muted blue clears 3:1 (WCAG 1.4.11) even over the grey motorway
+// casing without glaring at night. Opaque, so the contrast doesn't depend on
+// what lies under the line.
+const ROUTE_PAINT = {
+  light: { color: '#1D4ED8', opacity: 0.75 },
+  dark:  { color: '#4A7FD6', opacity: 1 },
+};
+
 const map = new maplibregl.Map({
   container: 'map',
   style: BASEMAP_LIGHT_URL,
@@ -516,7 +525,7 @@ map.on('load', () => {
     type:   'line',
     source: 'route',
     layout: { 'line-join': 'round', 'line-cap': 'round' },
-    paint:  { 'line-color': '#1D4ED8', 'line-width': 4, 'line-opacity': 0.75 },
+    paint:  { 'line-color': ROUTE_PAINT.light.color, 'line-width': 4, 'line-opacity': ROUTE_PAINT.light.opacity },
   });
 
   // ── Stations circle layer (WebGL) ─────────────────────────────────────────
@@ -1344,6 +1353,11 @@ function applyTheme(theme) {
   try {
     show(_basemapLightIds, theme !== 'dark' || !darkReady);  // light stays up until dark is loaded
     show(_basemapDarkIds, theme === 'dark');
+    const route = ROUTE_PAINT[theme === 'dark' && darkReady ? 'dark' : 'light'];
+    if (map.getLayer('route-layer')) {
+      map.setPaintProperty('route-layer', 'line-color', route.color);
+      map.setPaintProperty('route-layer', 'line-opacity', route.opacity);
+    }
   } catch (_) {
     // Style not loaded yet — will be applied in map.on('load')
   }
