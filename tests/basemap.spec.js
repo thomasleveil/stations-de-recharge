@@ -22,6 +22,10 @@ function basemapState(page) {
       light: light.length, lightVisible: light.filter(visible).length,
       dark: dark.length, darkVisible: dark.filter(visible).length,
       topLayers: layers.slice(-own.length).map(l => l.id),
+      route: {
+        color: map.getPaintProperty('route-layer', 'line-color'),
+        opacity: map.getPaintProperty('route-layer', 'line-opacity'),
+      },
     };
   }, OWN_LAYERS);
 }
@@ -56,6 +60,7 @@ test.describe('B-6 — OpenFreeMap basemap', () => {
     expect(light.lightVisible).toBe(light.light);
     expect(light.darkVisible).toBe(0);
     expect(light.topLayers).toEqual(OWN_LAYERS);
+    expect(light.route).toEqual({ color: '#1D4ED8', opacity: 0.75 });
 
     // The manual toggle lives in the settings view of the sheet.
     await page.click('#settings-btn');
@@ -65,6 +70,12 @@ test.describe('B-6 — OpenFreeMap basemap', () => {
     expect(dark.lightVisible).toBe(0);
     expect(dark.darkVisible).toBe(dark.dark);
     expect(dark.topLayers).toEqual(OWN_LAYERS);
+    // The light-theme route blue is about 2:1 on the dark basemap; the dark one
+    // is opaque and clears 3:1 even over the grey motorway casing.
+    expect(dark.route).toEqual({ color: '#4A7FD6', opacity: 1 });
+
+    await page.click('label[for="th-light"]');
+    expect((await basemapState(page)).route).toEqual({ color: '#1D4ED8', opacity: 0.75 });
   });
 
   test('dark theme falls back to the light basemap when the dark style is unreachable', async ({ page }) => {
@@ -81,5 +92,6 @@ test.describe('B-6 — OpenFreeMap basemap', () => {
     expect(s.theme).toBe('dark');
     expect(s.dark).toBe(0);
     expect(s.lightVisible).toBe(s.light);
+    expect(s.route).toEqual({ color: '#1D4ED8', opacity: 0.75 });
   });
 });
