@@ -110,14 +110,14 @@ const markers = [];
 // null = uninitialised (first call applies to all; subsequent calls diff).
 let _prevVisMain  = null;
 function isVisible(m) {
-  if (m._cheap) {
-    // Cheap markers: no power filter, wider corridor when route active
-    if (emergencyModeActive && _emergencyMarkers.has(m)) return true;
-    return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= CHEAP_CORRIDOR_KM);
-  }
-  // F-3 — minimum power filter
+  // F-3 — minimum power filter, budget networks included (a « bornes rapides »
+  // list must not show a 22 kW charger).
   if (m._maxPowerKw !== undefined && m._maxPowerKw < MIN_POWER_KW) return false;
   if (emergencyModeActive && _emergencyMarkers.has(m)) return true;
+  if (m._cheap) {
+    // Cheap markers: wider corridor when route active
+    return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= CHEAP_CORRIDOR_KM);
+  }
   return !routeActive || (m._distFromRoute !== undefined && m._distFromRoute <= ROUTE_BUFFER_KM);
 }
 
@@ -1067,7 +1067,7 @@ function _nearbyList(lat, lng, radiusKm = 15, max = 20) {
   const out = [];
   for (const m of markers) {
     if (Math.abs(m._lat - lat) > LAT_DELTA || Math.abs(m._lon - lng) > LON_DELTA) continue;
-    if (!m._cheap && m._maxPowerKw !== undefined && m._maxPowerKw < MIN_POWER_KW) continue;
+    if (m._maxPowerKw !== undefined && m._maxPowerKw < MIN_POWER_KW) continue;
     const dist = _geoHaversineM(lat, lng, m._lat, m._lon) / 1000;
     if (dist <= radiusKm) out.push({ m, dist });
   }

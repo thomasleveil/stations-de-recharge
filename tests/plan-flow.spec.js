@@ -69,14 +69,15 @@ for (const vp of ['desktop', 'mobile']) {
           .map(e => e.textContent);
         const lists = [...document.querySelectorAll('#sheet .stop-list')].filter(e => /** @type {HTMLElement} */ (e).offsetParent).length;
         const items = [...document.querySelectorAll('#stop-list li.stop, #stop-list li.gap-row')].map(li => li.classList.contains('gap-row')
-          ? { gap: parseInt(li.textContent || '', 10) }
+          ? { gap: (li.textContent || '').match(/km (\d+) → (\d+) : (\d+) km/)?.slice(1).map(Number) ?? null }
           : {
             km: parseInt(li.querySelector('.stop-km')?.textContent || '', 10),
             net: li.querySelector('.stop-net')?.textContent?.trim() || '',
             fast: !markers[+(/** @type {HTMLElement} */ (li).dataset.idx || -1)]._cheap,
           });
         const shown = markers.filter(m => isVisible(m)).length;
-        return { counts, lists, items, shown };
+        const underPower = markers.filter(m => isVisible(m) && m._maxPowerKw < MIN_POWER_KW).map(m => m._name);
+        return { counts, lists, items, shown, underPower };
       });
       expect(r.counts).toHaveLength(1);
       expect(r.counts[0]).toContain(`${r.shown} borne`);
@@ -86,19 +87,28 @@ for (const vp of ['desktop', 'mobile']) {
       expect(rows.every(i => i.net.length > 0)).toBe(true);
       const kms = rows.map(i => i.km);
       expect(kms).toEqual([...kms].sort((a, b) => a - b));
-      // A white zone sits between two fast stops more than 80 km apart, and only there.
-      let lastFast = null, pendingGap = null;
+      // Every row, budget networks included, meets the minimum power.
+      expect(r.underPower).toEqual([]);
+      // A white zone sits between two fast stops more than 80 km apart, and only
+      // there; it names where it starts and ends (« km 22 → 131 »).
+      let lastFast = null, pendingGap = null, gaps = 0;
       for (const it of r.items) {
-        if ('gap' in it) { pendingGap = it.gap; continue; }
+        if ('gap' in it) { pendingGap = it.gap; gaps++; continue; }
         if (!it.fast) continue;
         if (lastFast !== null) {
           const d = it.km - lastFast;
-          if (d > 80) expect(pendingGap, `gap before km ${it.km}`).not.toBeNull();
-          else expect(pendingGap, `no gap before km ${it.km}`).toBeNull();
+          if (d > 80) {
+            expect(pendingGap, `gap before km ${it.km}`).not.toBeNull();
+            const [from, to, len] = /** @type {number[]} */ (pendingGap);
+            expect(Math.abs(from - lastFast)).toBeLessThanOrEqual(1);
+            expect(Math.abs(to - it.km)).toBeLessThanOrEqual(1);
+            expect(Math.abs(len - (to - from))).toBeLessThanOrEqual(1);
+          } else expect(pendingGap, `no gap before km ${it.km}`).toBeNull();
         }
         lastFast = it.km;
         pendingGap = null;
       }
+      expect(gaps).toBeLessThanOrEqual(r.items.length);
     });
 
     test('selecting a row flies to the station and shows Naviguer; a map selection selects the row', async () => {

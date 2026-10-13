@@ -51,6 +51,7 @@
     pins: [],          // start / end map markers
     ring: null,        // selection ring map marker
     foldOpen: false,   // « first km » group of the trip list unfolded
+    filtering: false,  // corridor filter running: stops and route progress not known yet
   };
   let _readyResolve;
   const ready = new Promise(r => { _readyResolve = r; });
@@ -345,10 +346,19 @@
 
       routeActive = true;
       setClustering(false);
-      await applyRouteFilter(turf.lineString(coords), (done, total) => {
-        $('trip-summary').querySelector('.sub').textContent =
-          `Recherche des bornes sur le trajet… ${Math.round(done / total * 100)} %`;
-      });
+      updateVisibility(); // no stale whole-France markers while the corridor is computed
+      state.filtering = true;
+      try {
+        await applyRouteFilter(turf.lineString(coords), (done, total) => {
+          const sub = $('trip-summary').querySelector('.sub');
+          if (sub) sub.textContent = `Recherche des bornes sur le trajet… ${Math.round(done / total * 100)} %`;
+        });
+      } finally {
+        state.filtering = false;
+      }
+      // Démarrer may have been tapped while the filter ran: redraw the card now,
+      // without waiting for the next GPS fix.
+      if (driveModeActive) refreshDrive(true);
       saveRecentRoute(fromGps ? '' : state.start.label, state.dest.label,
         fromGps ? null : from, to);
       pushShareUrl();
@@ -503,21 +513,26 @@
     let early = stops.filter(m => kmOf(m) < foldKm);
     if (early.length === stops.length) early = [];
     if (state.selected && early.includes(state.selected)) state.foldOpen = true;
-    let html = '', earlyHtml = '';
-    let lastFastKm = null;
-    for (const m of stops) {
-      const km = kmOf(m);
-      let gap = '';
-      if (!m._cheap) {
-        if (lastFastKm !== null && km - lastFastKm > 80) {
-          gap = `<li class="gap-row">⚠ Zone blanche : ${Math.round(km - lastFastKm)} km sans borne rapide</li>`;
-        }
-        lastFastKm = km;
+    // White zones: between two fast stops more than 80 km apart, placed where
+    // the zone starts (budget stops inside it follow the warning).
+    const fast = stops.filter(m => !m._cheap);
+    const gapAfter = new Map();
+    for (let i = 1; i < fast.length; i++) {
+      const a = kmOf(fast[i - 1]), b = kmOf(fast[i]);
+      if (b - a > 80) {
+        gapAfter.set(fast[i - 1], `<li class="gap-row">⚠ Zone blanche km ${Math.round(a)} → ${Math.round(b)} : `
+          + `${Math.round(b - a)} km sans borne rapide</li>`);
       }
-      const row = gap + rowHtml(m, `${Math.round(km)}<small> km</small>`,
-        [m._cheap ? 'abordable' : '', detourText(m)].filter(Boolean).join(' · '));
-      if (early.includes(m)) earlyHtml += row; else html += row;
     }
+    let html = '', earlyHtml = '', carried = '';
+    for (const m of stops) {
+      const row = rowHtml(m, `${Math.round(kmOf(m))}<small> km</small>`,
+        [m._cheap ? 'abordable' : '', detourText(m)].filter(Boolean).join(' · '));
+      const gap = gapAfter.get(m) || '';
+      if (early.includes(m)) { earlyHtml += row; carried += gap; } // keep the warning out of the fold
+      else html += row + gap;
+    }
+    html = carried + html;
     if (early.length) {
       html = `<li class="fold"><details id="fold-early"${state.foldOpen ? ' open' : ''}>
           <summary>Les ${Math.round(foldKm)} premiers km (${early.length} arrêt${early.length > 1 ? 's' : ''})</summary>
@@ -725,6 +740,20 @@
       if (m) { nav.href = stationNavUrl(m); nav.removeAttribute('aria-disabled'); }
       else { nav.removeAttribute('href'); nav.setAttribute('aria-disabled', 'true'); }
     };
+    if (state.filtering) {
+      $('drive-title').textContent = 'Recherche des bornes…';
+      $('drive-km').textContent = '…';
+      $('drive-name').textContent = 'Calcul des bornes devant vous sur le trajet.';
+      $('drive-meta').textContent = '';
+      $('drive-avail').textContent = '';
+      $('drive-next').disabled = true;
+      setNav(null);
+      if (geoState.available) requestAnimationFrame(() => {
+        map.resize();
+        map.jumpTo({ center: [geoState.lng, geoState.lat], zoom: Math.max(map.getZoom(), 11) });
+      });
+      return;
+    }
     if (!geoState.available) {
       $('drive-title').textContent = 'Position GPS indisponible';
       $('drive-km').textContent = '—';

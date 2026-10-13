@@ -210,7 +210,7 @@ body[data-view="settings"] .view[data-for="settings"] { display: block; }
   color: var(--link); font: inherit; font-weight: 600;
   text-decoration: underline; cursor: pointer;
 }
-.btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+.btn[disabled], .btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
 
 /* ── Loading / messages ─────────────────────────────────────────────────── */
 
