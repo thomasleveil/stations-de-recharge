@@ -12,12 +12,13 @@ function nearestDist(lon, lat, flat, len) {
   for (let i = 0; i < len - 2; i += 2) {
     const ax = flat[i],     ay = flat[i + 1];
     const bx = flat[i + 2], by = flat[i + 3];
-    const dx = bx - ax, dy = by - ay;
+    // Project in a local metric frame (lon scaled by cos(lat)), not raw degrees
+    const dx = (bx - ax) * cosLat, dy = by - ay;
     const len2 = dx * dx + dy * dy;
     const t = len2 > 0
-      ? Math.max(0, Math.min(1, ((lon - ax) * dx + (lat - ay) * dy) / len2))
+      ? Math.max(0, Math.min(1, ((lon - ax) * cosLat * dx + (lat - ay) * dy) / len2))
       : 0;
-    const ex = (ax + t * dx - lon) * cosLat * K;
+    const ex = (ax + t * (bx - ax) - lon) * cosLat * K;
     const ey = (ay + t * dy - lat) * K;
     const d2 = ex * ex + ey * ey;
     if (d2 < minD2) minD2 = d2;
@@ -26,29 +27,52 @@ function nearestDist(lon, lat, flat, len) {
 }
 
 /**
- * Same as nearestDist but also returns the progress (0–1) of the nearest
- * projection along the polyline — used for staggered fade-in ordering.
+ * Cumulative length (km) of a flat polyline at each vertex: cum[k] is the
+ * distance from the first point to point k. Same equirectangular approximation.
+ * app.js (_routeCumKm) mirrors this formula to project the GPS position.
  */
-function nearestDistAndProgress(lon, lat, flat, len) {
+function cumulativeKm(flat, len) {
+  const K = 111.32;
+  const n = len >>> 1;
+  const cum = new Float64Array(n);
+  for (let k = 1; k < n; k++) {
+    const ax = flat[2 * k - 2], ay = flat[2 * k - 1];
+    const bx = flat[2 * k],     by = flat[2 * k + 1];
+    const ex = (bx - ax) * Math.cos((ay + by) * Math.PI / 360) * K;
+    const ey = (by - ay) * K;
+    cum[k] = cum[k - 1] + Math.sqrt(ex * ex + ey * ey);
+  }
+  return cum;
+}
+
+/**
+ * Same as nearestDist but also returns the progress (0–1) of the nearest
+ * projection along the polyline, proportional to distance travelled
+ * (cumKm from cumulativeKm). OSRM segments vary a lot in length, so the
+ * segment index is not a usable proxy (B-7).
+ */
+function nearestDistAndProgress(lon, lat, flat, len, cumKm) {
   const cosLat = Math.cos(lat * Math.PI / 180);
   const K = 111.32;
   let minD2 = Infinity;
   let bestI = 0, bestT = 0;
-  const numSegments = (len >>> 1) - 1; // number of segments
   for (let i = 0; i < len - 2; i += 2) {
     const ax = flat[i],     ay = flat[i + 1];
     const bx = flat[i + 2], by = flat[i + 3];
-    const dx = bx - ax, dy = by - ay;
+    const dx = (bx - ax) * cosLat, dy = by - ay;
     const len2 = dx * dx + dy * dy;
     const t = len2 > 0
-      ? Math.max(0, Math.min(1, ((lon - ax) * dx + (lat - ay) * dy) / len2))
+      ? Math.max(0, Math.min(1, ((lon - ax) * cosLat * dx + (lat - ay) * dy) / len2))
       : 0;
-    const ex = (ax + t * dx - lon) * cosLat * K;
+    const ex = (ax + t * (bx - ax) - lon) * cosLat * K;
     const ey = (ay + t * dy - lat) * K;
     const d2 = ex * ex + ey * ey;
     if (d2 < minD2) { minD2 = d2; bestI = i >>> 1; bestT = t; }
   }
-  const progress = numSegments > 0 ? (bestI + bestT) / numSegments : 0;
+  const totalKm = cumKm[cumKm.length - 1];
+  const progress = totalKm > 0
+    ? (cumKm[bestI] + bestT * (cumKm[bestI + 1] - cumKm[bestI])) / totalKm
+    : 0;
   return { dist: Math.sqrt(minD2), progress };
 }
 
@@ -101,10 +125,11 @@ self.onmessage = function ({ data }) {
   }
 
   // ── Pass 2 : precise check on candidates ─────────────────────────────
+  const cumKm = cumulativeKm(routeFlat, routeFlat.length);
   for (let k = 0; k < candidates.length; k++) {
     const i   = candidates[k];
     const lon = stationsFlat[i * 2], lat = stationsFlat[i * 2 + 1];
-    const { dist, progress } = nearestDistAndProgress(lon, lat, routeFlat, routeFlat.length);
+    const { dist, progress } = nearestDistAndProgress(lon, lat, routeFlat, routeFlat.length, cumKm);
     results[i]      = dist;
     progressFlat[i] = progress;
   }
