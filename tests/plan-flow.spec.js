@@ -140,5 +140,13 @@ for (const vp of ['desktop', 'mobile']) {
       await expect.poll(() => page.evaluate(() => /** @type {any} */ (window)._map.querySourceFeatures('stations')
         .some(x => x.properties.point_count)), { timeout: 10_000 }).toBe(true);
     });
+
+    test('the trip just planned is in the recent trips on the way back home', async () => {
+      // Fresh context: no recent trip existed at page load, only the one planned above.
+      await expect(page.locator('#recent-list button.recent').first()).toContainText('Lyon');
+      await page.locator('#recent-list button.recent').first().click();
+      await expect(page.locator('body')).toHaveAttribute('data-view', 'trip');
+      expect(errors).toEqual([]);
+    });
   });
 }
