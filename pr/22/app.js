@@ -762,31 +762,44 @@ function photonLabel(props) {
   return parts.slice(0, 3).join(', ');
 }
 
+// Errors thrown by geocode() and fetchRoute() are shown to the user as is, so
+// a network failure or an HTML error page must never surface as a raw
+// "Failed to fetch" or JSON SyntaxError.
+const _serviceDown = what => new Error(`${what} indisponible pour le moment : vérifiez la connexion et réessayez`);
+
 async function geocode(query) {
   // Photon: bias toward France/neighbors using a rough bbox
   const url = `${PHOTON_URL}?q=${encodeURIComponent(query)}&limit=1&lang=fr`;
   for (let attempt = 0; attempt < 2; attempt++) {
+    let data = null;
     try {
-      const r    = await fetch(url);
-      const data = await r.json();
+      const r = await fetch(url);
+      if (r.ok) data = await r.json();
+    } catch (_) { /* network failure or invalid JSON: retried below */ }
+    if (data) {
       if (!data.features?.length) throw new Error(`"${query}" introuvable`);
       const [lon, lat] = data.features[0].geometry.coordinates;
       return [lon, lat];
-    } catch (e) {
-      if (attempt === 1 || e.message.includes('introuvable')) throw e;
-      await new Promise(r => setTimeout(r, 800));
     }
+    if (attempt === 0) await new Promise(r => setTimeout(r, 800));
   }
+  throw _serviceDown('La recherche d\'adresse est');
 }
 
 async function fetchRoute(from, to) {
-  const r = await fetch(
-    `https://router.project-osrm.org/route/v1/driving/` +
-    `${from[0]},${from[1]};${to[0]},${to[1]}?overview=full&geometries=geojson`
-  );
-  const data = await r.json();
-  if (data.code !== 'Ok') throw new Error('Itinéraire introuvable');
-  return data.routes[0];
+  let r, data = null;
+  try {
+    r = await fetch(
+      `https://router.project-osrm.org/route/v1/driving/` +
+      `${from[0]},${from[1]};${to[0]},${to[1]}?overview=full&geometries=geojson`
+    );
+    data = await r.json();
+  } catch (_) { /* network failure, or an error page that is not JSON */ }
+  if (data?.code === 'Ok' && data.routes?.length) return data.routes[0];
+  // OSRM answers a valid request it cannot route (NoRoute, NoSegment…) with a
+  // JSON code; anything else means the service itself failed.
+  if (data?.code) throw new Error('Itinéraire introuvable');
+  throw _serviceDown('Le calcul d\'itinéraire est');
 }
 
 // Singleton Web Worker for off-thread route filtering.

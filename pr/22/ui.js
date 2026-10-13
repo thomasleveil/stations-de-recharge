@@ -361,6 +361,7 @@
       if (driveModeActive) refreshDrive(true);
       saveRecentRoute(fromGps ? '' : state.start.label, state.dest.label,
         fromGps ? null : from, to);
+      renderRecent();
       pushShareUrl();
       renderTrip();
     } catch (e) {
