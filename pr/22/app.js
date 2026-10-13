@@ -1176,7 +1176,8 @@ function applyPreferredStyling() {
 
 // ── Geolocation ────────────────────────────────────────────────────────────
 
-const geoState = { available: false, pending: false, lat: null, lng: null, heading: 0 };
+// signalLost: the last fix is kept after a timeout or a lost signal (tunnel).
+const geoState = { available: false, pending: false, signalLost: false, lat: null, lng: null, heading: 0 };
 const _geoHistory = [];   // rolling buffer of last positions for bearing
 let _geoMarker    = null;
 let _geoMarkerEl  = null; // inner element for heading updates without full marker rebuild
@@ -1241,8 +1242,9 @@ function _onGeoSuccess(pos) {
   // Keep last known heading when stationary
   if (heading === null) heading = geoState.heading;
 
-  geoState.available = true;
-  geoState.pending   = false;
+  geoState.available  = true;
+  geoState.signalLost = false;
+  geoState.pending    = false;
   geoState.lat = lat;
   geoState.lng = lng;
   geoState.heading = heading;
@@ -1287,8 +1289,13 @@ function _onGeoSuccess(pos) {
 }
 
 function _onGeoError(err) {
-  geoState.available = false;
-  geoState.pending   = false;
+  // A timeout or a lost signal (tunnel, underground car park) after a first fix
+  // keeps the last known position: it is still the best one, and the watch
+  // resumes on the next fix. Only a refusal, or no fix at all, loses it.
+  const lost = err.code !== 1 && geoState.available;
+  geoState.available  = lost;
+  geoState.signalLost = lost;
+  geoState.pending    = false;
   if (err.code !== 1) console.warn('Géolocalisation :', err.message);
   window.UI?.onGeo?.();
   // Permission refusée : activer le bouton pour permettre une nouvelle tentative

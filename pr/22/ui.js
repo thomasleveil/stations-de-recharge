@@ -734,6 +734,8 @@
     resizeMap();
   }
 
+  let _driveSignalLost = false; // whether the drive card currently says « signal GPS perdu »
+
   function refreshDrive(fit) {
     if (!driveModeActive) return;
     const nav = $('drive-nav');
@@ -778,7 +780,9 @@
     if (i < 0) i = 0;
     const { m, dist } = list[i];
     state.driveSel = m;
-    $('drive-title').textContent = i === 0 ? 'Prochaine borne' : `Borne suivante (${i + 1} sur ${list.length})`;
+    $('drive-title').textContent = (i === 0 ? 'Prochaine borne' : `Borne suivante (${i + 1} sur ${list.length})`)
+      + (geoState.signalLost ? ' · signal GPS perdu' : '');
+    _driveSignalLost = geoState.signalLost;
     $('drive-km').innerHTML = `${fmtKm(dist)}<small> km</small>`;
     $('drive-name').textContent = m._name || m._op.name;
     $('drive-meta').innerHTML = `${netHtml(m)}${kw(m) ? ` · ${kw(m)}` : ''}`
@@ -967,6 +971,9 @@
     },
     onGeo() {
       syncFromLabel();
+      // Signal lost or back (tunnel), or position refused: update the drive
+      // card at once, not on the next throttled GPS move.
+      if (driveModeActive && (!geoState.available || geoState.signalLost !== _driveSignalLost)) refreshDrive(false);
     },
     onGeoMove() {
       if (driveModeActive) refreshDrive(false);
