@@ -74,6 +74,7 @@ Application statique, sans backend ni étape de build.
 | Fichier | Rôle |
 |---|---|
 | `index.html` | Shell, charge les dépendances CDN |
+| `tariffs.js` | Tarifs des réseaux (prix, alertes, source, date de vérification) — données seules, mises à jour par PR |
 | `app.js` | Carte, DuckDB WASM, IndexedDB, marqueurs, itinéraires |
 | `style.css` | Interface, légende, popups, marqueurs |
 | `filter-worker.js` | Web Worker pour le filtrage corridor hors thread principal |

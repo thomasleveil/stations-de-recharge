@@ -25,12 +25,15 @@ Static frontend — no backend, no build step:
 
 | File | Role |
 |------|------|
-| `index.html` | Shell — map + sheet (+ drive card); loads MapLibre GL JS CDN, turf.js, SunCalc, `nav-links.js`, `app.js`, `ui.js`, `style.css` |
+| `index.html` | Shell — map + sheet (+ drive card); loads MapLibre GL JS CDN, turf.js, SunCalc, `nav-links.js`, `tariffs.js`, `app.js`, `ui.js`, `style.css` |
+| `tariffs.js` | Data only — `TARIFFS`, the price, price alerts, source URL and check date of each network, keyed by `OPERATORS[].name`. Merged into `OPERATORS` at load; a broken file drops the prices, never the app |
 | `app.js` | Engine — map init, DuckDB WASM filter, IndexedDB cache, markers, route filtering, TomTom, geolocation, theme. Reports to the UI only through `window.UI.on…` hooks |
 | `ui.js` | Interface — the sheet views (home, trip, station, nearby, settings) and the drive screen |
 | `nav-links.js` | Builds the « Naviguer » URL (Apple Plans / Google Maps / Waze) |
 | `style.css` | Layout (fixed zones: sheet column or bottom sheet + map, never overlays), sheet, rows, drive card |
 | `filter-worker.js` | Web Worker for off-thread route corridor filtering |
+
+**Tariff updates are data-only PRs on `tariffs.js`.** `tests/tariffs.spec.js` (browser-free, run by `.github/workflows/tariffs.yml` on every PR touching it) checks that it parses, that its keys match `OPERATORS` both ways, and the shape of each entry. Fill `source` + `updated` on every entry you touch; `null` means provenance unknown (prices carried over from before the file existed). Adding a network is not data-only: it needs an `OPERATORS` entry in `app.js` too.
 
 Every local file loaded by `index.html` or `new Worker()` must be on both `cp … dist/` lines of `.github/workflows/deploy.yml` and `pr-preview.yml` (`tests/deploy-files.spec.js` enforces it).
 
