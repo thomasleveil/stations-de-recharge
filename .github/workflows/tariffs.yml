@@ -1,0 +1,30 @@
+name: Tariffs check
+
+# Data-only tariff PRs merge on this check instead of a full manual test pass.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - tariffs.js
+      - app.js
+      - tests/tariffs.spec.js
+      - .github/workflows/tariffs.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Node-only spec: no browser download needed.
+      - run: npx playwright test tests/tariffs.spec.js tests/deploy-files.spec.js

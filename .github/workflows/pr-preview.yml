@@ -21,7 +21,7 @@ jobs:
       - name: Prepare app files
         run: |
           mkdir dist
-          cp index.html app.js ui.js style.css filter-worker.js nav-links.js dist/
+          cp index.html tariffs.js app.js ui.js style.css filter-worker.js nav-links.js dist/
 
       - name: Deploy to gh-pages (pr/${{ github.event.pull_request.number }}/)
         uses: peaceiris/actions-gh-pages@v4
