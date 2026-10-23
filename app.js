@@ -32,6 +32,8 @@ const OPERATORS = [
   { match: ['bp pulse', 'bp '],    name: 'bp pulse',         color: '#10B981', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
   { match: ['iecharge', 'ie charge', 'ie-charge'], name: 'IECharge',    color: '#06B6D4', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
   { match: ['izivia'],                             name: 'IZIVIA Fast', color: '#F59E0B', price: { tier: 2, range: '0.40–0.50 €/kWh', note: '' } },
+  // Lidl Plus prices as of 2026-10 (DC 0.29, AC 22 kW 0.18 since 2026-09-18) — hellowatt.fr/blog/lidl-borne-recharge-avril
+  { match: ['lidl'],                               name: 'Lidl',        color: '#0050AA', price: { tier: 1, range: '0.29 €/kWh', note: 'via appli Lidl Plus, gratuite' }, alerts: [{ icon: '📱', text: 'Payer avec l\'appli Lidl Plus' }] },
 ];
 
 // Try enseigne first, fall back to operateur field
@@ -200,7 +202,7 @@ async function cachePut(key, value) {
 // ── DuckDB WASM filter SQL ────────────────────────────────────────────────
 // Unified query — returns all relevant stations in a single pass.
 // cheap = FALSE → CCS2 fast station (≥ 150 kW, 24/7, no Tesla)
-// cheap = TRUE  → budget-network station (B&B Hotel, IECharge, IZIVIA/McDonald's, Tesla)
+// cheap = TRUE  → budget-network station (B&B Hotel, IECharge, IZIVIA/McDonald's, Tesla, Lidl)
 // When a station qualifies for BOTH, cheap = FALSE wins (fast takes priority, no duplicate).
 
 const UNIFIED_SQL = `
@@ -231,12 +233,14 @@ fast_sids AS (
 --   FRIEN* → IECharge       (operator code IEN)
 --   FRIZF* → IZIVIA Fast    (operator code IZF — McDonald's only)
 --   FRTSL* → Tesla          (Superchargers open to all EVs)
+--   FRLDL* + CCS → Lidl     (DC 50–180 kW only; 22 kW AC-only sites skipped)
 cheap_network_sids AS (
     SELECT DISTINCT id_station_itinerance FROM lat_lon
     WHERE (id_station_itinerance LIKE 'FRVIA%' AND nom_station ILIKE '%B&B HOTEL%')
        OR id_station_itinerance LIKE 'FRIEN%'
        OR id_station_itinerance LIKE 'FRIZF%'
        OR id_station_itinerance LIKE 'FRTSL%'
+       OR (id_station_itinerance LIKE 'FRLDL%' AND prise_type_combo_ccs = TRUE)
 ),
 -- Merge: BOOL_AND returns FALSE if any entry is FALSE → fast wins over cheap
 all_relevant AS (
@@ -387,7 +391,7 @@ async function initApp() {
     fetch(PARQUET_URL, { method: 'HEAD' })
       .then(r => r.headers.get('ETag') || r.headers.get('Last-Modified'))
       .catch(() => null),
-    cacheGet('stations-v2').catch(() => null),
+    cacheGet('stations-v3').catch(() => null),
   ]);
 
   const storedEtag = localStorage.getItem(PARQUET_ETAG_KEY);
@@ -480,7 +484,7 @@ async function initApp() {
 
   // 6. Persist unified dataset to IndexedDB and save ETag for future T-3 checks
   const nowTs = Date.now();
-  cachePut('stations-v2', { ts: nowTs, rows }).catch(() => {});
+  cachePut('stations-v3', { ts: nowTs, rows }).catch(() => {});
   if (serverEtag) localStorage.setItem(PARQUET_ETAG_KEY, serverEtag);
   showDataFreshness(nowTs);
 

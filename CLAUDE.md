@@ -57,7 +57,7 @@ Every local file loaded by `index.html` or `new Worker()` must be on both `cp â€
 
 ### Cache
 
-- **Storage**: IndexedDB database `irve-v1`, object store `data`, key `stations`
+- **Storage**: IndexedDB database `irve-v1`, object store `data`, key `stations-v3` (bump the suffix whenever `UNIFIED_SQL` changes, or cached users never see the new rows)
 - **Entry**: `{ ts: Date.now(), rows: [...] }` â€” plain JS objects
 - **TTL**: 24 hours
 
