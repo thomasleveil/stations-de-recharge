@@ -54,7 +54,7 @@ for (const [name, t] of Object.entries(loadTariffs())) {
     // Both null (provenance unknown, pre-dates this file) or both filled.
     expect(t.source === null, 'source and updated go together').toBe(t.updated === null);
     if (t.source !== null) {
-      expect(t.source, 'source is an http(s) URL').toMatch(/^https?:\/\/\S+$/);
+      expect(t.source, 'source is an http(s) URL or « appli <Network> »').toMatch(/^(https?:\/\/\S+|appli \S.*)$/);
       expect(isDate(t.updated), 'updated is YYYY-MM-DD').toBe(true);
       // One day of slack: a date typed in Paris after midnight is still tomorrow in UTC CI.
       expect(Date.parse(t.updated), 'updated is not in the future').toBeLessThanOrEqual(Date.now() + 86_400_000);
