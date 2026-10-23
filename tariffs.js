@@ -8,7 +8,8 @@
 // One entry per network, keyed by the exact `name` of its OPERATORS entry:
 //   tier     1 (€) · 2 (€€) · 3 (€€€), from the typical no-subscription DC
 //            price: below 0.40 → 1, below 0.58 → 2, otherwise 3
-//   range    no-subscription DC fast-charging price, e.g. '0.39–0.59 €/kWh'
+//   range    no-subscription DC fast-charging price, e.g. '0.39–0.59 €/kWh';
+//            when a free app gives a better price (Lidl Plus), take the app price
 //   note     optional subscription / condition hint, '' when none
 //   alerts   optional [{ icon, text }] warnings shown under the price
 //   source   where the price was read: an http(s) URL, or 'appli <Network>'
@@ -97,7 +98,8 @@ const TARIFFS = {
     tier: 2, range: '0.40–0.50 €/kWh', note: '',
     source: null, updated: null,
   },
-  // Limited-time offer with no published end date; 0.39 otherwise
+  // Lidl Plus price (free app): 0.29 is a limited-time offer with no published
+  // end date, the regular Lidl Plus price being 0.39
   'Lidl': {
     tier: 1, range: '0.29 €/kWh', note: 'via appli Lidl Plus, offre à durée limitée',
     alerts: [{ icon: '📱', text: 'Payer avec l\'appli Lidl Plus' }],
