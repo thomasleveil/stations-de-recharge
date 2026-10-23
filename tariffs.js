@@ -36,11 +36,17 @@ const TARIFFS = {
     source: 'https://mac4ever.com/196844',
     updated: '2026-10-23',
   },
-  // Electra 0.39–0.61 depending on affluence; Allego flat 0.59 (allego.eu/fr/tarifs)
-  'Allego / Electra': {
-    tier: 2, range: '0.39–0.61 €/kWh', note: 'Electra : prix selon l\'affluence, -0.10 avec Electra+ (1.99 €/mois) ; Allego : 0.59',
-    alerts: [{ icon: '⏱️', text: 'Electra : 0.40 €/min si la voiture reste branchée au-delà de 80 % sur une station saturée' }],
+  'Electra': {
+    tier: 2, range: '0.39–0.61 €/kWh', note: 'prix selon l\'affluence, -0.10 avec Electra+ (1.99 €/mois)',
+    alerts: [{ icon: '⏱️', text: '0.40 €/min si la voiture reste branchée au-delà de 80 % sur une station saturée' }],
     source: 'https://www.go-electra.com/fr/electra-plus/',
+    updated: '2026-10-23',
+  },
+  // Idle fee: https://www.allego.eu/fr/frais-de-depassement-de-sejour/
+  'Allego': {
+    tier: 3, range: '0.59 €/kWh', note: '0.39 avec Allego Plus (9.99 €/mois)',
+    alerts: [{ icon: '⏱️', text: '0.25 €/min après 45 min branché sans charger' }],
+    source: 'https://www.allego.eu/fr/tarifs/',
     updated: '2026-10-23',
   },
   'Fastned': {
