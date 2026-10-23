@@ -7,7 +7,7 @@ const BASE = 'http://localhost:8765';
 // watermark instead. The basemap is OpenFreeMap (Positron + Dark, no key), with
 // the dark layers added as a hidden `dark:`-prefixed group.
 
-const OWN_LAYERS = ['route-layer', 'stations-layer', 'clusters', 'cluster-count'];
+const OWN_LAYERS = ['route-layer', 'stations-layer', 'stations-brand-layer', 'clusters', 'cluster-count'];
 
 /** @param {import('@playwright/test').Page} page */
 function basemapState(page) {
