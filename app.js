@@ -21,7 +21,8 @@ let TOMTOM_API_KEY = localStorage.getItem('irve-tomtom-key') || '';
 const OPERATORS = [
   { match: ['totalenergies'],      name: 'TotalEnergies',    color: '#F97316' },
   { match: ['ionity'],             name: 'IONITY',           color: '#1D4ED8' },
-  { match: ['allego', 'electra'],  name: 'Allego / Electra', color: '#16A34A' },
+  { match: ['electra'],            name: 'Electra',          color: '#16A34A' },
+  { match: ['allego'],             name: 'Allego',           color: '#DB2777' },
   { match: ['fastned'],            name: 'Fastned',          color: '#DC2626' },
   { match: ['engie', 'vianeo'],    name: 'ENGIE Vianeo',     color: '#7C3AED' },
   { match: ['tesla'],              name: 'Tesla',            color: '#B91C1C' },
@@ -1036,7 +1037,7 @@ function staggeredFadeIn() {
 // ── F-9a — Network recommendation algorithm ───────────────────────────────
 
 // Alliance = four networks often covered by a single subscription
-const ALLIANCE_NAMES = new Set(['Allego / Electra', 'IONITY', 'Fastned', 'Atlante']);
+const ALLIANCE_NAMES = new Set(['Electra', 'IONITY', 'Fastned', 'Atlante']);
 
 /**
  * Returns top-2 network recommendations for the current route.
@@ -1094,10 +1095,9 @@ function computeNetworkRecommendation(routeKm) {
   for (const [name, segs] of segSets) {
     const score = segs.size / nSegs;
     if (score === 0) continue;
-    const allianceMemberLabel = n => n === 'Allego / Electra' ? 'Electra' : n;
     const allianceMembers = [...ALLIANCE_NAMES]
       .sort((a, b) => (segSets.get(b)?.size || 0) - (segSets.get(a)?.size || 0))
-      .map(allianceMemberLabel).join(' · ');
+      .join(' · ');
     const op = (name === 'Alliance')
       ? { name: `Alliance (${allianceMembers})`, color: '#7C3AED' }
       : (OPERATORS.find(o => o.name === name) || { name, color: '#6B7280' });
@@ -1207,6 +1207,8 @@ const PREFERRED_NETWORKS_KEY = 'irve-preferred-networks';
 /** Set of operator names the user has a price advantage on. */
 let preferredNetworks = new Set(
   JSON.parse(localStorage.getItem(PREFERRED_NETWORKS_KEY) || '[]')
+    // 'Allego / Electra' was split in two networks (T-10)
+    .flatMap(n => n === 'Allego / Electra' ? ['Electra', 'Allego'] : [n])
 );
 
 /**
