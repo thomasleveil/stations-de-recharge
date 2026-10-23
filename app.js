@@ -32,6 +32,8 @@ const OPERATORS = [
   { match: ['bp pulse', 'bp '],    name: 'bp pulse',         color: '#10B981', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
   { match: ['iecharge', 'ie charge', 'ie-charge'], name: 'IECharge',    color: '#06B6D4', price: { tier: 2, range: '0.39–0.49 €/kWh', note: '' } },
   { match: ['izivia'],                             name: 'IZIVIA Fast', color: '#F59E0B', price: { tier: 2, range: '0.40–0.50 €/kWh', note: '' } },
+  // Lidl Plus prices as of 2026-10 (DC 0.29, AC 22 kW 0.18 since 2026-09-18) — hellowatt.fr/blog/lidl-borne-recharge-avril
+  { match: ['lidl'],                               name: 'Lidl',        color: '#0050AA', brand: 'lidl', price: { tier: 1, range: '0.29 €/kWh', note: 'via appli Lidl Plus, gratuite' }, alerts: [{ icon: '📱', text: 'Payer avec l\'appli Lidl Plus' }] },
 ];
 
 // Try enseigne first, fall back to operateur field
@@ -156,6 +158,7 @@ function updateVisibility() {
         color:       m._op.color,
         strokeColor: pref ? '#F59E0B' : '#ffffff',
         strokeWidth: pref ? 3 : 2,
+        ...(m._op.brand && { brand: m._op.brand }),
       },
     });
   }
@@ -200,7 +203,7 @@ async function cachePut(key, value) {
 // ── DuckDB WASM filter SQL ────────────────────────────────────────────────
 // Unified query — returns all relevant stations in a single pass.
 // cheap = FALSE → CCS2 fast station (≥ 150 kW, 24/7, no Tesla)
-// cheap = TRUE  → budget-network station (B&B Hotel, IECharge, IZIVIA/McDonald's, Tesla)
+// cheap = TRUE  → budget-network station (B&B Hotel, IECharge, IZIVIA/McDonald's, Tesla, Lidl)
 // When a station qualifies for BOTH, cheap = FALSE wins (fast takes priority, no duplicate).
 
 const UNIFIED_SQL = `
@@ -231,12 +234,14 @@ fast_sids AS (
 --   FRIEN* → IECharge       (operator code IEN)
 --   FRIZF* → IZIVIA Fast    (operator code IZF — McDonald's only)
 --   FRTSL* → Tesla          (Superchargers open to all EVs)
+--   FRLDL* + CCS → Lidl     (DC 50–180 kW only; 22 kW AC-only sites skipped)
 cheap_network_sids AS (
     SELECT DISTINCT id_station_itinerance FROM lat_lon
     WHERE (id_station_itinerance LIKE 'FRVIA%' AND nom_station ILIKE '%B&B HOTEL%')
        OR id_station_itinerance LIKE 'FRIEN%'
        OR id_station_itinerance LIKE 'FRIZF%'
        OR id_station_itinerance LIKE 'FRTSL%'
+       OR (id_station_itinerance LIKE 'FRLDL%' AND prise_type_combo_ccs = TRUE)
 ),
 -- Merge: BOOL_AND returns FALSE if any entry is FALSE → fast wins over cheap
 all_relevant AS (
@@ -337,6 +342,17 @@ function buildMarkers(rows) {
   // GeoJSON source is populated by updateVisibility()
 }
 
+// Lidl logo: Simple Icons path (simpleicons.org, viewBox 0 0 24 24) over the brand's blue / yellow / red.
+const LIDL_LOGO_SVG =
+  "<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'>" +
+  "<rect width='24' height='24' rx='3' fill='#0050AA'/>" +
+  "<circle cx='12' cy='12' r='10.9' fill='#FFF000' stroke='#E60A14' stroke-width='1.1'/>" +
+  "<path fill='#0050AA' d='M0 0v24h24V0zm.209.209h23.582v23.582H.209zm11.789.625C5.83.834.83 5.834.83 12.002c0 6.168 5 11.168 11.168 11.168 6.167 0 11.167-5 11.168-11.166C23.165 5.837 18.166.837 12 .834zm.002.709c5.777 0 10.46 4.682 10.46 10.459v.004c-.004 5.773-4.686 10.452-10.46 10.453-5.777 0-10.46-4.68-10.46-10.457C1.54 6.225 6.222 1.543 12 1.543zM9.229 7.85c-.645 0-1.166.521-1.166 1.166v.004c0 1.044 1.261 1.567 1.999.829.738-.738.215-2-.829-1.999zM2.73 10.059v.71h.551v2.465h-.55v.713h4.644v-.65l.537-.54 1.486 1.491-.55.547.357.36 2.973-2.977v-.713l-.826.83-1.848-1.848-2.129 2.133v-.576l-1.904 1.06V10.77h.549v-.711zm8.905 0v.71h.549v2.465h-.555v.713h3.129c2.325 0 2.355-3.888.008-3.888zm4.963 0v.71h.55v2.465h-.55v.713h4.648v-1.943l-1.906 1.06V10.77h.55v-.711zm-2.43 1.21h.133c.687 0 .685 1.461.023 1.461h-.156v-1.46z'/></svg>";
+
+// Brands drawn as an icon on the map instead of a coloured dot (key = OPERATORS[].brand).
+const MAP_BRAND_ICONS = { lidl: LIDL_LOGO_SVG };
+const STATION_LAYERS  = ['stations-layer', 'stations-brand-layer'];
+
 // ── Main init — cache-first, then live fetch + DuckDB filter ─────────────
 
 // D-2 — Format a cache timestamp as a human-readable freshness string.
@@ -387,7 +403,7 @@ async function initApp() {
     fetch(PARQUET_URL, { method: 'HEAD' })
       .then(r => r.headers.get('ETag') || r.headers.get('Last-Modified'))
       .catch(() => null),
-    cacheGet('stations-v2').catch(() => null),
+    cacheGet('stations-v3').catch(() => null),
   ]);
 
   const storedEtag = localStorage.getItem(PARQUET_ETAG_KEY);
@@ -480,7 +496,7 @@ async function initApp() {
 
   // 6. Persist unified dataset to IndexedDB and save ETag for future T-3 checks
   const nowTs = Date.now();
-  cachePut('stations-v2', { ts: nowTs, rows }).catch(() => {});
+  cachePut('stations-v3', { ts: nowTs, rows }).catch(() => {});
   if (serverEtag) localStorage.setItem(PARQUET_ETAG_KEY, serverEtag);
   showDataFreshness(nowTs);
 
@@ -533,7 +549,7 @@ map.on('load', () => {
     id:     'stations-layer',
     type:   'circle',
     source: 'stations',
-    filter: ['!', ['has', 'point_count']],
+    filter: ['all', ['!', ['has', 'point_count']], ['!', ['has', 'brand']]],
     paint: {
       'circle-radius': [
         'interpolate', ['linear'], ['zoom'],
@@ -546,6 +562,25 @@ map.on('load', () => {
       'circle-stroke-width':   ['get', 'strokeWidth'],
       'circle-opacity':        0.9,
       'circle-stroke-opacity': 1,
+    },
+  });
+
+  // ── Brand icon layer — stations whose operator has a MAP_BRAND_ICONS entry ──
+  for (const [brand, svg] of Object.entries(MAP_BRAND_ICONS)) {
+    const img = new Image(48, 48);
+    img.onload = () => { if (!map.hasImage(`brand-${brand}`)) map.addImage(`brand-${brand}`, img, { pixelRatio: 2 }); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+  map.addLayer({
+    id:     'stations-brand-layer',
+    type:   'symbol',
+    source: 'stations',
+    filter: ['all', ['!', ['has', 'point_count']], ['has', 'brand']],
+    layout: {
+      'icon-image':            ['concat', 'brand-', ['get', 'brand']],
+      'icon-size':             ['interpolate', ['linear'], ['zoom'], 6, 0.7, 10, 0.85, 13, 1],
+      'icon-allow-overlap':    true,
+      'icon-ignore-placement': true,
     },
   });
 
@@ -588,7 +623,7 @@ map.on('load', () => {
   });
 
   // ── Hover tooltip ─────────────────────────────────────────────────────────
-  map.on('mouseenter', 'stations-layer', e => {
+  map.on('mouseenter', STATION_LAYERS, e => {
     map.getCanvas().style.cursor = 'pointer';
     const idx = e.features[0].properties.idx;
     const m = markers[idx];
@@ -598,7 +633,7 @@ map.on('load', () => {
       .setHTML(m._name || '')
       .addTo(map);
   });
-  map.on('mouseleave', 'stations-layer', () => {
+  map.on('mouseleave', STATION_LAYERS, () => {
     map.getCanvas().style.cursor = '';
     if (_hoverPopup) { _hoverPopup.remove(); _hoverPopup = null; }
   });
@@ -615,7 +650,7 @@ map.on('load', () => {
   map.on('mouseleave', 'clusters', () => { map.getCanvas().style.cursor = ''; });
 
   // ── Click → station selection (the sheet shows it; no map popup) ─────────
-  map.on('click', 'stations-layer', e => {
+  map.on('click', STATION_LAYERS, e => {
     if (_hoverPopup) { _hoverPopup.remove(); _hoverPopup = null; }
     const m = markers[e.features[0].properties.idx];
     if (m) window.UI?.onStationClick?.(m);
@@ -976,6 +1011,7 @@ function staggeredFadeIn() {
           color:       m._op.color,
           strokeColor: pref ? '#F59E0B' : '#ffffff',
           strokeWidth: pref ? 3 : 2,
+          ...(m._op.brand && { brand: m._op.brand }),
         },
       });
     }

@@ -35,7 +35,7 @@ Le bouton ⚡ recentre la carte sur votre position GPS et liste toutes les borne
 
 ### 💰 Stations à tarif réduit
 
-Les stations des réseaux à tarif réduit (B&B Hotels / ENGIE Vianeo, McDonald's / IZIVIA Fast, IECharge, Tesla Supercharger) sont mises en évidence. Vous pouvez aussi marquer vos réseaux préférés dans les paramètres pour les mettre en avant avec une bordure dorée.
+Les stations des réseaux à tarif réduit (B&B Hotels / ENGIE Vianeo, McDonald's / IZIVIA Fast, IECharge, Tesla Supercharger, Lidl) sont mises en évidence. Les stations Lidl ont leur logo sur la carte : le kWh y est à 0,29 € en charge rapide via l'appli gratuite Lidl Plus. Vous pouvez aussi marquer vos réseaux préférés dans les paramètres pour les mettre en avant avec une bordure dorée.
 
 ### 🌐 Disponibilité temps réel (optionnel)
 
